@@ -1,0 +1,39 @@
+---
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    toc: no
+    number_sections: false
+    keep_tex: true
+    includes:
+      in_header: "sipreamble.tex"
+bibliography: "references.bib"
+title: "Paper title"
+author:
+  - Author 1^[Institution 1, email1]
+  - Author 2^[Institution 2, email2]
+---
+
+```{r sisetup, echo=F}
+options(tinytex.clean = FALSE)
+```
+
+# Supporting Information
+
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+```{r sfigure, echo=F, fig.cap="A figure", fig.align="center", out.width="50%"}
+knitr::include_graphics("Model.png")
+```
+
+Figure \@ref(fig:sfigure) is from @Thornton2019-nu.
+
+\clearpage
+\newpage
+
+# Supporting References
+
+
