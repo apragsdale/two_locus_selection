@@ -7,31 +7,347 @@ output:
     keep_tex: true
     includes:
       in_header: "preamble.tex"
+    citation_package: natbib
 bibliography: "references.bib"
-abstract: The abstract (but it could also be a normal section).
-title: "Paper title"
+biblio-style: "genetics"
+title: Can we distinguish modes of selective interactions using linkage disequilibrium?
 author:
-  - Author 1^[Institution 1, email1]
-  - Author 2^[Institution 2, email2]
+header-includes:
+- |
+  ```{=latex}
+  \usepackage{authblk}
+  \author{Aaron P. Ragsdale \\ aaronpeaceragsdale@gmail.com}
+  \affil{Department of Human Genetics, McGill University, Montreal, Canada \\
+         National Laboratory of Genomics for Biodiversity, Irapuato, Mexico \\
+         }
+  ```
+date: \today
 ---
-
 
 ```{r setup, echo=FALSE}
 ```
 
+\begin{abstract} Selection acting on a mutation interferes and interacts with
+evolutionary processes at nearby loci, causing allele frequency and correlation
+patterns between pairs of selected mutations to deviate from expected
+single-locus dynamics. A number of recent studies have used patterns of linkage
+disequilibrium between selected variants to test for selective interference and
+epistatic interactions, with some disagreement over interpretation of
+observations. Interpreting this data is hindered by the relative lack of
+analytic or even numerical expectations for patterns of variation between pairs
+of loci under the combined effects of selection, dominance, epistasis, and
+demography. Here, I develop a numerical approach to compute the expected
+two-locus sampling distribution under diploid selection, with arbitrary
+epistasis and dominance, and variable recombination and population sizes. I use
+this to explore how different models of epistasis and dominance affect expected
+signed LD, including for non-steady-state demography relevant to human
+populations. Finally, I use whole-genome sequencing data to asses how well we
+can differentiate models of selective interference in practice, and find [[that
+while xxx, within classes/domains, we see...]]. \end{abstract}
+
 # Introduction
 
-This paper is neat [@Ragsdale2020-hv].
+Most new mutations that affect fitness are deleterious and tend to be
+eliminated from a population. The average number of generations that a
+deleterious mutation segregates in a population depends on the strength of
+selection against genomes that carry it, with very damaging mutations kept at
+low frequencies in the population and purged relatively rapidly. But in the
+time between mutation and fixation or loss, selected variants, both beneficial
+and damaging, can dramatically impact patterns of variation in nearby linked
+regions. This distortion away from neutral expectations has been well
+documented in practically every taxon and population for which we have genomic
+data. However, questions remain about the primary mode of interactions between
+multiple linked variants and their joint effects on genome-wide patterns of
+diversity.
 
-@Ragsdale2020-hv is still a neat paper if we cite it like this.
+In their foundational paper, @Hill1966-gv recognized that linked negatively
+selected variants reciprocally impede the efficacy of population to remove
+those mutations. In general, linked selection reduces the fixation probability
+of advantageous mutations and increases that of deleterious mutations, compared
+to expectations under single-locus dynamics [@Birky1988-jm]. Allele frequency
+dynamics of linked selected variants are also predicted to deviate from
+expectations without interference. Under a multiplicative fitness model, where
+the fitness reduction of a haplotype carrying multiple deleterious variants is
+equal to the product of the fitness reduction of each mutation independently, 
 
-```{r figure, echo=F, fig.cap="A figure", fig.align="center", out.width="50%"}
-knitr::include_graphics("Model.png")
+One (!!) paragraph on epistasis, dominance, etc and overall importance. Thus,
+there is a lot of interest in disentangling and distinguishing between these
+processes.
+
+## Empirical observations
+
+The most direct way to test for interactions between linked selected variants
+is through deep mutation scanning experiments, in which many distinct mutations
+are induced within a target gene and fitness, or some protein function, is
+experimentally measured [@Romero2009-yi; @Steinberg2016-is]. For example, using
+the model system of the TEM-1 $\beta$-lactamase gene in *E. coli*,
+@Bershtein2006-bk found evidence for synergistic epistasis, where multiple
+deleterious mutations had a greater effect on fitness than the multiplication
+of the observed effects of the individual mutations. The scale of mutation
+scanning experiments continues to improve dramatically, promising greater
+resolution of the fitness landscape in such model systems.
+
+In most natural populations, directed mutation studies are not possible, and we
+must turn to population genetic approaches to infer selective interactions
+between observed mutations. Motivated by theory that linked negatively selected
+mutations will display negative LD due to interference [@Hill1966-gv], and that
+epistasis will drive expected LD away from zero, a number of recent studies
+have used patterns of LD within classes of putatively selected variants to
+infer modes of selective interactions. In a notable study from
+@Callahan2011-ac, pairs of nonsynonymous mutations were found to cluster more
+than expected along lineages in the *Drosophilid* species complex, and that
+those clustered mutations tended to preserve the charge of the protein and were
+in positive LD compared to pairs including synonymous mutations, suggesting
+that compensatory nonsynonymous variants were more generally tolerated.
+
+More recently, @Sohail2017-zq observed negative LD between loss-of-function
+variants in protein-coding genes (such as stop gains and losses, frameshifts,
+and other nonsense mutations) in both human and fruit fly populations, from
+which they proposed that widespread synergistic epistasis between these
+mutations. Within the past year or two, both @Sandler2020-vk and @Garcia2020-zn
+have reevaluated patterns of LD between coding variants in humans, fruit flies,
+and *Capsella grandiflora*, and suggested interference and dominance may
+instead be driving patterns of LD [@Garcia2020-zn] or questioned whether LD
+between loss-of-function variants is significantly different from zero
+[@Sandler2020-vk].
+
+A number of factors impede our interpretation of patterns of signed LD between
+coding variants. First, for strongly deleterious or loss-of-function variants,
+their rarity and low frequency means that statistical measurement of LD and
+other diversity measures are quite noisy. Second, comparisons are based on
+theory that are confined to limiting and simplistic assumptions, including
+steady-state demography, simple selection and interaction models, or unlinked
+loci. To generate predictions under more complex models, we rely on expensive
+forward simulations. These can be great for building intuition or testing
+inference methods, but do not efficiently provide expectations for quantities
+of interest across parameter regimes of interest. Theoretical and numerical
+studies of haplotype frequencies and LD under general selective interaction
+models would be of great benefit.
+
+## Existing theory and numerical methods
+
+
+In addition to impacting surrounding neutral variation, selected variants can
+interact and interfere with selection acting for or against other mutations. In
+their foundational paper, @Hill1966-gv recognized that linked negatively
+selected variants impede the efficacy of a population to remove those
+mutations. Generally, linked selection reduces the fixation probability of
+advantageous mutations and increases that of deleterious mutations, compared to
+expectations under single-locus dynamics [@Birky1988-jm; @Barton1995-mj]. The
+joint allele frequency dynamics of linked variants under selection are also
+predicted to deviate from expectations without interference. Since haplotypes
+that carry multiple deleterious mutations have lower fitness than haplotypes
+that carry just one or the other under a multiplicative fitness model, we
+should expect to see those mutation segregate on different haplotypes more
+often than together, leading to negative, or repulsion, linkage disequilibrium
+(LD), although the extent of LD depends non-trivially on the strength of
+selection and probability of recombination separating loci. Nonetheless, this
+provides a simple, testable hypothesis under the standard selection model of
+additive effects within loci and multiplicative fitness between: we should
+observe average signed LD to be negative between pairs of selected variants.
+
+Aside from selective interference under a multiplicative fitness model, where
+the relative fitness conferred by a haplotype carrying two deleterious
+mutations is equal to the product of the fitnesses of haplotypes carrying
+individual mutations, considerable attention has been given to
+non-multiplicative deviations in the fitness function, known as epistasis.
+Early work focused primarily on mutations of strong effect and explored models
+of both synergistic and diminishing returns (or antagonistic or threshold)
+epistasis under sexual and asexual reproduction, often in the limiting case of
+free recombination between deleterious variants. Generally, for sexually
+reproducing organisms, deleterious load is decreased under simple models of
+synergistic epistasis compared to multiplicative fitness [@Kimura1966-gc;
+@Kondrashov1995-va]. Pervasive epistasis has been invoked as an explanation for
+the evolutionary advantage of sex [@Kondrashov1982-sf; @Charlesworth1990-kw;
+@Barton1998-lu], as well as driving incompatibilities that lead to postzygotic
+isolation during the process of speciation [@Turelli2000-kz]. Within
+populations, epistasis is known to cause signed LD to deviate dramatically from
+zero, with negative synergistic epistasis leading to an excess of negative LD
+[@Kondrashov1982-sf; @Charlesworth1990-kw].
+
+While epistasis is the most commonly considered nonlinear effect influencing
+interactions between selected variants, non-additive effects *within* a
+locus may also cause deviations from our baseline models, either with or
+without epistasis. Dominance and multi-locus interactions are jointly important
+in shaping the expected equilibrium allele frequencies and mutation load due to
+strongly damaging disease mutations [@Clark1998-kq]. However, despite dominance
+and partial recessiveness being appreciated as important factors shaping linked
+variation [@Turelli2000-kz; @Zhao2016-bb], dominance has received less
+attention than epistasis in multi-locus selection models, and its impact on the
+joint segregation of negatively selected variants is poorly understood. There
+is ample evidence that a large fraction of selected mutations are at least
+partially recessive in humans [@xx], flies [@xx], and other species [@xx], and
+that average levels of dominance vary with the strength of selection [@xx].
+
+- Patterns of dominance
+  - @Huber2018-cp, @Haldane1930-tt, @Kacser1981-nc
+
+
+
+### @Ohta1969-ie and @Ohta1971-yd
+
+- Diffusion models for the neutral two-locus decay of LD $\sigma_d^2$
+
+### @Hallgrimsdottir2008-sq
+
+-
+
+### @Good2020-wj
+
+- 
+
+
+
+- Neutrality, additive, dominance, epistasis, general diploid selection models
+- Analytic results: Older stuff, like some basic results from HR, through more
+  recent results in @Good2020-wj
+  - recursions under neutrality [@Golding1984-pu; @Hudson2001-sg]
+- Recent numerical approaches [@Ragsdale2017-gg; @Ragsdale2019-nt] and others that aren't me?
+- Resorting to discrete forward simulations (a few examples)
+
+In this paper, I develop a numerical approach to solve for the two-locus
+sampling distribution under a general diploid selection model with variable
+recombination and single-population size history. I use this model to describe
+how epistasis and dominance shape expected patterns of signed LD, under both
+steady-state and non-equilibrium demography, that have been used to test for
+interference and epistasis in population genomic data. I then turn to human
+sequencing data and compare patterns of LD for synonymous, missense, and
+loss-of-function mutations within and between protein-coding regions, and
+assess how well we can expect to discriminate between modes of selective
+interactions from genome-wide patterns of LD.
+
+# Methods
+
+## The two-locus sampling distribution with arbitrary selection
+
+### Drift and recombination
+
+### Selection models with epistasis and dominance
+
+### Low-order summaries of the sampling distribution
+
+## Numerical solution
+
+### Moment closure approach
+
+### Implementation
+
+- Numerical approach for solving the two-locus model with recombination,
+  single-population demography, and general selection models, following
+  @Jouganous2017-pq and @Ragsdale2019-nt.
+
+### Validation
+
+### Expected LD under inferred human demographic history
+
+## Analysis of human genomic data
+- Computing LD statistics commonly used for inference about selection models
+  (Figure \@ref(fig:fig1)), using @Ragsdale2020-nz
+- Data analysis of Thousand Genomes Project data
+  @1000_Genomes_Project_Consortium2015-zq
+- Domain information from @Stanek2020-pa
+
+
+**idea**: LD within genes partitioned by whether two mutations fall within
+domains or are in different domains (distance as a proxy? or can we get
+information about whether they lie in the same gene or not?)
+
+## Data and software availability
+
+- Thousand genomes VCFs and ancestral sequence
+  [@1000_Genomes_Project_Consortium2015-zq]
+- Protein domain information [@Stanek2020-pa]
+- Implementation as \texttt{moments.TwoLocus} at
+  \url{https://bitbucket.org/simongravel/moments}
+- Scripts to recreate analyses, figures, and compile this manuscript at
+  \url{https://github.com/apragsdale/two_locus_selection}
+
+
+# Results
+
+## Singed LD under steady-state demography
+
+- Expected LD under models of epistasis and dominance
+  at equilibrium (Figures \@ref(fig:fig2) and \@ref(fig:fig3))
+  - $\sigma_d^1$, $\sigma_d^2$, $r^2$, for all frequencies
+  - The same statistics conditioned on sample allele counts
+  - Relationship between "Hudson slice" and allele count-conditioned LD
+
+### Additive selection and epistasis
+
+### Simple dominance within a locus
+
+### General selection and gene-based dominance
+
+## Population size changes [[do what]]
+
+- Effect of demography on these same statistics
+  - Bottleneck with recovery
+  - Human-like size histories (using @Speidel2019-nj)
+
+## Data... main result in title
+
+- Present data from loss-of-function (LOF), synonymous, and nonsynonymous
+  variants from Thousand Genomes, both for pairs of loci within genes and for
+  pairs of loci between nearby genes. Do we see any differences, and do the
+  different patterns in African vs non-African populations tell us anything
+  about the possible selection model for different categories of variants?
+
+# Discussion
+
+- What can we say about epistasis and models of dominance using LD statistics?
+  Do we have power to distinguish models using low-order statistics of this
+  kind?
+- The role of numerical solutions to such models for population genetics
+  analyses. They bridge the gap between theory limited by analytic
+  intractability and expensive forward simulations such as \texttt{SLiM} and
+  \texttt{fwdpy11}.
+- Limitations and future directions:
+  - multiple populations
+  - strong selection leads to numerical instability
+
+# Acknowledgements
+- Simon Gravel
+- Kevin Thornton
+
+\clearpage
+\newpage
+
+# Figures:
+
+```{r fig1, echo=F, fig.cap="(ref:fig1cap)", fig.align="center"}
+knitr::include_graphics("figures/fig1.pdf")
 ```
 
-See Figure \@ref(fig:figure).
+(ref:fig1cap) \textbf{Additive selection and allele count-conditioned LD.} (A
+and B) The distribution of $AB$ haplotype counts in a sample size of 30, in
+which we observe 10 $A$ alleles at the left locus, and 10 $B$ alleles at the
+right locus. (C and D) The decay of normalized squared LD ($\sigma_d^2$) with
+scaled recombination distance for pairs of neutral and selected variants,
+respectively. The dashed line is the neutral expectation [@Ohta1971-yd]. (E and
+F) Similarly, the decay of $\sigma_d^1=\mathbb{E}[D]/ \mathbb{E}[p(1-p)q(1-q)]$
+for neutral and selected variants, respectively. Note the difference in scale
+between the two panels.
 
-See Supplementary Figure \@ref(fig:figure).
+```{r fig2, echo=F, fig.cap="(ref:fig2cap)", fig.align="center"}
+knitr::include_graphics("figures/fig2.pdf")
+```
+
+(ref:fig2cap) \textbf{Additive selection with epistasis.} (A) $D^2$, and (B) $D$.
+
+```{r fig3, echo=F, fig.cap="(ref:fig3cap)", fig.align="center"}
+knitr::include_graphics("figures/fig3.pdf")
+```
+
+(ref:fig3cap) \textbf{Dominance.} (A) $D^2$, and (B) $D$.
+
+4. Effects of demography on LD (bottleneck and recovery vs expansion, following
+   Tennessen model)
+
+5. LOF, missense, and synonymous variants, within and between genes.
+
+6. Missense variants in genes partitioned by conservation? Tolerance to
+   nonsynonymous changes?
 
 \clearpage
 \newpage

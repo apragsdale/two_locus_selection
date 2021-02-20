@@ -25,12 +25,6 @@ options(tinytex.clean = FALSE)
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-```{r sfigure, echo=F, fig.cap="A figure", fig.align="center", out.width="50%"}
-knitr::include_graphics("Model.png")
-```
-
-Figure \@ref(fig:sfigure) is from @Thornton2019-nu.
-
 \clearpage
 \newpage
 

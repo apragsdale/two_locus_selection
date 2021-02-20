@@ -3,7 +3,7 @@ SIMATERIAL:=SupportingInformation
 BIBFILE:=references.bib
 PDF:=$(PAPERFILENAME).pdf
 SIPDF:=$(SIMATERIAL).pdf
-IMAGES:=Model.png
+IMAGES:=figures/fig1.pdf
 
 all: $(PDF) $(SIPDF)
 
