@@ -227,11 +227,13 @@ def compute_LD_by_distance(
     """
     genes_set = set(genes)
     bins = [(l, r) for l, r in zip(bp_bins[:-1], bp_bins[1:])]
-    stat_sums = {b: np.zeros(4) for b in bins}
-    num_pairs = {b: 0 for b in bins}
+    stat_sums = {b: {} for b in bins}
+    num_pairs = {b: {} for b in bins}
     for ii, (pos, gene) in enumerate(zip(positions, genes)):
         other_gene = genes != gene
         for b in bins:
+            stat_sums[b].setdefault(gene, np.zeros(4))
+            num_pairs[b].setdefault(gene, 0)
             to_keep = np.logical_and(
                 positions - positions[ii] > b[0], positions - positions[ii] <= b[1]
             )
@@ -243,11 +245,29 @@ def compute_LD_by_distance(
                 D2, Dz, pi2, D = moments.LD.Parsing.compute_pairwise_stats_between(
                     focal_haplotype[np.newaxis, :], compare_haplotypes, genotypes=True
                 )
-                stat_sums[b] += np.array(
+                stat_sums[b][gene] += np.array(
                     [np.sum(D2), np.sum(Dz), np.sum(pi2), np.sum(D)]
                 )
-                num_pairs[b] += len(compare_haplotypes)
+                num_pairs[b][gene] += len(compare_haplotypes)
     return stat_sums, num_pairs
+
+
+def bootstrap_over_genes(gene_data, gene_sets, reps=1000):
+    bs_sums = [np.zeros(4) for k in gene_sets["gene_sets"].keys()]
+    for gene in gene_data:
+        try:
+            bs_sums[gene_sets["gene_set_map"][gene]] += gene_data[gene]
+        except KeyError:
+            print(gene)
+            # not good...
+            bs_sums[-1] += gene_data[gene]
+
+    sigma_d1s = []
+    for i in range(reps):
+        choices = np.random.choice(range(len(bs_sums)), len(bs_sums))
+        bs_stats = np.sum([bs_sums[j] for j in choices], axis=0)
+        sigma_d1s.append(bs_stats[3] / bs_stats[2])
+    return np.std(sigma_d1s)
 
 
 if __name__ == "__main__":
@@ -257,15 +277,15 @@ if __name__ == "__main__":
     num_pairs = {"synonymous": {}, "missense": {}, "loss_of_function": {}}
 
     bins = [0, 50e3, 100e3, 150e3, 200e3, 300e3, 500e3]
-    ld_stats_btw = {
-        "synonymous": {(l, r): np.zeros(4) for l, r in zip(bins[:-1], bins[1:])},
-        "missense": {(l, r): np.zeros(4) for l, r in zip(bins[:-1], bins[1:])},
-        "loss_of_function": {(l, r): np.zeros(4) for l, r in zip(bins[:-1], bins[1:])},
+    ld_stats_btw_by_gene = {
+        "synonymous": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
+        "missense": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
+        "loss_of_function": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
     }
-    num_pairs_btw = {
-        "synonymous": {(l, r): 0 for l, r in zip(bins[:-1], bins[1:])},
-        "missense": {(l, r): 0 for l, r in zip(bins[:-1], bins[1:])},
-        "loss_of_function": {(l, r): 0 for l, r in zip(bins[:-1], bins[1:])},
+    num_pairs_btw_by_gene = {
+        "synonymous": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
+        "missense": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
+        "loss_of_function": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
     }
 
     chroms = range(1, 23)
@@ -284,9 +304,11 @@ if __name__ == "__main__":
                 pos_sub, genes_sub, G_sub, bp_bins=bins
             )
             for k, v in LD_btw.items():
-                ld_stats_btw[annot][k] += v
+                ld_stats_btw_by_gene[annot][k].update(LD_btw[k])
             for k, v in N_btw.items():
-                num_pairs_btw[annot][k] += v
+                num_pairs_btw_by_gene[annot][k].update(N_btw[k])
+
+    #
 
     ld_stats_within = {
         annot: np.sum(list(ld_stats[annot].values()), axis=0)
@@ -296,31 +318,53 @@ if __name__ == "__main__":
         annot: sum(num_pairs[annot].values()) for annot in num_pairs.keys()
     }
 
+    ld_stats_between = {
+        annot: {
+            b: np.sum(list(ld_stats_btw_by_gene[annot][b].values()), axis=0)
+            for b in ld_stats_btw_by_gene[annot].keys()
+        }
+        for annot in ld_stats_btw_by_gene.keys()
+    }
+    num_pairs_between = {
+        annot: {
+            b: sum(num_pairs_btw_by_gene[annot][b].values())
+            for b in num_pairs_btw_by_gene[annot].keys()
+        }
+        for annot in num_pairs_btw_by_gene.keys()
+    }
+
     outputs = {
         "ld_within": ld_stats_within,
         "num_pairs_within": num_pairs_within,
-        "ld_between": ld_stats_btw,
-        "num_pairs_between": num_pairs_btw,
+        "ld_between": ld_stats_between,
+        "num_pairs_between": num_pairs_between,
         "bins": bins,
     }
 
+    # bootstrap sigma_d^1 stats
+    gene_sets = pickle.load(open("data/supp/bootstrap_gene_sets.500.bp", "rb"))
+    # within genes:
+    bs_within = {}
+    for annot in ld_stats_within.keys():
+        bs_within[annot] = bootstrap_over_genes(ld_stats[annot], gene_sets)
 
-    pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.within.between.bp", "wb+"))
+    # between genes:
+    bs_between = {}
+    for annot in ld_stats_between.keys():
+        bs_between[annot] = {}
+        for b in ld_stats_between[annot].keys():
+            bs_between[annot][b] = bootstrap_over_genes(
+                ld_stats_btw_by_gene[annot][b], gene_sets
+            )
 
-    """
-    ld_stats_by_freqs = {}
-    num_pairs_by_freqs = {}
-    for m, M in [(1, 1), (2, 2), (3, 4), (5, 8), (9, 16), (17, 32), (64, 108)]:
-        print(m, M)
-        ld_stats_by_freqs[(m, M)] = {"synonymous": {}, "missense": {}, "loss_of_function": {}}
-        num_pairs_by_freqs[(m, M)] = {"synonymous": {}, "missense": {}, "loss_of_function": {}}
-        chroms = range(1, 23)
-        for chrom in chroms:
-            positions, annotations, genes, G = load_genotype_matrix(chrom, POP)
-            for annot in ld_stats.keys():
-                pos_sub, genes_sub, G_sub = subset_annotation(
-                    positions, annotations, genes, G, annot=annot)
-                LD, N = compute_LD_within_genes_by_frequency(genes_sub, G_sub, n_min=m, n_max=M)
-                ld_stats_by_freqs[(m, M)][annot].update(LD)
-                num_pairs_by_freqs[(m, M)][annot].update(N)
-    """
+    # pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.within.between.bp", "wb+"))
+
+    bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}
+
+    pickle.dump(
+        bs_outputs,
+        open(
+            f"parsed_data/{POP}.unphased.within.between.sigmad1.bootstrap_std_err.bp",
+            "wb+",
+        ),
+    )

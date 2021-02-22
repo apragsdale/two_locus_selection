@@ -276,6 +276,46 @@ def compute_LD_between_domains(positions, genes, G, dom):
     return gene_stat_sums, num_pairs_per_gene
 
 
+def bootstrap_over_genes(gene_data, gene_sets, reps=1000):
+    bs_sums = [np.zeros(4) for k in gene_sets["gene_sets"].keys()]
+    for gene in gene_data:
+        try:
+            bs_sums[gene_sets["gene_set_map"][gene]] += gene_data[gene]
+        except KeyError:
+            print(gene)
+            # not good...
+            bs_sums[-1] += gene_data[gene]
+
+    sigma_d1s = []
+    for i in range(reps):
+        choices = np.random.choice(range(len(bs_sums)), len(bs_sums))
+        bs_stats = np.sum([bs_sums[j] for j in choices], axis=0)
+        sigma_d1s.append(bs_stats[3] / bs_stats[2])
+    return np.std(sigma_d1s)
+
+
+def bootstrap_over_genes_meanD(gene_data, num_pairs, gene_sets, reps=1000):
+    bs_sums = [np.zeros(4) for k in gene_sets["gene_sets"].keys()]
+    num_sums = [0 for k in gene_sets["gene_sets"].keys()]
+    for gene in gene_data:
+        try:
+            bs_sums[gene_sets["gene_set_map"][gene]] += gene_data[gene]
+            num_sums[gene_sets["gene_set_map"][gene]] += num_pairs[gene]
+        except KeyError:
+            print(gene)
+            # not good...
+            bs_sums[-1] += gene_data[gene]
+            num_sums[-1] += num_pairs[gene]
+
+    mean_Ds = []
+    for i in range(reps):
+        choices = np.random.choice(range(len(bs_sums)), len(bs_sums))
+        bs_stats = np.sum([bs_sums[j] for j in choices], axis=0)
+        total_pairs = np.sum([num_sums[j] for j in choices])
+        mean_Ds.append(bs_stats[3] / total_pairs)
+    return np.std(mean_Ds)
+
+
 if __name__ == "__main__":
     POP = sys.argv[1]
 
@@ -333,4 +373,41 @@ if __name__ == "__main__":
         "num_pairs_between_domains": num_pairs_between,
     }
 
-    pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.domains.bp", "wb+"))
+    # pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.domains.bp", "wb+"))
+
+    # bootstrap sigma_d^1 stats
+    gene_sets = pickle.load(open("data/supp/bootstrap_gene_sets.500.bp", "rb"))
+    # within domains
+    bs_within = {}
+    for annot in ld_stats_within.keys():
+        bs_within[annot] = bootstrap_over_genes(ld_win_dom[annot], gene_sets)
+
+    bs_between = {}
+    for annot in ld_stats_between.keys():
+        bs_between[annot] = bootstrap_over_genes(ld_btw_dom[annot], gene_sets)
+
+    bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}
+
+    # pickle.dump(
+    #    bs_outputs,
+    #    open(
+    #        f"parsed_data/{POP}.unphased.domains.sigmad1.bootstrap_std_err.bp",
+    #        "wb+",
+    #    ),
+    # )
+
+    # bootstrap mean D:
+    # within domains
+    bs_within = {}
+    for annot in ld_stats_within.keys():
+        bs_within[annot] = bootstrap_over_genes_meanD(
+            ld_win_dom[annot], num_win_dom[annot], gene_sets
+        )
+
+    bs_between = {}
+    for annot in ld_stats_between.keys():
+        bs_between[annot] = bootstrap_over_genes_meanD(
+            ld_btw_dom[annot], num_btw_dom[annot], gene_sets
+        )
+
+    bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}

@@ -65,7 +65,7 @@ except IOError:
     pickle.dump(data, open(data_fname, "wb+"))
 
 
-fig = plt.figure(2, figsize=(3.25, 4.5))
+fig = plt.figure(2, figsize=(6.5, 4.5))
 fig.clf()
 
 rhos = data["rhos"]
@@ -73,9 +73,13 @@ ok = data["Ohta_Kimura"]
 
 markers = ["x", "+", "1", "2"]
 colors = Colorblind[8]
-ax1 = plt.subplot(2, 1, 1)
 
-ax1.plot(rhos, ok, "k--", lw=1.5, label=None)
+# top panels are sigma_d^2
+ax1 = plt.subplot(2, 2, 1)
+ax2 = plt.subplot(2, 2, 2)
+
+ax1.plot(rhos, ok, "k--", lw=1, label=None)
+ax2.plot(rhos, ok, "k--", lw=1, label=None)
 
 for ii, eps in enumerate(epsilons):
     ax1.plot(
@@ -85,59 +89,75 @@ for ii, eps in enumerate(epsilons):
         color=colors[ii],
         ms=4,
         lw=0.5,
-        label=rf"$\gamma={-1}, \epsilon={eps}$",
+        label=rf"$\epsilon={eps}$",
     )
 
 for ii, eps in enumerate(epsilons):
-    ax1.plot(
+    ax2.plot(
         rhos,
         data[(-10, eps)]["all"]["sd2"],
-        markers[ii] + ":",
+        markers[ii] + "-",
         color=colors[ii],
         ms=4,
         lw=0.5,
-        label=rf"$\gamma={-10}, \epsilon={eps}$",
+        label=rf"$\epsilon={eps}$",
     )
 
 ax1.set_xscale("log")
 ax1.set_yscale("log")
-#ax1.set_xlabel(r"$\rho$")
+ax2.set_xscale("log")
+ax2.set_yscale("log")
 ax1.set_ylabel(r"$\sigma_d^2$")
-#ax1.legend(frameon=False, ncol=2)
+ax1.legend()
+#ax2.legend()
+ax1.set_title(r"$\gamma = -1$")
+ax2.set_title(r"$\gamma = -10$")
 
-ax2 = plt.subplot(2, 1, 2)
+ax3 = plt.subplot(2, 2, 3)
+ax4 = plt.subplot(2, 2, 4)
+
+ax3.plot(rhos, 0 * ok, "k--", lw=1, label=None)
+ax4.plot(rhos, 0 * ok, "k--", lw=1, label=None)
 
 for ii, eps in enumerate(epsilons):
-    ax2.plot(
+    ax3.plot(
         rhos,
         data[(-1, eps)]["all"]["sd1"],
         markers[ii] + "-",
         color=colors[ii],
         ms=4,
         lw=0.5,
-        label=rf"$\gamma={-1}, \epsilon={eps}$",
+        label=rf"$\epsilon={eps}$",
     )
 
 for ii, eps in enumerate(epsilons):
-    ax2.plot(
+    ax4.plot(
         rhos,
         data[(-10, eps)]["all"]["sd1"],
-        markers[ii] + ":",
+        markers[ii] + "-",
         color=colors[ii],
         ms=4,
         lw=0.5,
-        label=rf"$\gamma={-10}, \epsilon={eps}$",
+        label=rf"$\epsilon={eps}$",
     )
 
-ax2.set_xscale("log")
-ax2.set_xlabel(r"$\rho$")
-ax2.set_ylabel(r"$\sigma_d^1$")
-ax2.legend(frameon=False, ncol=2, bbox_to_anchor=(0.5, 0.96), loc='lower center')
+ax3.set_xscale("log")
+ax3.set_xlabel(r"$\rho$")
+ax4.set_xscale("log")
+ax4.set_xlabel(r"$\rho$")
+ax3.set_ylabel(r"$\sigma_d^1$")
+#ax3.legend()
+#ax4.legend()
+
+ax1.set_ylim([.005, 0.5])
+ax2.set_ylim(ax2.get_ylim())
+ax3.set_ylim(-0.6, 0.6)
+ax4.set_ylim(ax3.get_ylim())
 
 fig.tight_layout()
-fig.subplots_adjust(hspace=0.5, top=0.98)
+#fig.subplots_adjust(hspace=0.5, top=0.98)
 
-fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")
-fig.text(0.05, 0.45, "B", fontsize=8, ha="center", va="center")
+#fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")
+#fig.text(0.05, 0.45, "B", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"fig2_n0_{n0}.pdf")

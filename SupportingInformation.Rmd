@@ -25,9 +25,47 @@ options(tinytex.clean = FALSE)
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
+
+- Tables with data presented in figures 5 and 6
+- Table with Tajima's D for syn, mis, lof mutations for all, within, or outside of domains
+
+\clearpage
+\newpage
+
+# Supplementary Tables
+
+```{r tabS1, echo=F, tab.align="center"}
+library(knitr)
+library(kableExtra)
+pops <- read.csv("tables/populations.txt", sep=";", header=TRUE)
+knitr::kable(pops, "latex", booktabs=T,
+    caption="Thousand Genomes Project population descriptions for populations used in this study.") %>%
+kable_styling(latex_options = "HOLD_position")
+```
+
+
+```{r tabS2, echo=F, tab.align="center"}
+library(knitr)
+library(kableExtra)
+taj <- read.csv("tables/tajimas_d.txt", sep=";", header=TRUE)
+knitr::kable(taj, "latex", booktabs=T, longtable=T,
+    linesep = c("", "", "", "", "", "", "", "", "\\addlinespace"),
+    caption="Tamija's $D$ for classes of coding mutations, both within annotated domains and outside of domains.") %>%
+kable_styling(latex_options = c("HOLD_position", "repeat_header"))
+```
+
+
+
+\clearpage
+\newpage
+
+# Supplementary Figures
+
+1) Accuracy of jackknife for varying sample size
+2) Repeat of figures 2, 3, and 4 but for average $D$ instead of $\sigma_d^2$
+3) 
+
 \clearpage
 \newpage
 
 # Supporting References
-
-

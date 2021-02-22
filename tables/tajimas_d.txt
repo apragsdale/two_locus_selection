@@ -1,0 +1,136 @@
+Population;Mutation type;Region;Tajima's $D$
+ESN;Synonymous;All;-0.882
+;;In domain;-0.854
+;;Not in domain;-0.921
+;Missense;All;-1.414
+;;In domain;-1.535
+;;Not in domain;-1.293
+;Loss of function;All;-1.483
+;;In domain;-2.156
+;;Not in domain;-1.282
+GWD;Synonymous;All;-1.011
+;;In domain;-0.981
+;;Not in domain;-1.052
+;Missense;All;-1.566
+;;In domain;-1.678
+;;Not in domain;-1.452
+;Loss of function;All;-1.697
+;;In domain;-2.328
+;;Not in domain;-1.501
+LWK;Synonymous;All;-1.109
+;;In domain;-1.088
+;;Not in domain;-1.139
+;Missense;All;-1.589
+;;In domain;-1.700
+;;Not in domain;-1.477
+;Loss of function;All;-1.666
+;;In domain;-2.278
+;;Not in domain;-1.477
+MSL;Synonymous;All;-0.983
+;;In domain;-0.959
+;;Not in domain;-1.017
+;Missense;All;-1.501
+;;In domain;-1.603
+;;Not in domain;-1.400
+;Loss of function;All;-1.559
+;;In domain;-2.303
+;;Not in domain;-1.332
+YRI;Synonymous;All;-0.928
+;;In domain;-0.898
+;;Not in domain;-0.971
+;Missense;All;-1.467
+;;In domain;-1.586
+;;Not in domain;-1.348
+;Loss of function;All;-1.624
+;;In domain;-2.237
+;;Not in domain;-1.424
+CEU;Synonymous;All;-0.417
+;;In domain;-0.392
+;;Not in domain;-0.452
+;Missense;All;-1.248
+;;In domain;-1.404
+;;Not in domain;-1.082
+;Loss of function;All;-1.501
+;;In domain;-2.196
+;;Not in domain;-1.280
+FIN;Synonymous;All;-0.058
+;;In domain;-0.047
+;;Not in domain;-0.075
+;Missense;All;-0.883
+;;In domain;-1.048
+;;Not in domain;-0.710
+;Loss of function;All;-1.200
+;;In domain;-2.034
+;;Not in domain;-0.906
+GBR;Synonymous;All;-0.319
+;;In domain;-0.300
+;;Not in domain;-0.345
+;Missense;All;-1.120
+;;In domain;-1.276
+;;Not in domain;-0.954
+;Loss of function;All;-1.313
+;;In domain;-2.178
+;;Not in domain;-0.997
+IBS;Synonymous;All;-0.689
+;;In domain;-0.664
+;;Not in domain;-0.724
+;Missense;All;-1.424
+;;In domain;-1.560
+;;Not in domain;-1.279
+;Loss of function;All;-1.636
+;;In domain;-2.349
+;;Not in domain;-1.378
+TSI;Synonymous;All;-0.650
+;;In domain;-0.625
+;;Not in domain;-0.685
+;Missense;All;-1.422
+;;In domain;-1.568
+;;Not in domain;-1.266
+;Loss of function;All;-1.655
+;;In domain;-2.349
+;;Not in domain;-1.397
+CDX;Synonymous;All;-0.374
+;;In domain;-0.366
+;;Not in domain;-0.385
+;Missense;All;-1.179
+;;In domain;-1.323
+;;Not in domain;-1.026
+;Loss of function;All;-1.360
+;;In domain;-2.194
+;;Not in domain;-1.062
+CHB;Synonymous;All;-0.598
+;;In domain;-0.593
+;;Not in domain;-0.606
+;Missense;All;-1.389
+;;In domain;-1.528
+;;Not in domain;-1.239
+;Loss of function;All;-1.586
+;;In domain;-2.344
+;;Not in domain;-1.298
+CHS;Synonymous;All;-0.544
+;;In domain;-0.545
+;;Not in domain;-0.544
+;Missense;All;-1.334
+;;In domain;-1.499
+;;Not in domain;-1.150
+;Loss of function;All;-1.559
+;;In domain;-2.290
+;;Not in domain;-1.292
+JPT;Synonymous;All;-0.371
+;;In domain;-0.368
+;;Not in domain;-0.376
+;Missense;All;-1.194
+;;In domain;-1.355
+;;Not in domain;-1.019
+;Loss of function;All;-1.410
+;;In domain;-2.272
+;;Not in domain;-1.086
+KHV;Synonymous;All;-0.576
+;;In domain;-0.562
+;;Not in domain;-0.596
+;Missense;All;-1.346
+;;In domain;-1.473
+;;Not in domain;-1.210
+;Loss of function;All;-1.535
+;;In domain;-2.294
+;;Not in domain;-1.269

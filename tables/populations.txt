@@ -1,0 +1,16 @@
+Code;Description;Region
+ESN;Esan in Nigeria;Africa
+GWD;Gambian in Western Divisions in the Gambia;Africa
+LWK;Luhya in Webuye, Kenya;Africa
+MSL;Mende in Sierra Leone;Africa
+YRI;Yoruba in Ibadan, Nigeria;Africa
+CEU;Utah Residents (CEPH) with Northern and Western European Ancestry;Europe
+GBR;British in England and Scotland;Europe
+FIN;Finnish in Finland;Europe
+IBS;Iberian Population in Spain;Europe
+TSI;Toscani in Italia;Europe
+CDX;Chinese Dai in Xishuangbanna, China;East Asia
+CHB;Han Chinese in Beijing, China;East Asia
+CHS;Southern Han Chinese;East Asia
+JPT;Japanese in Tokyo, Japan;East Asia
+KHV;Kinh in Ho Chi Minh City, Vietnam;East Asia
