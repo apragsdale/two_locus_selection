@@ -51,7 +51,8 @@ markers = ["x", "+", "1"]
 colors = Colorblind[8]
 
 # plot all stats within genes
-ax1 = plt.subplot2grid((5, 4), (0, 0), rowspan=3, colspan=4)
+ax1 = plt.subplot2grid((7, 4), (0, 0), rowspan=2, colspan=4)
+ax1b = plt.subplot2grid((7, 4), (2, 0), rowspan=2, colspan=4)
 
 xx = np.concatenate(
     (np.linspace(1, 15, 15), np.linspace(18, 32, 15), np.linspace(35, 49, 15))
@@ -78,8 +79,10 @@ for continent in ["Africa", "Europe", "East Asia"]:
         err.append(1.96 * bs[pop]["bs_within"]["loss_of_function"])
 
 yy = np.array(yy)
+err = np.array(err)
 
 ax1.plot([0, 50], [0, 0], "k--", lw=lw)
+ax1b.plot([0, 50], [0, 0], "k--", lw=lw)
 
 for ii, v in enumerate(xx):
     if ii % 3 == 0:
@@ -103,24 +106,52 @@ ax1.plot(
     color=colors[1],
     label="Missense",
 )
-ax1.plot(
+ax1b.plot(
     xx.reshape(15, 3)[:, 2],
     yy.reshape(15, 3)[:, 2],
     "X",
     ms=ms,
-    color=colors[2],
+    color=colors[3],
     label="Loss of function",
 )
 
-ax1.errorbar(xx, yy, yerr=err, linestyle="None", linewidth=lw, color="gray")
+ax1.errorbar(
+    xx.reshape(15, 3)[:, 0],
+    yy.reshape(15, 3)[:, 0],
+    yerr=err.reshape(15, 3)[:, 0],
+    linestyle="None",
+    linewidth=lw,
+    color="gray",
+)
+ax1.errorbar(
+    xx.reshape(15, 3)[:, 1],
+    yy.reshape(15, 3)[:, 1],
+    yerr=err.reshape(15, 3)[:, 1],
+    linestyle="None",
+    linewidth=lw,
+    color="gray",
+)
+ax1b.errorbar(
+    xx.reshape(15, 3)[:, 2],
+    yy.reshape(15, 3)[:, 2],
+    yerr=err.reshape(15, 3)[:, 2],
+    linestyle="None",
+    linewidth=lw,
+    color="gray",
+)
 
 ax1.set_ylabel(r"$\sigma_d^1$")
-ax1.set_xlabel("Populations")
+ax1b.set_ylabel(r"$\sigma_d^1$")
+ax1b.set_xlabel("Populations")
 
 ax1.set_xticks(
     [2, 5, 8, 11, 14, 19, 22, 25, 28, 31, 36, 39, 42, 45, 48,]
 )
-ax1.set_xticklabels(
+ax1.set_xticklabels([])
+ax1b.set_xticks(
+    [2, 5, 8, 11, 14, 19, 22, 25, 28, 31, 36, 39, 42, 45, 48,]
+)
+ax1b.set_xticklabels(
     populations["Africa"] + populations["Europe"] + populations["East Asia"]
 )
 
@@ -129,10 +160,12 @@ ax1.set_xticklabels(
 # ax1.text(5, 0.005, "neutral expectation", ha="center", va="center")
 
 ax1.legend(loc="upper left")
+ax1b.legend(loc="upper left")
 
 ax1.set_xlim([0, 50])
+ax1b.set_xlim(ax1.get_xlim())
 ax1.set_title("Signed LD within genes")
-#ax1.set_ylim(-0.9, 0.2)
+# ax1.set_ylim(-0.9, 0.2)
 
 ## plots between genes
 
@@ -169,26 +202,26 @@ def plot_between(pop, data, bs, ax, legend=False, ylabel=False):
         ax.legend(loc="upper right")
     ax.plot(xx, np.zeros(len(xx)), "k--", lw=lw, label=None)
     if ylabel:
-        ax.set_ylabel("$\sigma_d^2$")
+        ax.set_ylabel("$\sigma_d^1$")
     ax.set_title(pop)
 
 
-ax2 = plt.subplot2grid((5, 4), (3, 0), rowspan=2)
+ax2 = plt.subplot2grid((7, 4), (5, 0), rowspan=2)
 pop = "ESN"
 plot_between(pop, data, bs, ax2, legend=True, ylabel=True)
 
-ax3 = plt.subplot2grid((5, 4), (3, 1), rowspan=2)
+ax3 = plt.subplot2grid((7, 4), (5, 1), rowspan=2)
 pop = "MSL"
 plot_between(pop, data, bs, ax3)
 
-ax4 = plt.subplot2grid((5, 4), (3, 2), rowspan=2)
+ax4 = plt.subplot2grid((7, 4), (5, 2), rowspan=2)
 pop = "GBR"
 plot_between(pop, data, bs, ax4)
 
-ax5 = plt.subplot2grid((5, 4), (3, 3), rowspan=2)
+ax5 = plt.subplot2grid((7, 4), (5, 3), rowspan=2)
 pop = "CHB"
 plot_between(pop, data, bs, ax5)
 
 fig.tight_layout()
-
+fig.subplots_adjust(hspace=0.3)
 plt.savefig(f"fig5.pdf")

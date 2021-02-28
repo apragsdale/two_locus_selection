@@ -63,7 +63,7 @@ except IOError:
     pickle.dump(data, open(data_fname, "wb+"))
 
 
-fig = plt.figure(3, figsize=(6.5, 4.5))
+fig = plt.figure(3, figsize=(6.5, 3.5))
 fig.clf()
 
 rhos = data["rhos"]
@@ -76,6 +76,7 @@ ax1 = plt.subplot(2, 2, 1)
 ax2 = plt.subplot(2, 2, 2)
 
 ax1.plot(rhos, ok, "k--", lw=1, label=None)
+ax2.plot(rhos, ok, "k--", lw=1, label=None)
 
 for ii, h in enumerate(hs):
     ax1.plot(
@@ -102,11 +103,12 @@ for ii, h in enumerate(hs):
 ax3 = plt.subplot(2, 2, 3)
 ax4 = plt.subplot(2, 2, 4)
 ax3.plot(rhos, 0 * ok, "k--", lw=1, label=None)
+ax4.plot(rhos, 0 * ok, "k--", lw=1, label=None)
 
 for ii, h in enumerate(hs):
     ax3.plot(
         rhos,
-        data[(-1, h)]["all"]["sd1"],
+        [2 * x for x in data[(-1, h)]["all"]["sd1"]],
         markers[ii] + "-",
         color=colors[ii],
         ms=4,
@@ -117,7 +119,7 @@ for ii, h in enumerate(hs):
 for ii, h in enumerate(hs):
     ax4.plot(
         rhos,
-        data[(-5, h)]["all"]["sd1"],
+        [2 * x for x in data[(-5, h)]["all"]["sd1"]],
         markers[ii] + "-",
         color=colors[ii],
         ms=4,
@@ -136,6 +138,9 @@ ax3.set_ylabel(r"$\sigma_d^1$")
 ax3.set_xlabel(r"$\rho$")
 ax4.set_xlabel(r"$\rho$")
 ax1.legend()
+
+ax1.set_title(r"$\gamma=-1$")
+ax2.set_title(r"$\gamma=-5$")
 
 fig.tight_layout()
 #fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")

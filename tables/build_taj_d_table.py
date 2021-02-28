@@ -5,7 +5,7 @@ import numpy as np
 pops = ["ESN", "GWD", "LWK", "MSL", "YRI", "CEU", "FIN", "GBR", "IBS", "TSI", "CDX", "CHB", "CHS", "JPT", "KHV"]
 
 with open("tajimas_d.txt", "w+") as fout:
-    fout.write("Population;Mutation type;Region;Tajima's $D$\n")
+    fout.write("Population;Mutation type;Region;Tajima's D\n")
     for pop in pops:
         spectra = pickle.load(open(f"../analysis/parsed_data/{pop}.frequency_spectra.bp", "rb"))
         Ds = {}

@@ -65,7 +65,7 @@ except IOError:
     pickle.dump(data, open(data_fname, "wb+"))
 
 
-fig = plt.figure(2, figsize=(6.5, 4.5))
+fig = plt.figure(2, figsize=(6.5, 3.5))
 fig.clf()
 
 rhos = data["rhos"]
@@ -122,7 +122,7 @@ ax4.plot(rhos, 0 * ok, "k--", lw=1, label=None)
 for ii, eps in enumerate(epsilons):
     ax3.plot(
         rhos,
-        data[(-1, eps)]["all"]["sd1"],
+        [2 * x for x in data[(-1, eps)]["all"]["sd1"]],
         markers[ii] + "-",
         color=colors[ii],
         ms=4,
@@ -133,7 +133,7 @@ for ii, eps in enumerate(epsilons):
 for ii, eps in enumerate(epsilons):
     ax4.plot(
         rhos,
-        data[(-10, eps)]["all"]["sd1"],
+        [2 * x for x in data[(-10, eps)]["all"]["sd1"]],
         markers[ii] + "-",
         color=colors[ii],
         ms=4,
@@ -151,7 +151,7 @@ ax3.set_ylabel(r"$\sigma_d^1$")
 
 ax1.set_ylim([.005, 0.5])
 ax2.set_ylim(ax2.get_ylim())
-ax3.set_ylim(-0.6, 0.6)
+ax3.set_ylim(-1.2, 1.2)
 ax4.set_ylim(ax3.get_ylim())
 
 fig.tight_layout()

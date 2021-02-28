@@ -193,123 +193,24 @@ def plot_inside_outside(pop, ax, legend=False, ylabel=False, xlabel=True):
     ax.set_title(pop)
     ax.set_xlim(xx[0] - 0.5, xx[-1] + 0.5)
 
-fig = plt.figure(5, figsize=(6.5, 4.5))
+fig = plt.figure(5, figsize=(6.5, 8))
 fig.clf()
-
-
-# plot all stats within genes
-ax1 = plt.subplot2grid((5, 3), (0, 0), rowspan=3, colspan=3)
-
-xx = np.concatenate(
-    (np.linspace(1, 20, 20), np.linspace(23, 42, 20), np.linspace(45, 64, 20))
-)
-yy = []
-err = []
-
-for continent in ["Africa", "Europe", "East Asia"]:
-    for pop in populations[continent]:
-        yy.append(
-            data[pop]["ld_within_domains"]["synonymous"][3]
-            / data[pop]["ld_within_domains"]["synonymous"][2]
-        )
-        yy.append(
-            data[pop]["ld_within_domains"]["missense"][3]
-            / data[pop]["ld_within_domains"]["missense"][2]
-        )
-        yy.append(
-            data[pop]["ld_between_domains"]["synonymous"][3]
-            / data[pop]["ld_between_domains"]["synonymous"][2]
-        )
-        yy.append(
-            data[pop]["ld_between_domains"]["missense"][3]
-            / data[pop]["ld_between_domains"]["missense"][2]
-        )
-        err.append(1.96 * bs[pop]["bs_within"]["synonymous"])
-        err.append(1.96 * bs[pop]["bs_within"]["missense"])
-        err.append(1.96 * bs[pop]["bs_between"]["synonymous"])
-        err.append(1.96 * bs[pop]["bs_between"]["missense"])
-
-yy = np.array(yy)
-
-ax1.plot([0, 65], [0, 0], "k--", lw=lw)
-
-for ii, v in enumerate(xx):
-    if ii % 4 == 0:
-        xx[ii] = v + 0.4
-    elif ii % 4 == 1:
-        xx[ii] = v + 0.2
-    elif ii % 4 == 2:
-        xx[ii] = v - 0.2
-    elif ii % 4 == 3:
-        xx[ii] = v - 0.4
-
-ax1.plot(
-    xx.reshape(15, 4)[:, 0],
-    yy.reshape(15, 4)[:, 0],
-    "o",
-    ms=ms,
-    color=colors[0],
-    label="Synonymous, within domains",
-)
-ax1.plot(
-    xx.reshape(15, 4)[:, 1],
-    yy.reshape(15, 4)[:, 1],
-    "s",
-    ms=ms,
-    color=colors[1],
-    label="Missense, within",
-)
-ax1.plot(
-    xx.reshape(15, 4)[:, 2],
-    yy.reshape(15, 4)[:, 2],
-    "o",
-    ms=ms,
-    markerfacecolor="white",
-    color=colors[0],
-    label="Synonymous, between",
-)
-ax1.plot(
-    xx.reshape(15, 4)[:, 3],
-    yy.reshape(15, 4)[:, 3],
-    "s",
-    ms=ms,
-    markerfacecolor="white",
-    color=colors[1],
-    label="Missense, between",
-)
-
-
-ax1.errorbar(xx, yy, yerr=err, linestyle="None", linewidth=lw, color="gray")
-
-ax1.set_ylabel(r"$\sigma_d^1$")
-ax1.set_xlabel("Populations")
-
-ax1.set_xticks(np.mean(xx.reshape(15, 4), axis=1))
-ax1.set_xticklabels(
-    populations["Africa"] + populations["Europe"] + populations["East Asia"]
-)
-
-# ax1.text(xx[0], 0.1, "synonymous", rotation=90, ha="center", va="center")
-# ax1.text(xx[1], 0.12, "missense", rotation=90, ha="center", va="center")
-# ax1.text(5, 0.005, "neutral expectation", ha="center", va="center")
-
-ax1.legend(loc="upper left")
-
-ax1.set_xlim([0, 65])
-ax1.set_title("Signed LD within and between domains")
-
-ax2 = plt.subplot2grid((5, 3), (3, 0), rowspan=2)
-
-plot_inside_outside("YRI", ax2, ylabel=True, legend=True)
-
-ax3 = plt.subplot2grid((5, 3), (3, 1), rowspan=2)
-
-plot_inside_outside("IBS", ax3)
-
-ax4 = plt.subplot2grid((5, 3), (3, 2), rowspan=2)
-
-plot_inside_outside("KHV", ax4)
+i = 0
+for continent, pops in populations.items():
+    for pop in pops:
+        i += 1
+        ax = plt.subplot(5, 3, i)
+        legend = False
+        if i % 3 == 1:
+            ylabel = True
+        else:
+            ylabel = False
+        if i > 12:
+            xlabel = True
+        else:
+            xlabel = False
+        plot_inside_outside(pop, ax, xlabel=xlabel, ylabel=ylabel, legend=legend)
 
 fig.tight_layout()
 
-plt.savefig(f"fig6_multipanel.pdf")
+plt.savefig(f"supp_domain_all_pops.pdf")

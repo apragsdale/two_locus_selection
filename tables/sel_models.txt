@@ -1,0 +1,11 @@
+Diploid genotype;General model;Simple dominance;Gene-based dominance
+$AB$ / $AB$;$1 + s_{AB/AB}$;$1 + 2s_A + 2s_B$;$1 + 2s$
+$AB$ / $Ab$;$1 + s_{AB/Ab}$;$1 + 2s_A + 2s_Bh_B$;$1 + 2s$
+$AB$ / $aB$;$1 + s_{AB/aB}$;$1 + 2s_Ah_A + 2s_B$;$1 + 2s$
+$AB$ / $ab$;$1 + s_{AB/ab}$;$1 + 2s_Ah_A + 2s_Bh_B$;$1 + 2sh$
+$Ab$ / $Ab$;$1 + s_{Ab/Ab}$;$1 + 2s_A$;$1 + 2s$
+$Ab$ / $aB$;$1 + s_{Ab/aB}$;$1 + 2s_Ah_A + 2s_Bh_B$;$1 + 2s$
+$Ab$ / $ab$;$1 + s_{Ab/ab}$;$1 + 2s_Ah_A$;$1 + 2sh$
+$aB$ / $aB$;$1 + s_{aB/aB}$;$1 + 2s_B$;$1 + 2s$
+$aB$ / $ab$;$1 + s_{aB/ab}$;$1 + 2s_Bh_B$;$1 + 2sh$
+$ab$ / $ab$;$1$;$1$;$1$

@@ -1,4 +1,5 @@
 import numpy as np
+import itertools
 import gzip
 import moments.LD
 import sys
@@ -181,6 +182,7 @@ def compute_LD_within_domains(pos, genes, G, dom):
     num_pairs_per_gene = {}
     found = 0
     not_found = 0
+    distances = []
     for gene in genes_set:
         if gene not in dom.keys():
             # print(gene, "not found")
@@ -207,8 +209,13 @@ def compute_LD_within_domains(pos, genes, G, dom):
                         [np.sum(D2), np.sum(Dz), np.sum(pi2), np.sum(D)]
                     )
                     num_pairs_per_gene[gene] += len(D2)
+                    pos_dom = pos_gene.compress(to_keep_dom)
+                    distances_dom = [
+                        abs(r - l) for l, r in itertools.combinations(pos_dom, 2)
+                    ]
+                    distances += distances_dom
     print("found:", found, ", not found:", not_found)
-    return gene_stat_sums, num_pairs_per_gene
+    return gene_stat_sums, num_pairs_per_gene, distances
 
 
 def getOverlap(a, b):
@@ -224,6 +231,7 @@ def compute_LD_between_domains(positions, genes, G, dom):
     genes_set = set(genes)
     gene_stat_sums = {}
     num_pairs_per_gene = {}
+    distances = []
     for ii, (pos, gene) in enumerate(zip(positions, genes)):
         if gene not in dom.keys():
             continue
@@ -260,6 +268,7 @@ def compute_LD_between_domains(positions, genes, G, dom):
                                     to_keep_dom[jj] = 1
                     # keep positions greater than focal pos and in other domain
                     G_dom = G_gene.compress(to_keep_dom, axis=0)
+                    pos_dom = pos_gene.compress(to_keep_dom)
                     if len(G_dom) >= 1:
                         (
                             D2,
@@ -273,7 +282,8 @@ def compute_LD_between_domains(positions, genes, G, dom):
                             [np.sum(D2), np.sum(Dz), np.sum(pi2), np.sum(D)]
                         )
                         num_pairs_per_gene[gene] += len(D2)
-    return gene_stat_sums, num_pairs_per_gene
+                        distances += [abs(pos - other_pos) for other_pos in pos_dom]
+    return gene_stat_sums, num_pairs_per_gene, distances
 
 
 def bootstrap_over_genes(gene_data, gene_sets, reps=1000):
@@ -328,6 +338,9 @@ if __name__ == "__main__":
     ld_btw_dom = {ann: {} for ann in annots}
     num_btw_dom = {ann: {} for ann in annots}
 
+    distances_within = {ann: [] for ann in annots}
+    distances_between = {ann: [] for ann in annots}
+
     chroms = range(1, 23)
     for chrom in chroms:
         print("processing chromosome", chrom)
@@ -337,18 +350,22 @@ if __name__ == "__main__":
             pos_sub, genes_sub, G_sub = subset_annotation(
                 positions, annotations, genes, G, annot=annot
             )
-            LD, N = compute_LD_within_domains(pos_sub, genes_sub, G_sub, domains[chrom])
+            LD, N, d = compute_LD_within_domains(
+                pos_sub, genes_sub, G_sub, domains[chrom]
+            )
             ld_win_dom[annot].update(LD)
             num_win_dom[annot].update(N)
+            distances_within[annot] += d
         for annot in ld_btw_dom.keys():
             pos_sub, genes_sub, G_sub = subset_annotation(
                 positions, annotations, genes, G, annot=annot
             )
-            LD, N = compute_LD_between_domains(
+            LD, N, d = compute_LD_between_domains(
                 pos_sub, genes_sub, G_sub, domains[chrom]
             )
             ld_btw_dom[annot].update(LD)
             num_btw_dom[annot].update(N)
+            distances_between[annot] += d
 
     ld_stats_within = {
         annot: np.sum(list(ld_win_dom[annot].values()), axis=0)
@@ -373,7 +390,7 @@ if __name__ == "__main__":
         "num_pairs_between_domains": num_pairs_between,
     }
 
-    # pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.domains.bp", "wb+"))
+    #    pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.domains.bp", "wb+"))
 
     # bootstrap sigma_d^1 stats
     gene_sets = pickle.load(open("data/supp/bootstrap_gene_sets.500.bp", "rb"))
@@ -388,26 +405,39 @@ if __name__ == "__main__":
 
     bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}
 
-    # pickle.dump(
-    #    bs_outputs,
-    #    open(
-    #        f"parsed_data/{POP}.unphased.domains.sigmad1.bootstrap_std_err.bp",
-    #        "wb+",
-    #    ),
-    # )
+    ## distances
+    bin_edges = bin_edges = np.logspace(0, 7, 22)
+    num_within = {
+        annot: np.histogram(distances_within[annot], bin_edges) for annot in annots
+    }
+    num_between = {
+        annot: np.histogram(distances_between[annot], bin_edges) for annot in annots
+    }
+    pickle.dump(
+        {"bin_edges": bin_edges, "num_within": num_within, "num_between": num_between},
+        open(f"parsed_data/{POP}.distances_within_between_domains.bp", "wb+"),
+    )
 
-    # bootstrap mean D:
-    # within domains
-    bs_within = {}
-    for annot in ld_stats_within.keys():
-        bs_within[annot] = bootstrap_over_genes_meanD(
-            ld_win_dom[annot], num_win_dom[annot], gene_sets
-        )
+#    pickle.dump(
+#        bs_outputs,
+#        open(
+#            f"parsed_data/{POP}.unphased.domains.sigmad1.bootstrap_std_err.bp",
+#            "wb+",
+#        ),
+#    )
 
-    bs_between = {}
-    for annot in ld_stats_between.keys():
-        bs_between[annot] = bootstrap_over_genes_meanD(
-            ld_btw_dom[annot], num_btw_dom[annot], gene_sets
-        )
+# bootstrap mean D:
+# within domains
+# bs_within = {}
+# for annot in ld_stats_within.keys():
+#    bs_within[annot] = bootstrap_over_genes_meanD(
+#        ld_win_dom[annot], num_win_dom[annot], gene_sets
+#    )
 
-    bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}
+# bs_between = {}
+# for annot in ld_stats_between.keys():
+#    bs_between[annot] = bootstrap_over_genes_meanD(
+#        ld_btw_dom[annot], num_btw_dom[annot], gene_sets
+#    )
+
+# bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}

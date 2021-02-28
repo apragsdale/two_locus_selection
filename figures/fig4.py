@@ -1,4 +1,11 @@
-# Figure 3: Demography and trajectories.
+# Figure 4: Demography and trajectories.
+# Two columns, left is simple size changes: expansion and bottleneck+recovery
+# Right column has human-like domographic history inferred by Relate
+# Rows: all with rho = 1
+# 1: illustration of demography
+# 2: (a) Additive selection w/ gamma=-1, (b) negative epistasis, gamma=-1, (c) negative epistasis, gamma=-10
+# 3: (a) Simple dominance, gamma=-1, (b) simple dominance, gamma=-10
+# 4: (a) Some gene-based selection model
 import sys
 import moments.TwoLocus
 import matplotlib.pylab as plt
@@ -17,12 +24,8 @@ matplotlib.rc("legend", fontsize=6)
 
 from bokeh.palettes import Colorblind
 
-try:
-    n = int(sys.argv[1])  # the sample size
-    gamma = float(sys.argv[2])
-    rho = float(sys.argv[3])
-except:
-    raise ValueError("inputs are n, gamma, rho in that order")
+n = 30  # the sample size
+
 
 def piecewise_constant(
     nus,
@@ -31,6 +34,7 @@ def piecewise_constant(
     rho=0.0,
     gamma=0,
     h=None,
+    dom="simple",
     eps=None,
     track_stats=True,
     spacing=3,
@@ -49,7 +53,10 @@ def piecewise_constant(
         sel_params_general = None
     elif h is not None:
         sel_params = None
-        sel_params_general = moments.TwoLocus.Util.simple_dominance(gamma, h=h)
+        if dom == "simple":
+            sel_params_general = moments.TwoLocus.Util.simple_dominance(gamma, h=h)
+        elif dom == "gene":
+            sel_params_general = moments.TwoLocus.Util.gene_based_dominance(gamma, h=h)
     elif eps is not None:
         sel_params = moments.TwoLocus.Util.additive_epistasis(gamma, epsilon=eps)
         sel_params_general = None
@@ -63,6 +70,8 @@ def piecewise_constant(
         for cond in conditions:
             stats["sd1"][cond].append(F.D(nA=cond, nB=cond) / F.pi2(nA=cond, nB=cond))
             stats["sd2"][cond].append(F.D2(nA=cond, nB=cond) / F.pi2(nA=cond, nB=cond))
+
+    print("o" * len(nus), flush=True)
     for nu, T in zip(nus, Ts):
         print(".", end="", flush=True)
         if not track_stats:
@@ -118,6 +127,22 @@ def load_relate_curves(fname, pop0, pop1):
     return t, N0, N1
 
 
+## Toy demography:
+# t in generations, Ne ~ 1e4
+nu_expand = 3.0
+nu_B = 0.1
+nu_F = 2.0
+Ne = 1e4
+t_bottle = [0, 1000, 2000, 4000]
+t_expand = [0, 3000, 4000]
+N_bottle = [nu_F * Ne, nu_B * Ne, Ne, Ne, Ne]
+N_expand = [nu_expand * Ne, Ne, Ne]
+Ts_bottle = [0.2, 0.1, 0.1]
+nus_bottle = [1, nu_B, nu_F]
+Ts_expand = [0.1, 0.3]
+nus_expand = [1, nu_expand]
+
+## Relate demography:
 pop0 = "YRI"
 pop1 = "CEU"
 t, N0, N1 = load_relate_curves(
@@ -139,6 +164,8 @@ N1 = np.concatenate((N1, [Ne]))
 Ts = ((t[1:] - t[:-1]) / 2 / Ne)[::-1]
 nu0s = N0[::-1][2:] / Ne
 nu1s = N1[::-1][2:] / Ne
+
+## function to plot t vs N
 
 
 def plot_relate_curve(ax, t, N, gen=29, line_style="--", lw=1.5, color="k", label=None):
@@ -167,216 +194,293 @@ def plot_relate_curve(ax, t, N, gen=29, line_style="--", lw=1.5, color="k", labe
         )
 
 
-data = {}
-data[pop0] = {}
-data[pop1] = {}
-# keys are (rho, gamma, eps, h, gene-based) where gene-based is True or False
+### Compute data
+data_fname = f"fig4_data_n_{n}.bp"
+try:
+    data = pickle.load(open(data_fname, "rb"))
+except:
+    data = {
+        "Expansion": {"A": {}, "B": {}, "C": {}},
+        "Bottleneck": {"A": {}, "B": {}, "C": {}},
+        pop0: {"A": {}, "B": {}, "C": {}},
+        pop1: {"A": {}, "B": {}, "C": {}},
+    }
 
-print(f"computing {pop0}, {pop1} stats for rho={rho}, gamma=0")
-F0, stats0 = piecewise_constant(nu0s, Ts, n, rho=rho, gamma=0, conditions=[2])
-F1, stats1 = piecewise_constant(nu1s, Ts, n, rho=rho, gamma=0, conditions=[2])
-data[pop0][(rho, 0, 0, 0.5, False)] = stats0
-data[pop1][(rho, 0, 0, 0.5, False)] = stats1
+    ## second row (A): rho=0, rho=5 with gamma = -2
+    print("Additive")
+    # Expansion model
+    print("Expansion")
+    F, stats = piecewise_constant(nus_expand, Ts_expand, n, rho=0, gamma=-2, spacing=10)
+    data["Expansion"]["A"][0] = stats
+    F, stats = piecewise_constant(nus_expand, Ts_expand, n, rho=5, gamma=-2, spacing=10)
+    data["Expansion"]["A"][5] = stats
+    # Bottleneck model
+    print("Bottleneck")
+    F, stats = piecewise_constant(nus_bottle, Ts_bottle, n, rho=0, gamma=-2, spacing=10)
+    data["Bottleneck"]["A"][0] = stats
+    F, stats = piecewise_constant(nus_bottle, Ts_bottle, n, rho=5, gamma=-2, spacing=10)
+    data["Bottleneck"]["A"][5] = stats
+    # African model
+    print(pop0)
+    F, stats = piecewise_constant(nu0s, Ts, n, rho=0, gamma=-2, spacing=10)
+    data[pop0]["A"][0] = stats
+    F, stats = piecewise_constant(nu0s, Ts, n, rho=5, gamma=-2, spacing=10)
+    data[pop0]["A"][5] = stats
+    # European model
+    print(pop1)
+    F, stats = piecewise_constant(nu1s, Ts, n, rho=0, gamma=-2, spacing=10)
+    data[pop1]["A"][0] = stats
+    F, stats = piecewise_constant(nu1s, Ts, n, rho=5, gamma=-2, spacing=10)
+    data[pop1]["A"][5] = stats
 
-eps = 0.5
-print(f"computing {pop0}, {pop1} stats for rho={rho}, gamma={gamma}, eps={eps}")
-F0, stats0 = piecewise_constant(
-    nu0s, Ts, n, rho=rho, gamma=gamma, eps=eps, conditions=[2]
-)
-F1, stats1 = piecewise_constant(
-    nu1s, Ts, n, =rho=rho, gamma=gamma, eps=eps, conditions=[2]
-)
-data[pop0][(rho, gamma, eps, 0.5, False)] = stats0
-data[pop1][(rho, gamma, eps, 0.5, False)] = stats1
+    ## Third row (B): rho=1, gamma = -2, eps=0.5 and -0.5
+    print("B: epistasis")
+    # Expansion model
+    print("Expansion")
+    F, stats = piecewise_constant(
+        nus_expand, Ts_expand, n, rho=0, gamma=-2, eps=0.5, spacing=10
+    )
+    data["Expansion"]["B"][0.5] = stats
+    F, stats = piecewise_constant(
+        nus_expand, Ts_expand, n, rho=5, gamma=-2, eps=-0.5, spacing=10
+    )
+    data["Expansion"]["B"][-0.5] = stats
+    # Bottleneck model
+    print("Bottleneck")
+    F, stats = piecewise_constant(
+        nus_bottle, Ts_bottle, n, rho=0, gamma=-2, eps=0.5, spacing=10
+    )
+    data["Bottleneck"]["B"][0.5] = stats
+    F, stats = piecewise_constant(
+        nus_bottle, Ts_bottle, n, rho=5, gamma=-2, eps=-0.5, spacing=10
+    )
+    data["Bottleneck"]["B"][-0.5] = stats
+    # African model
+    print(pop0)
+    F, stats = piecewise_constant(nu0s, Ts, n, rho=0, gamma=-2, eps=0.5, spacing=10)
+    data[pop0]["B"][0.5] = stats
+    F, stats = piecewise_constant(nu0s, Ts, n, rho=5, gamma=-2, eps=-0.5, spacing=10)
+    data[pop0]["B"][-0.5] = stats
+    # European model
+    print(pop1)
+    F, stats = piecewise_constant(nu1s, Ts, n, rho=0, gamma=-2, eps=0.5, spacing=10)
+    data[pop1]["B"][0.5] = stats
+    F, stats = piecewise_constant(nu1s, Ts, n, rho=5, gamma=-2, eps=-0.5, spacing=10)
+    data[pop1]["B"][-0.5] = stats
 
-print(f"computing {pop0}, {pop1} stats for rho={rho}, gamma={gamma}")
-F0, stats0 = piecewise_constant(nu0s, Ts, n, rho=rho, gamma=gamma, conditions=[2])
-F1, stats1 = piecewise_constant(nu1s, Ts, n, rho=rho, gamma=gamma, conditions=[2])
-data[pop0][(rho, gamma, 0, 0.5, False)] = stats0
-data[pop1][(rho, gamma, 0, 0.5, False)] = stats1
+    ## Fourth row (C): rho=1, gamma=-2, h=0.1, with (i) simple, and (ii) gene based dom.
+    # Expansion model
+    print("C: dominance")
+    print("Expansion")
+    F, stats = piecewise_constant(
+        nus_expand, Ts_expand, n, rho=0, gamma=-2, h=0.1, dom="simple", spacing=10
+    )
+    data["Expansion"]["C"]["simple"] = stats
+    F, stats = piecewise_constant(
+        nus_expand, Ts_expand, n, rho=5, gamma=-2, h=0.1, dom="gene", spacing=10
+    )
+    data["Expansion"]["C"]["gene"] = stats
+    # Bottleneck model
+    print("Bottleneck")
+    F, stats = piecewise_constant(
+        nus_bottle, Ts_bottle, n, rho=0, gamma=-2, h=0.1, dom="simple", spacing=10
+    )
+    data["Bottleneck"]["C"]["simple"] = stats
+    F, stats = piecewise_constant(
+        nus_bottle, Ts_bottle, n, rho=5, gamma=-2, h=0.1, dom="gene", spacing=10
+    )
+    data["Bottleneck"]["C"]["gene"] = stats
+    # African model
+    print(pop0)
+    F, stats = piecewise_constant(nu0s, Ts, n, rho=0, gamma=-2, h=0.1, dom="simple", spacing=10)
+    data[pop0]["C"]["simple"] = stats
+    F, stats = piecewise_constant(nu0s, Ts, n, rho=5, gamma=-2, h=0.1, dom="gene", spacing=10)
+    data[pop0]["C"]["gene"] = stats
+    # European model
+    print(pop1)
+    F, stats = piecewise_constant(nu1s, Ts, n, rho=0, gamma=-2, h=0.1, dom="simple", spacing=10)
+    data[pop1]["C"]["simple"] = stats
+    F, stats = piecewise_constant(nu1s, Ts, n, rho=5, gamma=-2, h=0.1, dom="gene", spacing=10)
+    data[pop1]["C"]["gene"] = stats
 
-eps = 0.5
-print(f"computing {pop0}, {pop1} stats for rho={rho}, gamma={gamma}, eps={eps}")
-F0, stats0 = piecewise_constant(
-    nu0s, Ts, n, rho=rho, gamma=gamma, eps=eps, conditions=[2]
-)
-F1, stats1 = piecewise_constant(
-    nu1s, Ts, n, rho=rho, gamma=gamma, eps=eps, conditions=[2]
-)
-data[pop0][(rho, gamma, eps, 0.5, False)] = stats0
-data[pop1][(rho, gamma, eps, 0.5, False)] = stats1
-
-
-h = 0.1
-print(f"computing {pop0}, {pop1} stats for rho={rho}, gamma={gamma}, h={h}")
-F0, stats0 = piecewise_constant(nu0s, Ts, n, rho=rho, gamma=gamma, h=h, conditions=[2])
-F1, stats1 = piecewise_constant(nu1s, Ts, n, rho=rho, gamma=gamma, h=h, conditions=[2])
-data[pop0][(rho, gamma, 0, h, False)] = stats0
-data[pop1][(rho, gamma, 0, h, False)] = stats1
-
-Ts_years = 1e6 - 2 * Ne * 29 * np.array(stats0["t"])
-
-fig = plt.figure(4, figsize=(3.25, 6))
+fig = plt.figure(4, figsize=(6.5, 6))
 fig.clf()
 
 markers = ["x", "+", "1"]
 colors = Colorblind[8]
 
-ax1 = plt.subplot(3, 1, 1)
+ax1 = plt.subplot(4, 2, 1)
 
-plot_relate_curve(ax1, t, N0, line_style="-", lw=1, color=colors[0], label=pop0)
-plot_relate_curve(ax1, t, N1, line_style="--", lw=1, color=colors[1], label=pop1)
+plot_relate_curve(
+    ax1,
+    t_expand,
+    N_expand,
+    line_style="-",
+    lw=1,
+    color=colors[0],
+    label="Expansion",
+    gen=1,
+)
+plot_relate_curve(
+    ax1,
+    t_bottle,
+    N_bottle,
+    line_style="--",
+    lw=1,
+    color=colors[1],
+    label="Bottleneck",
+    gen=1,
+)
 
 ax1.legend(frameon=False)
-ax1.set_xscale("log")
-ax1.set_yscale("log")
-ax1.set_xlim(1e6, 1e3)
-ax1.set_ylim(1e2, 1e7)
+# ax1.set_xscale("log")
+# ax1.set_yscale("log")
+ax1.set_xlim(4000, 0)
+ax1.set_ylim(0, 5e4)
 ax1.set_ylabel(r"$N_e$")
 
-ax2 = plt.subplot(3, 1, 2)
-ax3 = plt.subplot(3, 1, 3)
+ax2 = plt.subplot(4, 2, 2)
 
-ax2.plot(
-    Ts_years,
-    data[pop0][(rho, 0, 0, 0.5, False)]["sd1"]["all"],
-    label=rf"{pop0}, $\gamma=0$",
-    color="black",
-    lw=0.5,
-)
-ax2.plot(
-    Ts_years,
-    data[pop1][(rho, 0, 0, 0.5, False)]["sd1"]["all"],
-    label=rf"{pop1}, $\gamma=0$",
-    linestyle="--",
-    color="black",
-    lw=0.5,
-)
-ax2.plot(
-    Ts_years,
-    data[pop0][(rho, gamma, 0, 0.5, False)]["sd1"]["all"],
-    label=rf"{pop0}, $\gamma={gamma}$",
-    color=colors[2],
-    lw=1,
-)
-ax2.plot(
-    Ts_years,
-    data[pop1][(rho, gamma, 0, 0.5, False)]["sd1"]["all"],
-    label=rf"{pop1}, $\gamma={gamma}$",
-    linestyle="--",
-    color=colors[2],
-    lw=1,
-)
-ax2.plot(
-    Ts_years,
-    data[pop0][(rho, gamma, 0.5, 0.5, False)]["sd1"]["all"],
-    label=rf"{pop0}, $\epsilon={eps}$",
-    color=colors[3],
-    lw=1,
-)
-ax2.plot(
-    Ts_years,
-    data[pop1][(rho, gamma, 0.5, 0.5, False)]["sd1"]["all"],
-    label=rf"{pop1}, $\epsilon={eps}$",
-    linestyle="--",
-    color=colors[3],
-    lw=1,
-)
-ax2.plot(
-    Ts_years,
-    data[pop0][(rho, gamma, 0, 0.1, False)]["sd1"]["all"],
-    label=rf"{pop0}, $h={h}$",
-    color=colors[4],
-    lw=1,
-)
-ax2.plot(
-    Ts_years,
-    data[pop1][(rho, gamma, 0, 0.1, False)]["sd1"]["all"],
-    label=rf"{pop1}, $h={h}$",
-    linestyle="--",
-    color=colors[4],
-    lw=1,
-)
+plot_relate_curve(ax2, t, N0, line_style="-", lw=1, color=colors[0], label=pop0)
+plot_relate_curve(ax2, t, N1, line_style="--", lw=1, color=colors[1], label=pop1)
 
-
-ax3.plot(
-    Ts_years,
-    data[pop0][(rho, 0, 0, 0.5, False)]["sd1"][2],
-    label=rf"{pop0}, $\gamma=0$",
-    color="black",
-    lw=0.5,
-)
-ax3.plot(
-    Ts_years,
-    data[pop1][(rho, 0, 0, 0.5, False)]["sd1"][2],
-    label=rf"{pop1}, $\gamma=0$",
-    linestyle="--",
-    color="black",
-    lw=0.5,
-)
-ax3.plot(
-    Ts_years,
-    data[pop0][(rho, gamma, 0, 0.5, False)]["sd1"][2],
-    label=rf"{pop0}, $\gamma={gamma}$",
-    color=colors[2],
-    lw=1,
-)
-ax3.plot(
-    Ts_years,
-    data[pop1][(rho, gamma, 0, 0.5, False)]["sd1"][2],
-    label=rf"{pop1}, $\gamma={gamma}$",
-    linestyle="--",
-    color=colors[2],
-    lw=1,
-)
-ax3.plot(
-    Ts_years,
-    data[pop0][(rho, gamma, 0.5, 0.5, False)]["sd1"][2],
-    label=rf"{pop0}, $\epsilon={eps}$",
-    color=colors[3],
-    lw=1,
-)
-ax3.plot(
-    Ts_years,
-    data[pop1][(rho, gamma, 0.5, 0.5, False)]["sd1"][2],
-    label=rf"{pop1}, $\epsilon={eps}$",
-    linestyle="--",
-    color=colors[3],
-    lw=1,
-)
-ax3.plot(
-    Ts_years,
-    data[pop0][(rho, gamma, 0, 0.1, False)]["sd1"][2],
-    label=rf"{pop0}, $h={h}$",
-    color=colors[4],
-    lw=1,
-)
-ax3.plot(
-    Ts_years,
-    data[pop1][(rho, gamma, 0, 0.1, False)]["sd1"][2],
-    label=rf"{pop1}, $h={h}$",
-    linestyle="--",
-    color=colors[4],
-    lw=1,
-)
-
-ax2.set_xlim(ax1.get_xlim())
+ax2.legend(frameon=False)
 ax2.set_xscale("log")
+ax2.set_yscale("log")
+ax2.set_xlim(1e6, 1e3)
+ax2.set_ylim(1e2, 1e7)
+ax2.set_ylabel(r"$N_e$")
+
+Ts_gens = {}
+Ts_gens["Expansion"] = 4000 - 1e4 * np.array(data["Expansion"]["A"][0]["t"])
+Ts_gens["Bottleneck"] = 4000 - 1e4 * np.array(data["Bottleneck"]["A"][0]["t"])
+Ts_years = 1e6 - 2 * Ne * 29 * np.array(data[pop0]["A"][0]["t"])
+
+ax3 = plt.subplot(4, 2, 3)
+
+ax3.plot(Ts_gens["Expansion"], 0 * Ts_gens["Expansion"], "k:", lw=1, label=None)
+for rho, c in zip([0, 5], [colors[2], colors[3]]):
+    for pop, m in zip(["Expansion", "Bottleneck"], ["-", "--"]):
+        ax3.plot(
+            Ts_gens[pop],
+            data[pop]["A"][rho]["sd1"]["all"],
+            m,
+            lw=1,
+            color=c,
+            label=rf"{pop[:3]}, $\rho={rho}$",
+        )
+
+ax3.legend(frameon=False, ncol=2)
 ax3.set_xlim(ax1.get_xlim())
-ax3.set_xscale("log")
-
-ax2.legend(frameon=False, fontsize=5, ncol=2)
-ax3.legend(frameon=False, fontsize=5, ncol=2)
-
-ax2.set_ylabel(f"$\sigma_d^1$")
 ax3.set_ylabel(f"$\sigma_d^1$")
+ax3.set_title("Additive selection, no epistasis")
 
-ax3.set_xlabel("Years ago")
-ax2.set_title("All frequencies")
-ax3.set_title("$n_A = n_B = 2$")
+
+ax4 = plt.subplot(4, 2, 4)
+ax4.plot(Ts_years, 0 * Ts_years, "k:", lw=1, label=None)
+for rho, c in zip([0, 5], [colors[2], colors[3]]):
+    for pop, m in zip([pop0, pop1], ["-", "--"]):
+        ax4.plot(
+            Ts_years,
+            data[pop]["A"][rho]["sd1"]["all"],
+            m,
+            lw=1,
+            color=c,
+            label=rf"{pop[:3]}, $\rho={rho}$",
+        )
+
+ax4.set_xlim(ax2.get_xlim())
+ax4.set_title("Additive selection, no epistasis")
+ax4.set_xscale("log")
+ax4.legend(frameon=False, ncol=2)
+
+ax5 = plt.subplot(4, 2, 5)
+
+ax5.plot(Ts_gens["Expansion"], 0 * Ts_gens["Expansion"], "k:", lw=1, label=None)
+for eps, c in zip([-0.5, 0.5], [colors[4], colors[5]]):
+    for pop, m in zip(["Expansion", "Bottleneck"], ["-", "--"]):
+        ax5.plot(
+            Ts_gens[pop],
+            data[pop]["B"][eps]["sd1"]["all"],
+            m,
+            lw=1,
+            color=c,
+            label=rf"{pop[:3]}, $\epsilon={eps}$",
+        )
+
+ax5.legend(frameon=False, ncol=2)
+ax5.set_xlim(ax1.get_xlim())
+ax5.set_ylabel(f"$\sigma_d^1$")
+ax5.set_title(r"Epistasis (with $\rho=1$)")
+
+
+ax6 = plt.subplot(4, 2, 6)
+ax6.plot(Ts_years, 0 * Ts_years, "k:", lw=1, label=None)
+for eps, c in zip([-0.5, 0.5], [colors[4], colors[5]]):
+    for pop, m in zip([pop0, pop1], ["-", "--"]):
+        ax6.plot(
+            Ts_years,
+            data[pop]["B"][eps]["sd1"]["all"],
+            m,
+            lw=1,
+            color=c,
+            label=rf"{pop[:3]}, $\epsilon={eps}$",
+        )
+
+ax6.set_xlim(ax2.get_xlim())
+ax6.set_title(r"Epistasis (with $\rho=1$)")
+ax6.set_xscale("log")
+ax6.legend(frameon=False, ncol=2)
+
+ax7 = plt.subplot(4, 2, 7)
+
+ax7.plot(Ts_gens["Expansion"], 0 * Ts_gens["Expansion"], "k:", lw=1, label=None)
+for model, c in zip(["simple", "gene"], [colors[6], colors[7]]):
+    if model == "simple":
+        model_type = "within loci"
+    elif model == "gene":
+        model_type = "gene-based"
+    for pop, m in zip(["Expansion", "Bottleneck"], ["-", "--"]):
+        ax7.plot(
+            Ts_gens[pop],
+            data[pop]["C"][model]["sd1"]["all"],
+            m,
+            lw=1,
+            color=c,
+            label=rf"{pop[:3]}, {model_type}",
+        )
+
+ax7.legend(frameon=False, ncol=2)
+ax7.set_xlim(ax1.get_xlim())
+ax7.set_ylabel(f"$\sigma_d^1$")
+ax7.set_title(r"Dominance (with $\rho=1$)")
+ax7.set_xlabel("Generations ago")
+
+ax8 = plt.subplot(4, 2, 8)
+ax8.plot(Ts_years, 0 * Ts_years, "k:", lw=1, label=None)
+for model, c in zip(["simple", "gene"], [colors[6], colors[7]]):
+    if model == "simple":
+        model_type = "within loci"
+    elif model == "gene":
+        model_type = "gene-based"
+    for pop, m in zip([pop0, pop1], ["-", "--"]):
+        ax8.plot(
+            Ts_years,
+            data[pop]["C"][model]["sd1"]["all"],
+            m,
+            lw=1,
+            color=c,
+            label=rf"{pop[:3]}, {model_type}",
+        )
+
+ax8.set_xlim(ax2.get_xlim())
+ax8.set_title(r"Dominance (with $\rho=1$)")
+ax8.set_xscale("log")
+ax8.set_xlabel("Time ago (years)")
+ax8.legend(frameon=False, ncol=2)
 
 fig.tight_layout()
 
 # fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")
 
-plt.savefig(f"fig4_n0_{n}_rho_{rho}_gamma_{gamma}.pdf")
+plt.savefig(f"fig4_n0_{n}_toy_relate.pdf")

@@ -1,4 +1,4 @@
-Population;Mutation type;Region;Tajima's $D$
+Population;Mutation type;Region;Tajima's D
 ESN;Synonymous;All;-0.882
 ;;In domain;-0.854
 ;;Not in domain;-0.921

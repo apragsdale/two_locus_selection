@@ -170,10 +170,11 @@ def subset_annotation(positions, annotations, genes, G, annot="synonymous"):
     return new_positions, new_genes, new_G
 
 
-def compute_LD_within_genes(genes, G):
+def compute_LD_outside_domains(pos, genes, G, dom, bins):
     """
     Compute LD statistics within each gene for the given genotype matrix.
     Also returns the number of pair comparisons made per gene.
+    Only keep pairs of SNPs that fall within the same domain in each gene.
     """
     genes_set = set(genes)
     gene_stat_sums = {}
@@ -181,91 +182,96 @@ def compute_LD_within_genes(genes, G):
     for gene in genes_set:
         to_keep = genes == gene
         G_gene = G.compress(to_keep, axis=0)
+        pos_gene = pos.compress(to_keep)
+        gene_stat_sums[gene] = {}
+        num_pairs_per_gene[gene] = {}
+        added_gene = False
         if len(G_gene) > 1:
-            D2, Dz, pi2, D = moments.LD.Parsing.compute_pairwise_stats(
-                G_gene, genotypes=True
-            )
-            gene_stat_sums[gene] = np.array(
-                [np.sum(D2), np.sum(Dz), np.sum(pi2), np.sum(D)]
-            )
-            num_pairs_per_gene[gene] = len(D2)
-        else:
-            gene_stat_sums[gene] = np.zeros(4)
-            num_pairs_per_gene[gene] = 0
+            to_keep_dom = np.array([True for _ in pos_gene])
+            for dom_interval in dom[gene]:
+                to_keep_dom = np.logical_and(
+                    to_keep_dom,
+                    np.logical_or(
+                        pos_gene < dom_interval[0], pos_gene > dom_interval[1]
+                    ),
+                )
+            G_dom = G_gene.compress(to_keep_dom, axis=0)
+            pos_dom = pos_gene.compress(to_keep_dom)
+            if len(G_dom) > 1:
+                D2, Dz, pi2, D = moments.LD.Parsing.compute_pairwise_stats(
+                    G_dom, genotypes=True
+                )
+                # get pair distances
+                pair_distances = []
+                for i, l in enumerate(pos_dom[:-1]):
+                    for r in pos_dom[i + 1 :]:
+                        pair_distances.append(r - l)
+                pair_distances = np.array(pair_distances)
+                assert np.all(pair_distances > 0)
+                # sum statistics over bins
+                for b in bins:
+                    added_gene = True
+                    to_keep_bin = np.logical_and(
+                        pair_distances >= b[0], pair_distances < b[1]
+                    )
+                    D2_bin = D2.compress(to_keep_bin)
+                    Dz_bin = Dz.compress(to_keep_bin)
+                    pi2_bin = pi2.compress(to_keep_bin)
+                    D_bin = D.compress(to_keep_bin)
+                    gene_stat_sums[gene][b] = np.array(
+                        [np.sum(D2_bin), np.sum(Dz_bin), np.sum(pi2_bin), np.sum(D_bin)]
+                    )
+                    num_pairs_per_gene[gene][b] = np.sum(to_keep_bin)
+        if not added_gene:
+            gene_stat_sums[gene] = {b: np.zeros(4) for b in bins}
+            num_pairs_per_gene[gene] = {b: 0 for b in bins}
     return gene_stat_sums, num_pairs_per_gene
 
 
-def compute_LD_within_genes_by_frequency(genes, G, n_min=2, n_max=2):
-    genes_set = set(genes)
-    gene_stat_sums = {}
-    num_pairs_per_gene = {}
-    allele_counts = G.sum(axis=1)
-    to_keep_ac = np.logical_and(allele_counts >= n_min, allele_counts <= n_max)
-    for gene in genes_set:
-        to_keep = genes == gene
-        to_keep = np.logical_and(to_keep, to_keep_ac)
-        G_gene = G.compress(to_keep, axis=0)
-        if len(G_gene) > 1:
-            D2, Dz, pi2, D = moments.LD.Parsing.compute_pairwise_stats(
-                G_gene, genotypes=True
-            )
-            gene_stat_sums[gene] = np.array(
-                [np.sum(D2), np.sum(Dz), np.sum(pi2), np.sum(D)]
-            )
-            num_pairs_per_gene[gene] = len(D2)
-        else:
-            gene_stat_sums[gene] = np.zeros(4)
-            num_pairs_per_gene[gene] = 0
-    return gene_stat_sums, num_pairs_per_gene
+def sum_over_genes(values, bins):
+    data = {b: np.zeros(4) for b in bins}
+    for v in values:
+        for b, d in v.items():
+            data[b] += d
+    return data
 
 
-def compute_LD_by_distance(
-    positions, genes, G, bp_bins=[0, 1e4, 2e4, 3e4, 4e4, 5e4], exclude_within=True
+def sum_over_weights(ld_stats, num_pairs, bin_weights):
+    weighted_stats = np.zeros(4)
+    for ii, b in enumerate(ld_stats.keys()):
+        if num_pairs[b] > 0:
+            weighted_stats += ld_stats[b] / num_pairs[b] * bin_weights[ii]
+    return weighted_stats
+
+
+def bootstrap_over_genes(
+    gene_data, num_pairs, gene_sets, bins, bin_weights=None, reps=1000
 ):
-    """
-    Compute LD only for pairs lying in different genes, within the given bp window
-    """
-    genes_set = set(genes)
-    bins = [(l, r) for l, r in zip(bp_bins[:-1], bp_bins[1:])]
-    stat_sums = {b: {} for b in bins}
-    num_pairs = {b: {} for b in bins}
-    for ii, (pos, gene) in enumerate(zip(positions, genes)):
-        other_gene = genes != gene
-        for b in bins:
-            stat_sums[b].setdefault(gene, np.zeros(4))
-            num_pairs[b].setdefault(gene, 0)
-            to_keep = np.logical_and(
-                positions - positions[ii] > b[0], positions - positions[ii] <= b[1]
-            )
-            if exclude_within:
-                to_keep = np.logical_and(to_keep, other_gene)
-            focal_haplotype = G[ii]
-            compare_haplotypes = G.compress(to_keep, axis=0)
-            if len(compare_haplotypes) > 0:
-                D2, Dz, pi2, D = moments.LD.Parsing.compute_pairwise_stats_between(
-                    focal_haplotype[np.newaxis, :], compare_haplotypes, genotypes=True
-                )
-                stat_sums[b][gene] += np.array(
-                    [np.sum(D2), np.sum(Dz), np.sum(pi2), np.sum(D)]
-                )
-                num_pairs[b][gene] += len(compare_haplotypes)
-    return stat_sums, num_pairs
-
-
-def bootstrap_over_genes(gene_data, gene_sets, reps=1000):
-    bs_sums = [np.zeros(4) for k in gene_sets["gene_sets"].keys()]
+    bs_sums = {k: {b: np.zeros(4) for b in bins} for k in gene_sets["gene_sets"].keys()}
+    bs_nums = {k: {b: 0 for b in bins} for k in gene_sets["gene_sets"].keys()}
     for gene in gene_data:
         try:
-            bs_sums[gene_sets["gene_set_map"][gene]] += gene_data[gene]
+            k = gene_sets["gene_set_map"][gene]
         except KeyError:
-            print(gene)
             # not good...
-            bs_sums[-1] += gene_data[gene]
+            k = 500
+        for b in bins:
+            bs_sums[k][b] += gene_data[gene][b]
+            bs_nums[k][b] += num_pairs[gene][b]
 
     sigma_d1s = []
     for i in range(reps):
         choices = np.random.choice(range(len(bs_sums)), len(bs_sums))
-        bs_stats = np.sum([bs_sums[j] for j in choices], axis=0)
+        ld_stats_rep = {b: np.zeros(4) for b in bins}
+        num_pairs_rep = {b: 0 for b in bins}
+        for c in choices:
+            for b in bins:
+                ld_stats_rep[b] += bs_sums[c][b]
+                num_pairs_rep[b] += bs_nums[c][b]
+        if bin_weights is not None:
+            bs_stats = sum_over_weights(ld_stats_rep, num_pairs_rep, bin_weights)
+        else:
+            bs_stats = np.sum(list(ld_stats_rep.values()), axis=0)
         sigma_d1s.append(bs_stats[3] / bs_stats[2])
     return np.std(sigma_d1s)
 
@@ -273,98 +279,47 @@ def bootstrap_over_genes(gene_data, gene_sets, reps=1000):
 if __name__ == "__main__":
     POP = sys.argv[1]
 
-    ld_stats = {"synonymous": {}, "missense": {}, "loss_of_function": {}}
-    num_pairs = {"synonymous": {}, "missense": {}, "loss_of_function": {}}
+    domains = pickle.load(open("data/supp/domain_dict.bp", "rb"))
 
-    bins = [0, 50e3, 100e3, 150e3, 200e3, 300e3, 500e3]
-    ld_stats_btw_by_gene = {
-        "synonymous": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
-        "missense": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
-        "loss_of_function": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
-    }
-    num_pairs_btw_by_gene = {
-        "synonymous": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
-        "missense": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
-        "loss_of_function": {(l, r): {} for l, r in zip(bins[:-1], bins[1:])},
-    }
+    bin_edges = np.logspace(0, 7, 22)
+    bins = [(l, r) for l, r in zip(bin_edges[:-1], bin_edges[1:])]
+
+    annots = ["synonymous", "missense", "loss_of_function"]
+    ld_outside = {ann: {} for ann in annots}
+    num_outside = {ann: {} for ann in annots}
 
     chroms = range(1, 23)
-
     for chrom in chroms:
-        print("processing chromosome", chrom)
+        #print("processing chromosome", chrom)
         positions, annotations, genes, G = load_genotype_matrix(chrom, POP)
-        for annot in ld_stats.keys():
+        # get stats within domains
+        for annot in ld_outside.keys():
             pos_sub, genes_sub, G_sub = subset_annotation(
                 positions, annotations, genes, G, annot=annot
             )
-            LD, N = compute_LD_within_genes(genes_sub, G_sub)
-            ld_stats[annot].update(LD)
-            num_pairs[annot].update(N)
-            LD_btw, N_btw = compute_LD_by_distance(
-                pos_sub, genes_sub, G_sub, bp_bins=bins
+            LD, N = compute_LD_outside_domains(
+                pos_sub, genes_sub, G_sub, domains[chrom], bins
             )
-            for k, v in LD_btw.items():
-                ld_stats_btw_by_gene[annot][k].update(LD_btw[k])
-            for k, v in N_btw.items():
-                num_pairs_btw_by_gene[annot][k].update(N_btw[k])
+            ld_outside[annot].update(LD)
+            num_outside[annot].update(N)
 
-    #
-
-    ld_stats_within = {
-        annot: np.sum(list(ld_stats[annot].values()), axis=0)
-        for annot in ld_stats.keys()
+    ld_stats = {
+        annot: sum_over_genes(ld_outside[annot].values(), bins)
+        for annot in ld_outside.keys()
     }
-    num_pairs_within = {
-        annot: sum(num_pairs[annot].values()) for annot in num_pairs.keys()
-    }
-
-    ld_stats_between = {
+    num_pairs = {
         annot: {
-            b: np.sum(list(ld_stats_btw_by_gene[annot][b].values()), axis=0)
-            for b in ld_stats_btw_by_gene[annot].keys()
+            b: sum([num_outside[annot][g][b] for g in num_outside[annot].keys()])
+            for b in bins
         }
-        for annot in ld_stats_btw_by_gene.keys()
-    }
-    num_pairs_between = {
-        annot: {
-            b: sum(num_pairs_btw_by_gene[annot][b].values())
-            for b in num_pairs_btw_by_gene[annot].keys()
-        }
-        for annot in num_pairs_btw_by_gene.keys()
+        for annot in num_outside.keys()
     }
 
     outputs = {
-        "ld_within": ld_stats_within,
-        "num_pairs_within": num_pairs_within,
-        "ld_between": ld_stats_between,
-        "num_pairs_between": num_pairs_between,
         "bins": bins,
+        "ld": ld_stats,
+        "num_pairs": num_pairs
     }
 
-    # bootstrap sigma_d^1 stats
-    gene_sets = pickle.load(open("data/supp/bootstrap_gene_sets.500.bp", "rb"))
-    # within genes:
-    bs_within = {}
-    for annot in ld_stats_within.keys():
-        bs_within[annot] = bootstrap_over_genes(ld_stats[annot], gene_sets)
+    pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.outside_domains.decay.bp", "wb+"))
 
-    # between genes:
-    bs_between = {}
-    for annot in ld_stats_between.keys():
-        bs_between[annot] = {}
-        for b in ld_stats_between[annot].keys():
-            bs_between[annot][b] = bootstrap_over_genes(
-                ld_stats_btw_by_gene[annot][b], gene_sets
-            )
-
-    pickle.dump(outputs, open(f"parsed_data/{POP}.unphased.within.between.bp", "wb+"))
-
-    bs_outputs = {"bs_within": bs_within, "bs_between": bs_between}
-
-    pickle.dump(
-        bs_outputs,
-        open(
-            f"parsed_data/{POP}.unphased.within.between.sigmad1.bootstrap_std_err.bp",
-            "wb+",
-        ),
-    )
