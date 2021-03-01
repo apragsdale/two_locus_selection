@@ -7,11 +7,13 @@ output:
     keep_tex: true
     includes:
       in_header: "sipreamble.tex"
+    extra_dependencies: ["float"]
 bibliography: "references.bib"
-title: "Paper title"
+title: "Supporting Information for [[main paper title]]"
 author:
-  - Author 1^[Institution 1, email1]
-  - Author 2^[Institution 2, email2]
+  - Aaron P. Ragsdale^[aaronpeaceragsdale@gmail.com]
+date:
+  - \today
 ---
 
 ```{r sisetup, echo=F}
@@ -25,29 +27,75 @@ options(tinytex.clean = FALSE)
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-
+Yet to include:
 - Tables with data presented in figures 5 and 6
-- Table with Tajima's D for syn, mis, lof mutations for all, within, or outside of domains
+
+## The diffusion equation, etc
+
+\[ 
+\frac{\partial \psi}{\partial t} = 
+\frac{1}{2}\mathop{\sum\sum}_{1\leq i, j \leq 3} 
+\frac{\partial^2}{\partial x_i \partial x_j} 
+\left[\frac{x_i(\delta_{i=j}-x_j)\psi}{N(t)}\right] 
+-\frac{\rho}{2}\left(\frac{\partial}{\partial x}\right) 
+\] 
+
+## Moment equation and evolution operators
+
+### Drift
+
+### Recombination
+
+### Mutation
+
+### General selection
+
+### Moment closure via jackknife approximation
+
+## Data analysis
+
+### Grouping Thousand Genomes populations based on clustering
+
+Citation for Alex's work:
+\url{https://www.abstractsonline.com/pp8/#!/9070/presentation/2384}
 
 \clearpage
 \newpage
 
 # Supplementary Tables
 
-```{r tabS1, echo=F, tab.align="center"}
+```{r selmodels, echo=F, tab.align="center"}
 library(knitr)
 library(kableExtra)
-pops <- read.csv("tables/populations.txt", sep=";", header=TRUE)
+pops <- read.csv("tables/sel_models.txt", sep=";", header=TRUE, check.names=FALSE)
+knitr::kable(pops, "latex", booktabs=T, escape=F,
+    caption="General selection model for diploids and dominance models.") %>%
+kable_styling(latex_options = "HOLD_position")
+```
+
+```{r epistasis, echo=F, tab.align="center"}
+library(knitr)
+library(kableExtra)
+pops <- read.csv("tables/epistasis_model.txt", sep=";", header=TRUE, check.names=FALSE)
+knitr::kable(pops, "latex", booktabs=T, escape=F,
+    caption="Haploid epistasis model.") %>%
+kable_styling(latex_options = "HOLD_position")
+```
+
+```{r 1kgpops, echo=F, tab.align="center"}
+library(knitr)
+library(kableExtra)
+pops <- read.csv("tables/populations.txt", sep=";", header=TRUE, check.names=FALSE)
 knitr::kable(pops, "latex", booktabs=T,
     caption="Thousand Genomes Project population descriptions for populations used in this study.") %>%
 kable_styling(latex_options = "HOLD_position")
 ```
 
 
-```{r tabS2, echo=F, tab.align="center"}
+```{r tajimasD, echo=F, tab.align="center"}
 library(knitr)
 library(kableExtra)
-taj <- read.csv("tables/tajimas_d.txt", sep=";", header=TRUE)
+taj <- read.csv("tables/tajimas_d.txt", sep=";", header=TRUE, check.names=FALSE)
 knitr::kable(taj, "latex", booktabs=T, longtable=T,
     linesep = c("", "", "", "", "", "", "", "", "\\addlinespace"),
     caption="Tamija's $D$ for classes of coding mutations, both within annotated domains and outside of domains.") %>%
@@ -64,6 +112,37 @@ kable_styling(latex_options = c("HOLD_position", "repeat_header"))
 1) Accuracy of jackknife for varying sample size
 2) Repeat of figures 2, 3, and 4 but for average $D$ instead of $\sigma_d^2$
 3) 
+
+```{r genespops, echo=F, fig.cap="(ref:figgenespopscap)", fig.align="center"}
+knitr::include_graphics("figures/supp_gene_wide_all_pops.pdf")
+```
+
+(ref:figgenespopscap) **LD within and between protein-coding genes.** This is
+the caption.
+
+```{r domainspops, echo=F, fig.cap="(ref:figdomainspopscap)", fig.align="center"}
+knitr::include_graphics("figures/supp_domain_all_pops.pdf")
+```
+
+(ref:figdomainspopscap) **LD within and between coding domains and pairs
+outside domains at matched distances.** This is the caption.
+
+```{r lddecay, echo=F, fig.cap="(ref:figlddecay)", fig.align="center"}
+knitr::include_graphics("figures/supp_ld_decay.pdf")
+```
+
+(ref:figlddecay) **LD decay for synonymous and missense mutations for pairs
+of mutations that fall outside of domains.** 
+
+```{r lddecaydomain, echo=F, fig.cap="(ref:figlddecaydomain)", fig.align="center"}
+knitr::include_graphics("figures/supp_ld_decay_in_domain.pdf")
+```
+
+(ref:figlddecaydomain) **LD decay for synonymous and missense mutations for pairs
+of mutations that fall inside the same domains.** 
+
+
+
 
 \clearpage
 \newpage
