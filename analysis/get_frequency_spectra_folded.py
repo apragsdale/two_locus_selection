@@ -2,6 +2,8 @@
 # within a gene, for mutations falling in annotated domains, and for
 # mutations falling outside of annotated domains.
 
+# Ignore ancestral information, so keeping all SNPs, and return folded SFS
+
 import numpy as np
 import gzip
 import moments
@@ -18,35 +20,6 @@ lof_annotations = [
     "transcript_ablation",
 ]
 
-import tarfile
-
-try:
-    print("already loaded ancestral seqs", len(ancestral_seqs))
-except NameError:
-    ancestral_seqs = {}
-    print("reading ancestral sequences")
-
-    tar = tarfile.open(
-        "/home/aaronragsdale/Data/1000G/human_ancestor/human_ancestor_GRCh37_e59.tar.bz2",
-        mode="r:bz2",
-    )
-    for member in tar.getmembers():
-        if member.isfile() is False:
-            # print(member)
-            continue
-        if member.get_info()["name"].endswith("fa"):
-            f = tar.extractfile(member)
-            ## can't get SeqIO.parse to read in the extracted file
-            lines = f.readlines()
-            chrom = lines[0].decode().split(":")[2]
-            print("found chrom", chrom)
-            ancestral_seqs[chrom] = "".join([l.decode().strip() for l in lines[1:]])
-            # for record in SeqIO.parse(x, "fasta"):
-            #    chrom = record.id.split(":")[2]
-            #    print(chrom)
-            #    ancestral_seqs[chrom] = record.seq
-    tar.close()
-
 
 def get_annotations(annot_file):
     annots = {}  # pos: alt: (gene, csq)
@@ -55,22 +28,6 @@ def get_annotations(annot_file):
         annots.setdefault(pos, {})
         annots[pos][alt] = (gene, csq)
     return annots
-
-
-def flip_gts(gts):
-    gts_out = []
-    for gt in gts:
-        if gt == "0|0":
-            gts_out.append("1|1")
-        elif gt == "0|1":
-            gts_out.append("1|0")
-        elif gt == "1|0":
-            gts_out.append("0|1")
-        elif gt == "1|1":
-            gts_out.append("0|0")
-        else:
-            raise ValueError("unexpected genotype", gt)
-    return gts_out
 
 
 def to_haplotypes(gts):
@@ -96,6 +53,8 @@ def load_genotype_matrix(chrom, pop, haplotypes=True):
     annotations = []
     genes = []
     G = []
+    kept = 0
+    discarded = 0
     with gzip.open(vcf, "rb") as fin:
         for line in fin:
             l = line.decode()
@@ -106,29 +65,7 @@ def load_genotype_matrix(chrom, pop, haplotypes=True):
             alt = l.split()[4]
             if ref not in SNPs or alt not in SNPs:
                 continue
-
-            try:
-                AA = l.split()[7].split(";AA=")[1].split("|")[0]
-            except IndexError:
-                # AA not found in info
-                AA = "-"
-            if AA not in SNPs:
-                continue
-            # get from ancestral fastas
-            AA_fasta = ancestral_seqs[str(chrom)][int(pos) - 1]
-            # only keep high confidence ancestral alleles
-            # AA_fasta = AA_fasta.upper()
-            if AA_fasta != AA:
-                continue
             gts = l.split()[9:]
-            if AA != ref:
-                if AA == alt:
-                    # flip SNP
-                    gts = flip_gts(gts)
-                else:
-                    # doesn't match ref or alt
-                    # print(f"AA = {AA}, ref = {ref}, alt = {alt}, pos = {pos}")
-                    continue
             if np.all([g == "1|1" for g in gts]) or np.all([g == "0|0" for g in gts]):
                 # fixed for ref or alt
                 continue
@@ -219,15 +156,15 @@ if __name__ == "__main__":
             spectra[annot]["in"].append(chrom_spectra[1])
             spectra[annot]["out"].append(chrom_spectra[2])
 
-    compiled_spectra = {
-        annot: {
-            category: np.sum(spectra[annot][category], axis=0)
-            for category in ["all", "in", "out"]
-        }
-        for annot in annots
-    }
+    compiled_spectra = {}
+    for annot in annots:
+        compiled_spectra[annot] = {}
+        for category in ["all", "in", "out"]:
+            fs = moments.Spectrum(np.sum(spectra[annot][category], axis=0))
+            fs.fold()
+            compiled_spectra[annot][category] = fs
 
     for annot in annots:
         assert np.all(compiled_spectra[annot]["all"] == compiled_spectra[annot]["in"] + compiled_spectra[annot]["out"])
 
-    pickle.dump(compiled_spectra, open(f"parsed_data/{POP}.frequency_spectra.bp", "wb+"))
+    pickle.dump(compiled_spectra, open(f"parsed_data/{POP}.frequency_spectra.folded.bp", "wb+"))
