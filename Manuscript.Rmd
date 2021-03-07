@@ -11,7 +11,7 @@ output:
     extra_dependencies: ["float"]
 bibliography: "references.bib"
 biblio-style: "genetics"
-title: Linkage disequilibrium in conserved domains reveals opposing selective interactions in genes
+title: Can we distinguish modes of selective interactions using linkage disequilibrium?
 author:
 header-includes:
 - |
@@ -65,10 +65,11 @@ segregates depends on the strength of selection against genomes that carry it,
 with very damaging mutations kept at low frequencies and purged relatively
 rapidly. In the time between mutation and fixation or loss, selected variants,
 both beneficial and damaging, can dramatically impact patterns of variation in
-nearby linked regions. This distortion away from neutral expectations has been
-widely documented in sequencing data, but questions remain about the primary
-mode of interactions between multiple linked variants and their joint effects
-on genome-wide patterns of diversity.
+nearby linked regions. This distortion away from neutral expectations is now
+empirically documented using sequencing data from an ever-growing set of study
+systems, but questions remain about the primary mode of interactions between
+multiple linked variants and their joint effects on genome-wide patterns of
+diversity.
 
 In their foundational paper, @Hill1966-gv recognized that linked selected
 variants reciprocally impede the efficacy of selection at each locus. Linked

@@ -20,8 +20,6 @@ date:
 options(tinytex.clean = FALSE)
 ```
 
-# Supporting Information
-
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\theequation}{S\arabic{equation}}
@@ -29,7 +27,7 @@ options(tinytex.clean = FALSE)
 \setcounter{table}{0}
 \setcounter{equation}{0}
 
-## The diffusion equation and moment system for the two-locus sampling distribution
+# The diffusion equation and moment system for the two-locus sampling distribution
 
 The two-locus diffusion equation with additive selection was first described by
 @Kimura1955-qe studied extensively in the 1960s and 70s, including by
@@ -60,7 +58,8 @@ $D$ is the standard covariance measure of linkage disequilibrium, \[D=x_1 -
 (x_1+x_2)(x_1+x_3) = x_1 x_4 - x_2 x_3,\] $\gamma_A$ and $\gamma_B$ are the
 scaled selection coefficients at the left and right locus, and $\rho$ is the
 scaled recombination rate between the two loci. Time $\tau$ is measured in
-$2N_e$ generations.
+$2N_e$ generations, and $\nu(\tau)$ is the population size relative
+to the ancestral size or some reference size at time $\tau$.
 
 Given a function $\psi$ that solves Equation \ref{eq:diffeq}, the two-locus
 sampling distribution for a sample size of $n$ haploids can be found by
@@ -73,25 +72,228 @@ integrating $\Psi$ against the multinomial sampling function, so that
 dx_1 dx_2 dx_3.
 \end{align}
 
-- instead of (numerically) solving for $\psi$ and using \@ref(eq:multinomial},
-  we can apply the multinomial sampling formula directly to the PDE
-- what we get instead is a system of differential equations on the entries of
-  $\Psi_n$
-- we can then solve for these noncanonical moments of $\psi$, which are the
-  objects of interest in any case, and avoid having to solve this numerical PDE
-  with unpleasant boundary conditions
-- the same system can be found by deriving recursion from considering tracking
-  $n$ lineages within the population, in the vein of @Wright1931-xx
+In the method-of-moments approach, instead of solving the differential equation
+for $\psi$, we instead integrate both sides of the differential equation
+against the multinomial sampling function for a given sampling configuration
+$(i, j, k)$. On the left side, we get $\partial_t \Psi_n(i, j, k)$, and on the
+right we obtain, after some simple integration by parts and somewhat tedious
+simplification, terms for drift, recombination, and selection that can be
+written as sparse linear operators of $\Psi_n$. Written compactly, this takes
+the form
+\begin{equation}
+\partial_\tau \Psi_n = 
+\frac{1}{2\nu(\tau)}\mathcal{D}_{n}\Psi_n
++ \frac{\rho}{2}\mathcal{R}_{n}\Psi_n
++ \frac{\theta}{2}\mathcal{U}_{n}\Psi_n
++ \mathcal{S}_{n, \mathbf{\gamma}, \mathbf{h}}\Psi_n.
+\end{equation}.
 
-### Drift, mutation, recombination, and moment closure
+Alternatively, we arrive at this same linear system of equations by considering
+tracking the expected sampling distribution over $n$ lineages within the full
+population and how that changes over time by drawing lineages from one
+generation to the next in the style of @Wright1931-wy. Both @Jouganous2017-pq,
+for the single-locus SFS, and @Ragsdale2019-nt drew this connection in detail,
+so I refer readers to that previous work for a fuller description of those
+derivations and discussion. In the next section I repeat the results for
+$\mathcal{D}$, $\mathcal{R}$, and $\mathcal{U}$, briefly describe the moment
+closure approximation (which is the same as presented in @Ragsdale2019-nt), and
+then describe the selection operator $\mathcal{S}$ for selection with
+epistasis, both with and without dominance.
 
-- point to supplement of @Ragsdale2019-nt
+## Drift, mutation, recombination, and moment closure
 
-### Selection
+### Drift
 
-## Data analysis
+Drift for an entry $(i, j, k)$ depends only on $\Psi_n$ and therefore closes.
+The entries of $\mathcal{D}$ are found by considering the possibility of a
+coalescence event occurring within a given generation within $n$ lineages in
+the full population. If $n \ll N$, we can safely assume that at most a single
+such event occurs in any given generation.
 
-### DFE for missense and LOF variants
+\begin{align}
+\mathcal{D}_{n}(i, j, k)\Psi_n =
+& (i - 1) (n - i - j - k + 1) \Psi_n(i - 1, j, k) \\\nonumber
+& + (i + 1) (n - i - j - k - 1) \Psi_n(i + 1, j, k) \\\nonumber
+& + (i - 1) (k + 1) \Psi_n(i - 1, j, k + 1) \\\nonumber
+& + (i + 1) (k - 1) \Psi_n(i + 1, j, k - 1) \\\nonumber
+& + (i - 1) (j + 1) \Psi_n(i - 1, j + 1, k) \\\nonumber
+& + (i + 1) (j - 1) \Psi_n(i + 1, j - 1, k) \\\nonumber
+& + (j - 1) (n - i - j - k + 1) \Psi_n(i, j - 1, k) \\\nonumber
+& + (j + 1) (n - i - j - k - 1) \Psi_n(i, j + 1, k) \\\nonumber
+& + (j - 1) (k + 1) \Psi_n(i, j - 1, k + 1) \\\nonumber
+& + (j + 1) (k - 1) \Psi_n(i, j + 1, k - 1) \\\nonumber
+& + (k - 1) (n - i - j - k + 1) \Psi_n(i, j, k - 1) \\\nonumber
+& + (k + 1) (n - i - j - k - 1) \Psi_n(i, j, k + 1) \\\nonumber
+& - 2\left( i ( n - i - j - k) + i k + i j + j (n - i - j - k) + j k + k(n - i - j - k)\right)\Psi_n(i, j, k)
+\end{align}
+
+### Recombination
+
+If a lineage in our sample of size $n$ recombines in a given generation, which
+occurs with probability $nr$, we need to draw an extra lineage from the full
+population for it to recombine with. This means we need $\Psi_{n+1}$ in the
+previous generation. After drawing that extra lineage, $\Psi_n$ changes as we
+draw one of the two recombinant types (each with probability $1/2$$ instead of
+the lineage that was chosen to recombine.
+
+\begin{align}
+\mathcal{R}_{n}(i, j, k)\Psi_n = &
+\frac{(i + 1)(n - i - j - k + 1)}{n + 1}\Psi_{n+1}(i + 1, j - 1, k) \\\nonumber
+& + \frac{(i + 1)(n - i - j - k + 1)}{n + 1}\Psi_{n+1}(i + 1, j, k - 1) \\\nonumber
+& + \frac{(j + 1)(k + 1}{n + 1)}\Psi_{n+1}(i - 1, j + 1, k + 1) \\\nonumber
+& + \frac{(j + 1)(k + 1}{n + 1)}\Psi_{n+1}(i, j + 1, k + 1) \\\nonumber
+& - \frac{(i + 1)(n - i - j - k)}{n + 1}\Psi_{n+1}(i + 1, j, k) \\\nonumber
+& - \frac{(j + 1) k}{n + 1}\Psi_{n+1}(i, j + 1, k) \\\nonumber
+& - \frac{j (k + 1)}{n + 1}\Psi_{n+1}(i, j, k + 1) \\\nonumber
+& - \frac{i (n - i - j - k + 1}{n + 1}\Psi_{n+1}(i, j, k)
+\end{align}
+
+### Mutation
+
+We assume an infinite sites mutation (ISM) model where new mutations occur at
+previously unmutated loci. In the two-locus ISM model, two-locus pairs of
+variable loci arise when a mutation occurs at one locus when the other locus is
+already variable. Thus, new mutations at the $B/b$ locus occur against the
+single-locus allele frequency distribution $\Phi_{n,A}$, and new mutations at
+the $A/a$ locus occur against $\Phi_{n, B}$, which are found via the single-locus
+system from @Jouganous2017-pq.
+
+\begin{align}
+\mathcal{U}_{n}(i, j, k)\Psi_n = & 
+(j + 1)\frac{\theta_B}{2} \Phi_{n, A}(j+1) \delta_{i=1, k=0} \\\nonumber
+& + (n - j)\frac{\theta_B}{2} \Phi_{n, A}(j) \delta_{i=0, k=1} \\\nonumber
+& + (i + 1)\frac{\theta_A}{2} \Phi_{n, B}(i+1) \delta_{i=1, j=0} \\\nonumber
+& + (n - i)\frac{\theta_A}{2} \Phi_{n, B}(i) \delta_{i=0, j=1} \\\nonumber
+\end{align}
+
+### Jackknife moment closure approximation
+
+We use a jackknife approximation to write the entries of $\Psi_{n+1}$ and
+$\Psi_{n+2}$ as linear combinations of entries in $\Psi_n$. The general
+strategy is to assume the underlying continuous distribution $\psi(x, y, z)$
+can be approximated locally as a quadratic, and then use entries in $\Psi_n$
+that are close in frequency to a given entry in $\Psi_{n+l}$ to estimate the
+coefficients of that quadratic using the multinomial sampling formula. Then
+this quadratic local approximation to $\psi$ can be used to compute
+$\Psi_{n+l}(i, j, k)$ using Eq. \@ref(eq:multinomial). Readers should refer to
+section S1.3.5 in the Supporting material for @Ragsdale2019-nt for details.
+
+## Selection
+
+First consider the case of no dominance, so that the haplotypes $Ab$, $aB$,
+and $AB$ have selection coefficients $s_{Ab}$, $s_{aB}$, and $s_{AB}$,
+respectively. Note that the case with $s_{AB} = s_{Ab} + s_{aB}$ implies no
+epistasis between the $A/a$ and $B/b$ loci. Here, we assume all selection
+coefficients are negative. In a given generation, a selection event could
+occur in which a haplotype is rejected (selected against) with probability
+proportional to its selection coefficient, $-s$. We then draw an extra lineage
+from the full population to replace that rejected lineage.
+
+For example, the probability that an $AB$ haplotype is selected against and
+replaced by an $Ab$ haplotype is \[-ns_{AB} \frac{i}{n+1}{j+1}{n}\Psi_{n+1}(i,
+j + 1, k),\] where the additional $j + 1$ lineage in a sample of size $n + 1$
+accounts drawing that extra $Ab$ haplotype. Taking all such selective events
+together, for additive selection we get
+\begin{align}
+\mathcal{S}_{n}(i, j, k)\Psi_n = &
+\frac{i+1}{n+1}\left(-s_{AB}(n-i) + s_{Ab}j
++ s_{aB}k\right)\Psi_{n+1}(i+1, j, k) \\\nonumber
+& +\frac{j+1}{n+1}\left(s_{AB}i - s_{Ab}(n-j)
++ s_{aB}k\right)\Psi_{n+1}(i, j+1, k) \\\nonumber
+& +\frac{k+1}{n+1}\left(s_{AB}i + s_{Ab}j
+- s_{aB}(n-k)\right)\Psi_{n+1}(i, j, k+1) \\\nonumber
+& + \frac{n-i-j-k+1}{n+1}\left(s_{AB}i + s_{Ab}j
++ s_{aB}k\right)\Psi_{n+1}(i, j, k)
+\end{align}
+
+For a general diploid selection model, the idea is nearly the same, but we need
+to draw an extra lineage to determine the fitness of a diploid individual. For
+example, the probability that an $AB$ haplotype is paired with an additional
+lineage $Ab$ and selected against, and then replaced by an $aB$ haplotype is
+\[-ns_{AB/Ab}\frac{i}{n+2}\frac{j+1}{n+1}\frac{k+1}{n}\Psi_{n+2}(i, j+1,
+k+1).\] There are now many more possible selective events to consider, but
+after accounting for all possible diploid pairs and replacements (90 in total)
+and simplifying, we find
+\begin{align}
+\mathcal{S}_{n}(i, j, k)\Psi_n = &
+\frac{n-i-j-k+2}{n+2}\frac{n-i-j-k+1}{n+1}\left(
+  s_{AB/ab}i 
+  + s_{Ab/ab}j 
+  + s_{aB/ab}k
+\right)\Psi_{n+2}(i,j,k) \\\nonumber
+& + \frac{i+1}{n+2}\frac{n-i-j-k+1}{n+1}(
+  s_{AB/AB}i
+  + s_{AB/Ab}j
+  + s_{AB/aB}k
+  + s_{Ab/ab}j \\\nonumber & \hspace{20pt}
+  + s_{aB/ab}k
+  - s_{AB/ab}(n + j + k)
+)\Psi_{n+2}(i+1, j, k) \\\nonumber
+& + \frac{i+2}{n+2}\frac{i+1}{n+1}(
+  s_{AB/Ab}j
+  + s_{AB/aB}k
+  + s_{AB/ab}(n-i-j-k)
+  - s_{AB/AB}(n-i)
+)\Psi_{n+2}(i+2, j, k) \\\nonumber
+& + \frac{i+1}{n+2}\frac{j+1}{n+2}(
+  s_{AB/AB}i
+  + s_{AB/aB}k
+  + s_{AB/ab}(n-i-j-k)
+  + s_{Ab/Ab}j \\\nonumber & \hspace{20pt}
+  + s_{Ab/aB}k
+  + s_{Ab/ab}(n-i-j-k)
+  - s_{AB/Ab}(2n-i-j)
+)\Psi_{n+2}(i+1, j+1, k) \\\nonumber
+& + \frac{i+1}{n+2}\frac{k+1}{n+1}(
+  s_{AB/AB}i
+  + s_{AB/Ab}j
+  + s_{AB/ab}(n-i-j-k)
+  + s_{Ab/aB}j \\\nonumber & \hspace{20pt}
+  + s_{aB/aB}k
+  + s_{aB/ab}(n-i-j-k)
+  - s_{AB/aB}(2n-i-k)
+)\Psi_{n+2}(i+1, j, k+1) \\\nonumber
+& + \frac{j+1}{n+2}\frac{n-i-j-k+1}{n+1}(
+  s_{AB/Ab}i
+  + s_{AB/ab}i
+  + s_{Ab/Ab}j
+  + s_{Ab/aB}k \\\nonumber & \hspace{20pt}
+  + s_{aB/ab}k
+  -s_{Ab/ab}(n+i+k)
+)\Psi_{n+2}(i, j+1, k) \\\nonumber
+& + \frac{j+2}{n+2}\frac{j+1}{n+1}(
+s_{AB/Ab}i + s_{Ab/aB}k + s_{Ab/ab}(n-i-j-k) - s_{Ab/Ab}(n-j)
+)\Psi_{n+2}(i, j+2, k) \\\nonumber
+& + \frac{j+1}{n+2}\frac{k+1}{n+1}(
+  s_{AB/Ab}i
+  + s_{AB/aB}i
+  + s_{Ab/Ab}j
+  + s_{Ab/ab}(n-i-j-k) \\\nonumber & \hspace{20pt}
+  + s_{aB/aB}k
+  + s_{aB/ab}(n-i-j-k)
+  - s_{Ab/aB}(2n - j - k)
+)\Psi_{n+2}(i, j+1, k+1) \\\nonumber
+& + \frac{k+1}{n+2}\frac{n-i-j-k+1}{n+1}(
+  s_{AB/aB}i
+  + s_{AB/ab}i
+  + s_{Ab/aB}j
+  + s_{Ab/ab}j \\\nonumber & \hspace{20pt}
+  + s_{aB/aB}k
+  - s_{aB/ab}(n + i + j)
+)\Psi_{n+2}(i, j, k+1) \\\nonumber
+& + \frac{k+2}{n+2}\frac{k+1}{n+1}(
+  s_{AB/aB}i
+  + s_{Ab/aB}j
+  + s_{aB/ab}(n-i-j-k)
+  - s_{aB/aB}(n - k)
+)\Psi_{n+2}(i, j, k+2).
+\end{align}
+Multiplying through by $2N_{ref}$ gives us selection operators in terms of
+$\gamma$ instead of $s$.
+
+# Data analysis
+
+## DFE for missense and LOF variants
 
 Loss-of-function (LOF) variants show a dramatic skew toward low-frequency
 variants across all human populations (Table \@ref(tab:tajimasD)). Here, using
@@ -142,7 +344,7 @@ assumed, however, the vast majority of LOF variants were inferred to be
 strongly deleterious, with only $\sim10\%$ of new mutations having selection
 coefficients on the order $1/N_e$ or less.
 
-### Multinucleotide mutations and positive LD between linked synonymous variants
+## Multinucleotide mutations and positive LD between linked synonymous variants
 
 Multinucleotide mutations (MNMs) are complex mutational events that result in
 multiple mutations occurring on the same haplotype background in a single
@@ -174,21 +376,40 @@ d$, and expected statistics for $\rho \ll 1$ vary only negligibly.
 
 In fitting the LD decay of $\sigma_d^1$, the best fit parameters were
 $A=0.132$, and $\lambda=0.0103$. An exponential scaling of $0.01$ implies that
-the vast majority of new mutations do not occur via MNMs for distances greater
-than 200 bp, though a substantial fraction ($10-15\%$) occur via MNMs for very
-tightly linked loci with distances on the order $0-50$ base pairs. It is
-important to note that this does not mean that $10-15\%$ of new mutations occur
-via MNMs, since this fraction is contitioned on two mutations occurring at
-short distances.
+the vast majority of new mutations *pairs* do not occur via MNMs for distances
+greater than 200 bp, though a substantial fraction ($10-15\%$) occur via MNMs
+for very tightly linked loci with distances on the order $0-50$ base pairs. It
+is important to note that this does not mean that $10-15\%$ of new mutations
+occur via MNMs, since this fraction is contitioned on two mutations occurring
+at short distances.
 
-### Grouping Thousand Genomes populations based on clustering
+## Grouping Thousand Genomes populations based on clustering
 
-Testing grouping populations that cluster together as a single population.
+The large confidence intervals for measurements of signed LD could be driven by
+either averaging over relatively few observed pairs of mutations, or due to
+small sample sizes that make each individual measurement noisy estimates of the
+LD for that pair of mutations in the full population. To explore the underlying
+cause of measurement uncertainty in the @1000_Genomes_Project_Consortium2015-zq
+data, I considered larger sets of samples by combining populations that
+consistently cluster together in PCA and UMAP space and have low
+differentiation [@Diaz-Papkovich2020-ee]. I took combinations of CEU/GBR,
+CHB/CHS, CDX/KHV, and MSL/GWD. While recognizing that residual population
+structure in these population combinations could alter expected LD statistics
+compared to the respective single-population estimates, I was more interested
+in the effect that increasing the sample sizes would have on estimated
+measurement error.
 
-- Does not reduce CIs
-
-Citation for Alex's work:
-\url{https://www.abstractsonline.com/pp8/#!/9070/presentation/2384}
+Across each of the four combinations tested, confidence intervals were roughly
+equivalent to those of each of the individual populations. This suggests that
+the limiting factor to accurate LD measurement is not sample size but rather
+the overall levels of diversity and number of pairs of mutations that we
+compare. $\mathbb{E}[D]$ is most affected by common variants, and the sample
+sizes of the Thousand Genomes Project data are likely sufficient to accurately
+estimate common allele frequencies. Adding additional samples will increase the
+number of rare variants that we observe, but rare variants have minimal impact
+on $\sigma_d^1$. Thus, the accuracy of estimates of $\sigma_d^1$ is more
+fundamentally limited by evolutionary history and genome biology (i.e. past
+population sizes, mutation and recombination rates) than by sample sizes.
 
 \clearpage
 \newpage
