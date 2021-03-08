@@ -45,15 +45,14 @@ this to explore how different models of epistasis and dominance affect expected
 signed LD, including for non-steady-state demography relevant to human
 populations. Finally, I use whole-genome sequencing data from humans to asses
 how well we can differentiate modes of selective interactions in practice. I
-find that observations of positive LD between missense mutations within genes
-is driven by strong positive correlations between pairs of mutations that fall
-within the same conserved domain, pointing to compensatory mutations or
-antagonistic epistasis as the prevailing mode of interaction within but not
-outside of conserved genic elements. The heterogeneous landscape of both
-strength of selection and selective interactions within protein-coding genes
-calls for more refined inferences of the joint distribution of fitness and
-interactive effects, and the methods presented here should prove useful in that
-pursuit.
+find that positive LD between missense mutations within genes is driven by
+strong positive correlations between pairs of mutations that fall within the
+same conserved domain, pointing to compensatory mutations or antagonistic
+epistasis as the prevailing mode of interaction within but not outside of
+conserved genic elements. The heterogeneous landscape of both strength of
+selection and selective interactions within protein-coding genes calls for more
+refined inferences of the joint distribution of fitness and interactive
+effects, and the methods presented here should prove useful in that pursuit.
 
 \end{abstract}
 
@@ -74,7 +73,7 @@ diversity.
 In their foundational paper, @Hill1966-gv recognized that linked selected
 variants reciprocally impede the efficacy of selection at each locus. Linked
 selection reduces the fixation probability of advantageous mutations and
-increases that of deleterious mutations, compared to expectations under
+increases that of deleterious mutations compared to expectations under
 single-locus models [@Birky1988-jm]. Allele frequency dynamics of linked
 selected variants are also predicted to deviate from expectations without
 interference. Under a multiplicative fitness model, where the fitness reduction
@@ -91,19 +90,19 @@ evolutionary models. A large fraction of nonsynonymous coding mutations are
 thought to be at least partially recessive [@Agrawal2011-wb; @Huber2018-cp],
 with average levels of dominance correlating with strength of selection
 [@Kacser1981-nc], and dominance plays an important role in shaping expected
-equilibrium allele frequencies and mutation load of strongly damaging disease
-mutations [@Clark1998-kq]. On the other hand, epistasis differentially impacts
-the deleterious load for asexually and sexually reproducing organisms
+equilibrium allele frequencies and the mutation load of strongly damaging
+disease mutations [@Clark1998-kq]. On the other hand, epistasis differentially
+impacts the deleterious load for asexually and sexually reproducing organisms
 [@Kimura1966-gc; @Kondrashov1995-va], has been invoked as an explanation for
 the evolutionary advantage of sex [@Kondrashov1982-sf; @Charlesworth1990-kw;
 @Barton1998-lu], and can drive incompatibilities that lead to postzygotic
 isolation during the process of speciation [@Turelli2000-kz]. Within
 populations, epistasis is known to cause signed LD to deviate dramatically from
-zero [@Charlesworth1990-kw; @Kondrashov1995-va]. However, despite dominance
-being appreciated as important factors shaping linked variation
-[@Turelli2000-kz; @Zhao2016-bb] and the evolutionary importance of epistatic
-interactions, we currently lack models for predicting correlation patterns
-between linked mutations under general selection models.
+zero [@Charlesworth1990-kw; @Kondrashov1995-va]. However, despite appreciation
+of the effect of dominance on linked variation [@Turelli2000-kz; @Zhao2016-bb]
+and the evolutionary importance of epistatic interactions, we currently lack
+models for predicting correlation patterns between linked mutations under
+general selection models.
 
 In this paper, I develop a numerical approach to solve for the two-locus
 sampling distribution under a general diploid selection model with variable
@@ -136,7 +135,7 @@ improve dramatically, promising greater resolution of the fitness landscape in
 such model systems which can be compared to evolutionary models
 [@Otwinowski2018-zk].
 
-In most natural populations, directed mutational studies are not possible, and
+Directed mutational studies are not possible in most natural populations, and
 we must turn to population genetic approaches to infer selective interactions
 between observed mutations. Motivated by theory that linked negatively selected
 mutations will display negative LD due to interference [@Hill1966-gv], and that
@@ -167,15 +166,14 @@ A number of factors impede our interpretation of patterns of signed LD between
 coding variants. First, for strongly deleterious or loss-of-function variants,
 their rarity and low frequency means that statistical measurement of LD and
 other diversity measures are very noisy. Second, comparisons are based on
-theory that are confined to limiting and simplistic assumptions, including
-steady-state demography, simple selection and interaction models, or unlinked
-loci. To generate predictions under more complex models, we rely on expensive
-forward simulations. Such simulations can help build intuition and test
-inference methods, but do not efficiently provide expectations for quantities
-of interest across the range of relevant parameters. Analytical and numerical
-methods for expected haplotype frequencies and LD under general selective
-interaction models are thus crucial for interpreting patterns of variation
-observed in data.
+theory with limiting assumptions, such as steady-state demography, simple
+selection and interaction models, or unlinked loci. To generate predictions
+under more complex models, we rely on expensive forward simulations. Such
+simulations can help build intuition and test inference methods, but do not
+efficiently provide expectations for quantities of interest across the range of
+relevant parameters. Analytical and numerical methods for expected haplotype
+frequencies and LD under general selective interaction models are thus crucial
+for interpreting patterns of variation observed in data.
 
 # Results
 
@@ -203,9 +201,8 @@ I first consider the case of additive selection and epistasis, followed by
 dominance acting within loci but no epistatic effects, and then describe a
 general diploid selection model and consider simple gene-based dominance
 effects. In what follows I focus on parameters where the strengths of selection
-and dominance at each locus are equal, but note that the methods and
-implementation allow for arbitrary and unequal selection and dominance at the
-two loci.
+and dominance at each locus are equal, but note that the methods presented here
+allow for arbitrary and unequal selection and dominance at the two loci.
 
 ### Additive selection and epistasis
 
@@ -514,19 +511,30 @@ at finer scales.
 ## Clustered mutations account for positive LD among synonymous mutations
 
 In a single randomly mating population, neutral mutations are expected to have
-average signed LD of zero, but across all populations analyzed here, we observe
-positive LD between synonymous mutations. While selection on some subset of
+average signed LD of zero, but across all populations analyzed here, LD between
+synonymous mutations is positive. While selection on some subset of
 synonymous variants is possible, it should be much weaker on average than
 between missense mutations, and any interference between selected synonymous
 variants should lead to negative LD. @Sandler2020-vk proposed that spatial
-population structure is responsible for the increase of LD for both synonymous
-and missense variants, arguing that every natural population lives in some
-geography that will necessarily induce some structure, and they used forward
-simulations to demonstrate this effect. However, this increase in LD, at least
-in simulations of spatial structure and migration, typically extends over larger
-distances separating base-pairs than we observe in the data. Instead, positive
-LD between synonymous mutations decays to zero within just a few hundred
-base-pairs (Figures \@ref(fig:lddecay) and \@ref(fig:lddecaydomain)).
+population structure may be responsible for the increase of LD for both synonymous
+and missense variants. They argued that every natural population lives in some
+geography that will necessarily induce some structure, and that migration, admixture,
+or spatial structure could increase signed LD above zero.
+
+However, under standard population genetic assumptions of constant mutation and
+recombination rates and independent mutation events, migration and admixture
+does not result in $\E[D]$ to be nonzero. For a given set of mutations with
+differences in allele frequencies between source populations, $D$ will be
+nonzero in an admixed population between those mutations even when $D$ is zero
+in the sources [@Cavalli-Sforza1971-jv]. However, genome averages of allele
+frequency differences in the source populations are zero, as they can be either
+positive or negative, and resulting $\E[D]$ is still zero genome-wide.
+Furthermore, @Sandler2020-vk used forward simulations with an explicit spatial
+model and a multiplicative fitness function to explore this effect, and the
+positive LD they observed under these scenarios extends over larger distances
+than observed in the data. Instead, positive LD between synonymous mutations
+decays to zero within just a few hundred base (Figures \@ref(fig:lddecay) and
+\@ref(fig:lddecaydomain)).
 
 Nonrandom mutational processes provide an alternative explanation for positive
 LD between neutral variants separated by short distances, in which clusters of

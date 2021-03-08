@@ -9,9 +9,9 @@ output:
       in_header: "sipreamble.tex"
     extra_dependencies: ["float"]
 bibliography: "references.bib"
-title: Supporting Information for 
+title: Supporting Information for "Can we distinguish model of selective interactions using linkage disequilibrium?"
 author:
-  - Aaron P. Ragsdale^[aaronpeaceragsdale@gmail.com]
+  - Aaron P. Ragsdale
 date:
   - \today
 ---
