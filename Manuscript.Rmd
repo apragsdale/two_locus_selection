@@ -43,7 +43,7 @@ two-locus sampling distribution under diploid selection, with arbitrary
 epistasis and dominance, and variable recombination and population sizes. I use
 this to explore how different models of epistasis and dominance affect expected
 signed LD, including for non-steady-state demography relevant to human
-populations. Finally, I use whole-genome sequencing data from humans to asses
+populations. Finally, I use whole-genome sequencing data from humans to assess
 how well we can differentiate modes of selective interactions in practice. I
 find that positive LD between missense mutations within genes is driven by
 strong positive correlations between pairs of mutations that fall within the
