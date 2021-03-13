@@ -306,33 +306,33 @@ should not be strongly affected by population size history.
 
 ## Signed LD within protein-coding genes
 
-In what follows, I turn to empirical measurements of LD within human
-populations, focusing on mutations within protein-coding regions. I first look
-at average values of LD across genes for synonymous, missense, and
-loss-of-function mutations, and then turn to patterns of LD partitioned by
-functional elements and distances separating mutations within genes.
+In what follows I examine LD from human population sequencing data, focusing on
+mutations within protein-coding regions. I first look at average values of LD
+across genes for pairs of synonymous, missense, and loss-of-function mutations
+and then turn to patterns of LD partitioned by functional elements and
+distances separating mutations within genes.
 
 Synonymous and missense mutations show similar levels of positive LD when
 considering pairs of mutations within the same gene. Loss-of-function mutations
-instead have negative LD, pointing to differing modes of selective interactions
-for loss-of-function and missense mutations (Figure \@ref(fig:fig5)). Within
-each population, large measurement noise gives 95\% confidence intervals that
-overlap with zero for each mutation class, although the pattern is remarkably
-consistent across African, European, and East Asian populations in the Thousand
-Genomes dataset. Comparing mean LD within genes between African and Eurasian
-populations, LD in Eurasian populations is somewhat larger on average, that
-is, more positive for missense mutations and more negative for loss-of-function
-mutations. This is in agreement with differences in expectations between
-populations that have or have not gone through a bottleneck in their recent
-past (Figure \@ref(fig:fig4)).
+instead have more negative LD, suggesting differing modes of selective
+interactions for loss-of-function and missense mutations (Figure
+\@ref(fig:fig5)). Within each population, large measurement noise gives 95\%
+confidence intervals that overlap with zero across mutation class, although the
+pattern is remarkably consistent across African, European, and East Asian
+populations in the Thousand Genomes dataset. Comparing mean LD within genes in
+African and Eurasian populations, LD in Eurasian populations is somewhat larger
+on average, that is, more positive for missense mutations and more negative for
+loss-of-function mutations. This is in agreement with differences in
+expectations between populations that have or have not gone through a
+bottleneck in their recent past (Figure \@ref(fig:fig4)). For pairs of missense
+mutations in different protein-coding genes, signed LD decays to zero fairly
+rapidly and is lower than signed LD within genes even for mutations that are
+linked (distance less that 50 kb).
 
-For pairs of missense mutations in different protein-coding genes, signed LD
-decays to zero fairly rapidly and is lower than signed LD within genes even for
-mutations that are more tightly linked (distance less that 50 kb). The
-similarity in signed LD observed between missense and synonymous mutations
+The similarity in signed LD observed between missense and synonymous mutations
 would suggest that interference between missense mutations is minimal. However,
-below I show that interactive effects differ dramatically between
-mutations that lie within annotated functional domains and mutations outside of
+below I show that interactive effects differ dramatically between mutations
+that lie within annotated functional domains and mutations outside of
 functional domains, with these opposing effects effectively canceling out when
 averaging LD over entire genes. Due to the rarity of loss-of-function
 mutations, I focus only on comparisons between synonymous and missense
@@ -344,18 +344,18 @@ To further explore the observation of positive LD between both synonymous and
 missense mutations within genes, I examine the role that annotated conserved
 domains in protein-coding genes play in driving this signal. Note that the low
 density of loss-of-function mutations within annotated domains in humans
-precludes any analysis of LD between those mutations at the level of
-sub-elements within genes. Protein-coding domains are conserved elements of
-genes, often associated with some known functional or structural feature of a
-protein. As such, we would expect that purifying selection is stronger on
-average within domains than within the same gene but outside of a conserved
-domains. Indeed, the site-frequency spectrum (SFS) is skewed to lower
-frequencies for both missense and loss-of-function mutations within domains
-when compared to the same classes of mutations outside of domains, with much
-more negative values of Tajima's D within domains (Table \@ref(tab:tajimasD)).
-On the other hand, no difference is observed for synonymous mutations within or
-outside domains, suggesting roughly equivalent effects of selection (either
-direct or linked) on synonymous variation.
+precludes analysis of LD between those mutations at the level of sub-elements
+within genes. Protein-coding domains are conserved elements of genes, often
+associated with some known functional or structural feature of a protein. As
+such, we would expect that purifying selection is stronger on average within
+domains than within the same gene but outside of a conserved domains. Indeed,
+the site-frequency spectrum (SFS) is skewed to lower frequencies for both
+missense and loss-of-function mutations within domains when compared to the
+same classes of mutations outside of domains, with much more negative values of
+Tajima's D within domains (Table \@ref(tab:tajimasD)). On the other hand, no
+difference is observed for synonymous mutations whether within or outside
+domains, suggesting roughly equivalent effects of selection (either direct or
+linked) on synonymous variation.
 
 For pairs of missense mutations that both fall within the same functional
 domain, we observe large positive LD, roughly an order of magnitude larger than
@@ -368,7 +368,8 @@ mutations to be less than that between synonymous mutations under predictions
 from models of either Hill-Robertson interference, synergistic epistasis, or
 dominance (Figures \@ref(fig:fig1)-\@ref(fig:fig3)). This observation is
 opposite to those expectations, suggesting a different prevailing interactive
-effect within domains than those that are commonly tested or modeled.
+effect between nonsynonymous mutations within domains than those that are
+commonly tested or modeled.
 
 The large positive signal of LD for missense mutations within the same
 domain does not extend to pairs of missense mutations that are in
@@ -378,36 +379,36 @@ even slightly more negative than synonymous mutations (Figure \@ref(fig:fig6)).
 The interactive effect driving large LD within domains is therefore likely
 domain-specific. However, the average distance between pairs of mutations
 within domains is much smaller than between domains, so this observation may be
-primarily driven by the higher recombination rate between pairs of mutations
+primarily driven by the higher recombination distances between pairs of mutations
 across distinct domains.
 
 ### Reduced LD between pairs of missense mutations outside of conserved domains
 
 I also measure LD between pairs of mutations that both fall outside of
-annotated domains. For such mutations, I consider averages across all pairs
-outside of domains, as well as subsets of pairs matched to the same distances
-for pairs of mutation within and between domains (Figures \@ref(fig:fig6)B-D and
-\@ref(fig:domainspops)). Averaging over all pairs of mutations within the same
-gene but outside domains, both synonymous and missense mutations have LD
-slightly above zero, with synonymous mutations observed to have slightly higher
-signed LD than missense mutations. This pattern is primarily driven by tightly
-linked variants. For pairs of mutations at distances matched to those within
-the domains, synonymous mutations have much larger positive LD than
-missense mutations, a signal that vanishes for pairs matched to distances
-between domains. For larger distances, both synonymous and missense mutations
-have LD approximately zero.
+annotated domains. For such mutations, I consider averages across all pairs of
+mutations outside of domains, as well as subsets of pairs matched to the same
+distances as pairs of mutation within and between domains as surveyed in the
+previous section (Figures \@ref(fig:fig6)B-D and \@ref(fig:domainspops)).
+Averaging over all pairs of mutations within the same gene but outside domains,
+both synonymous and missense mutations have LD slightly above zero, with
+synonymous mutations observed to have slightly higher signed LD than missense
+mutations. This pattern is primarily driven by tightly linked variants. For
+pairs of mutations at distances matched to those within the domains, synonymous
+mutations have much larger positive LD than missense mutations, a signal that
+vanishes for pairs matched to distances between domains. For larger distances,
+both synonymous and missense mutations have LD approximately zero.
 
 The role that tightly linked variants have in driving this signal can be
 clearly seen in the decay of signed LD with distance (Figure
 \@ref(fig:lddecay)). Both pairs of synonymous and missense mutations with
-distances greater than a few hundred base pairs have LD that fluctuates around
-zero. But for shorter distances, synonymous variants have large positive LD,
-while missense mutations have much lower LD except for pairs within the
-shortest distance bin ($<10$ bp). This reduction in LD is consistent with
-Hill-Robertson interference between linked missense mutations instead of
-epistatic effects, as interference between either additive or recessive
-mutations without epistasis results in signed LD that decays rapidly by
-recombination distance $\rho \approx 1$.
+distances greater than a few hundred base pairs have average LD that fluctuates
+around zero. But for shorter distances, synonymous variants have large positive
+LD, while missense mutations have much lower LD except for pairs within the
+shortest distance bin ($<10$ bp). This reduction in LD for missense mutations
+compared to synonymous mutations is consistent with Hill-Robertson interference
+between linked selected mutations instead of epistatic effects, as interference
+between either additive or recessive mutations but without epistasis results in
+signed LD that decays rapidly by recombination distances of $\rho \approx 1$.
 
 # Discussion
 
@@ -444,10 +445,8 @@ strongly deleterious mutations does produce large negative deviations of mean
 LD. Strongly deleterious *recessive* mutations can also produce this pattern,
 making it difficult to distinguish these effects with certainty. This
 difficulty is compounded by the large measurement noise for $\E[D]$, especially
-for loss-of-function variants for which only a few hundred pairs are found
-within genes in each population. If loss-of-function variants are in fact
-recessive, even partially, this can impact inferences of
-the DFE (Supporting Information).
+for loss-of-function variants for which only a few hundred within-gene pair in
+human populations. 
 
 ## Non-uniform interactions between selected mutations within genes
 
@@ -466,23 +465,24 @@ at the same distances as those within domains have more negative LD, both
 compared to distance-matched synonymous mutations outside of domains and to
 mutations within domains. Neither dominance effects, synergistic epistasis, nor
 Hill-Robertson interference are expected to result in positive LD, so that some
-other interactive effect must be driving this positive LD signal.
+other interactive effect must be driving this positive LD signal within
+conserved domains.
 
 There are a number of possible interaction scenarios that can result in
-positive signed LD between linked loci. One explanation is a
-prevalence of pairs of compensatory mutations that are tolerated to
-co-segregate at high frequencies within conserved domains [@Yeang2007-gj;
-@Ivankov2014-tn]. @Callahan2011-ac and @Taverner2020-lk have proposed such a
-mechanism to explain observed clusters of mutations in lineages of *Drosophila*
-and other species. Another possibility is a model of antagonistic, or
-diminishing returns epistasis, in which a single amino acid-changing mutation
-within a domain damages the functionality of that subunit, but additional
-mutations within that same domain reduces fitness by a factor less than the
-first mutation. A third possibility, related to the antagonistic epistasis
-case, is that selection acts on the functional domain as a unit instead of at
-loci within the domain individually (such as gene-based dominance). In this
-scenario, double heterozygotes have different fitnesses depending on whether
-the mutations are found on same haplotype or on different haplotypes.
+positive signed LD between linked loci. One explanation is a prevalence of
+pairs of compensatory mutations that are tolerated to co-segregate at high
+frequencies within conserved domains [@Yeang2007-gj; @Ivankov2014-tn].
+@Callahan2011-ac and @Taverner2020-lk have proposed such a mechanism to explain
+observed clusters of mutations in lineages of *Drosophila* and other species.
+Another possibility is a model of antagonistic, or diminishing returns
+epistasis, in which a single amino acid-changing mutation within a domain
+damages the functionality of that subunit, but additional mutations within that
+same domain reduce fitness by a factor less than the first mutation. A third
+possibility, related to the antagonistic epistasis case, is that selection acts
+on the functional domain as a unit instead of at loci within the domain
+individually (such as gene-based dominance). In this scenario, double
+heterozygotes have different fitnesses depending on whether the mutations are
+found on same haplotype or on different haplotypes.
 
 We do not see an increase in LD between mutations that are found in different
 annotated domains within the same gene, which are on average at much larger
@@ -500,13 +500,15 @@ Taken together, selection on segregating variants within protein-coding genes
 is nonuniform, with both the overall strength of selection and interactions
 between variants differing between annotated elements. Missense and
 loss-of-function mutations within conserved domains are subject to stronger
-selection, skewing the SFS to lower frequencies. However, typical approaches
-for inferring the distribution of fitness effects from population genomic data
+selection, skewing the SFS to lower frequencies. Typical approaches for
+inferring the distribution of fitness effects from population genomic data
 average over these differences by considering all nonsynonymous mutations
-together [@Boyko2008-zk; @Kim2017-xo]. It would be straightforward to adapt
-those methods to infer more detailed and accurate representation of the
-heterogeneous effects of new mutations within genes by partitioning by missense
-and loss-of-function classes as well as by annotated domains. Similarly, the
+together [@Boyko2008-zk; @Kim2017-xo], but if loss-of-function variants are in
+fact recessive, even partially, this can impact inferences of the DFE
+(Supporting Information). It would be straightforward to adapt DFE-inference
+methods to infer more detailed and accurate representation of the heterogeneous
+effects of new mutations within genes by partitioning by missense and
+loss-of-function classes as well as by annotated domains. Similarly, the
 different modes of interaction between mutations across annotated domains mean
 that our standard models and simulation approaches may be too simple and will
 not capture the evolutionary trajectories and patterns of diversity that differ
@@ -516,29 +518,32 @@ at finer scales.
 
 In a single randomly mating population, neutral mutations are expected to have
 average signed LD of zero, but across all populations analyzed here, LD between
-synonymous mutations is positive. While selection on some subset of
-synonymous variants is possible, it should be much weaker on average than
-between missense mutations, and any interference between selected synonymous
-variants should lead to negative LD. @Sandler2020-vk proposed that spatial
-population structure may be responsible for the increase of LD for both synonymous
-and missense variants. They argued that every natural population lives in some
-geography that will necessarily induce some structure, and that migration, admixture,
-or spatial structure could increase signed LD above zero.
+synonymous mutations is positive. While selection on some subset of synonymous
+variants is possible, it should be much weaker on average than between missense
+mutations, and any interference between selected synonymous variants should
+lead to negative LD. @Sandler2020-vk proposed that spatial population structure
+may be responsible for the increase of LD for both synonymous and missense
+variants. They argued that every natural population lives in some geography
+that will necessarily induce some structure, and that migration, admixture, or
+spatial structure could increase average signed LD above zero.
 
-However, under standard population genetic assumptions of constant mutation and
-recombination rates and independent mutation events, migration and admixture
-does not result in $\E[D]$ to be nonzero. For a given set of mutations with
-differences in allele frequencies between source populations, $D$ will be
-nonzero in an admixed population between those mutations even when $D$ is zero
-in the sources [@Cavalli-Sforza1971-jv]. However, genome averages of allele
-frequency differences in the source populations are zero, as they can be either
-positive or negative, and resulting $\E[D]$ is still zero genome-wide.
-Furthermore, @Sandler2020-vk used forward simulations with an explicit spatial
-model and a multiplicative fitness function to explore this effect, and the
-positive LD they observed under these scenarios extends over larger distances
-than observed in the data. Instead, positive LD between synonymous mutations
-decays to zero within just a few hundred base (Figures \@ref(fig:lddecay) and
-\@ref(fig:lddecaydomain)).
+Under standard population genetic assumptions of constant mutation and
+recombination rates and independent mutation events, however, migration and
+admixture do not result in nonzero $\E[D]$. Rather, for a set of mutations with
+*given* differences in allele frequencies between source populations, $D$ can
+be nonzero in an admixed population between those particular mutations even
+when $D$ is zero in the source populations [@Cavalli-Sforza1971-jv]. But this
+result relies on conditioning on directional differences in allele frequencies
+between populations. Expected mean allele frequency difference in the source
+populations is zero ($\E[(p_1-p_2)(q_1-q_2)] = 0$), as differences are equally
+likely to be positive or negative, and resulting $\E[D]$ is still zero when
+taking genome-wide averages. Furthermore, @Sandler2020-vk used forward
+simulations with an explicit spatial model and a multiplicative fitness
+function to explore the joint effect of structure and interference, and the
+positive LD they observed under these scenarios extends over much larger
+distances than observed in the data. Instead, positive LD between synonymous
+mutations decays to zero within just a few hundred base (Figures
+\@ref(fig:lddecay) and \@ref(fig:lddecaydomain)).
 
 Nonrandom mutational processes provide an alternative explanation for positive
 LD between neutral variants separated by short distances, in which clusters of
@@ -547,16 +552,17 @@ multinucleotide mutations have been shown to affect patterns of LD over short
 distances, on the order of 10s to 100s of base pairs [@Harris2014-zg], and
 clustered mutational events may be common in humans [@Besenbacher2016-ac].
 Indeed, a simple exponential model in which the fraction of pairs of mutations
-arising arising from a multinucleotide event decays with distance fits the
-observed decay of $\sigma_d^1$ between synonymous mutations (Supporting
+arising from a multinucleotide mutation event decays with distance fits the
+observed decay of $\sigma_d^1$ between synonymous variants (Supporting
 Information). We may therefore treat positive LD as the baseline expectation
 for tightly linked variants primarily due to clustered mutations, so that
 subsequent selective processes and interactions cause LD to deviate from that
 expectation, as seen for missense mutations across different sub-elements of
 genes. It may also be more appropriate to compare the negative LD observed
 between linked loss-of-function variants to that positive baseline expectation
-instead of zero, so that they are more recessive or have stronger synergistic
-epistasis than if the neutral expectation were zero.
+instead of zero, which would imply that they are more recessive or have
+stronger synergistic epistasis than from inferences assuming a neutral
+expectation of zero.
 
 ## Challenges to distinguishing highly parameterized models of selective interactions
 
@@ -568,14 +574,15 @@ number of parameters to consider. This makes performing forward simulations
 that span the range of all such selective interaction scenarios burdensome.
 
 Instead, closed, numerical approaches to compute expectations for two-locus
-statistics under a wide range of selection models, as presented here, allow us
-to explore this highly parameterized space of models far more efficiently, and
-it opens the possibility for performing likelihood-based inference using signed
-LD or other two-locus summaries of the data. For example, inferring the joint
-distribution of dominance and selection is underpowered using the SFS. Because
+statistics under a wide range of selection models, as presented here or in
+@Ragsdale2019-nt and @Friedlander2021-bs, allow us to explore this highly
+parameterized space of models far more efficiently, and it opens the
+possibility for performing likelihood-based inference using signed LD or other
+two-locus summaries of the data. For example, inferring the joint distribution
+of dominance and selection is underpowered using the SFS alone, but because
 signed LD is sensitive to the levels of dominance (Figure \@ref(fig:fig3)),
-inferring the DFE with dominance may become feasible using the joint
-distribution of allele frequencies and LD.
+inferring the DFE with dominance may be feasible using the joint distribution
+of allele frequencies and LD.
 
 Using a single low-order summary of signed LD, such as $\E[D]$ or $\sigma_d^1$,
 is likely insufficient to confidently discriminate modes of selective
@@ -588,8 +595,9 @@ among a class of mutations, which are unknown for a given pair of mutations, so
 that we must integrate over a distribution of fitness effects. This DFE,
 however, will have been inferred under a simple set of assumptions, such as
 additivity and interchangeability between sites within a gene, potentially
-biasing any inference using this DFE to learn about other patterns of
-selection.
+biasing any inference using previously inferred DFEs to learn about patterns of
+interactions. Again, this underlies the need to jointly infer strengths and
+interactions of selected variants.
 
 Finally, exploring additional summaries of the two-locus sampling distribution
 could provide additional power to distinguish between interaction models. The
@@ -654,12 +662,17 @@ with additive selection at either locus, although that paper focused on the
 applicability of two-locus statistics to demographic inference. More recently,
 @Ragsdale2019-nt extended the @Hill1968-vu system for $\E[D^2]$ to compute
 arbitrary moments of the distribution of $D$ for any number of populations
-connected by migration and admixture. This paper also showed that such a
+connected by migration and admixture. They also showed that such a
 moments-construction can be used to solve for the two-locus sampling
 distribution within a single population, though it requires a moment-closure
 approximation for nonzero recombination and selection. Below, I extend this
 approach to model arbitrary diploid selection, which encompasses dominance,
-epistasis, and other forms of selective interactions between two loci.
+epistasis, and other forms of selective interactions between two loci. In a
+concurrent study to this paper, @Friedlander2021-bs developed numerical
+solutions to the same moments system, which they used to describe selected
+haplotype trajectories and the distortion of neutral diversity at loci variably
+linked to beneficial alleles that sweep to high frequencies under
+non-equilibrium demography.
 
 ## The two-locus sampling distribution with arbitrary selection
 
@@ -744,8 +757,8 @@ means that the system in \@ref(eq:system) is not closed, so that we need a
 moment-closure approximation to solve for $\Psi_n$. As in @Ragsdale2019-nt, a
 jackknife approximation is used to estimate $\Psi_{n+l}$, for $l=1$ or $2$,
 from $\Psi_n$ [@Jouganous2017-pq], so that $\hat{\Psi}_{n+l}(i, j, k) =
-\mathcal{J}_{n, l}\Psi_n$, although other closure approximations are possible.
-This emits a closed approximate system,
+\mathcal{J}_{n, l}\Psi_n$, although other accurate closure approximations are
+possible [@Friedlander2021-bs]. This emits a closed approximate system,
 \begin{equation}
 (\#eq:closed-system)
 \dot{\hat\Psi}_n(i, j, k; t) = 
