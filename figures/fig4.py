@@ -332,7 +332,7 @@ plot_relate_curve(
     gen=1,
 )
 
-ax1.legend(frameon=False)
+ax1.legend()
 # ax1.set_xscale("log")
 # ax1.set_yscale("log")
 ax1.set_xlim(4000, 0)
@@ -344,7 +344,7 @@ ax2 = plt.subplot(4, 2, 2)
 plot_relate_curve(ax2, t, N0, line_style="-", lw=1, color=colors[0], label=pop0)
 plot_relate_curve(ax2, t, N1, line_style="--", lw=1, color=colors[1], label=pop1)
 
-ax2.legend(frameon=False)
+ax2.legend()
 ax2.set_xscale("log")
 ax2.set_yscale("log")
 ax2.set_xlim(1e6, 1e3)
@@ -370,7 +370,7 @@ for rho, c in zip([0, 5], [colors[2], colors[3]]):
             label=rf"{pop[:3]}, $\rho={rho}$",
         )
 
-ax3.legend(frameon=False, ncol=2)
+ax3.legend(ncol=2)
 ax3.set_xlim(ax1.get_xlim())
 ax3.set_ylabel(f"$\sigma_d^1$")
 ax3.set_title("Additive selection, no epistasis")
@@ -392,7 +392,7 @@ for rho, c in zip([0, 5], [colors[2], colors[3]]):
 ax4.set_xlim(ax2.get_xlim())
 ax4.set_title("Additive selection, no epistasis")
 ax4.set_xscale("log")
-ax4.legend(frameon=False, ncol=2)
+ax4.legend(ncol=2)
 
 ax5 = plt.subplot(4, 2, 5)
 
@@ -408,7 +408,7 @@ for eps, c in zip([-0.5, 0.5], [colors[4], colors[5]]):
             label=rf"{pop[:3]}, $\epsilon={eps}$",
         )
 
-ax5.legend(frameon=False, ncol=2)
+ax5.legend(ncol=2)
 ax5.set_xlim(ax1.get_xlim())
 ax5.set_ylabel(f"$\sigma_d^1$")
 ax5.set_title(r"Epistasis (with $\rho=1$)")
@@ -430,7 +430,7 @@ for eps, c in zip([-0.5, 0.5], [colors[4], colors[5]]):
 ax6.set_xlim(ax2.get_xlim())
 ax6.set_title(r"Epistasis (with $\rho=1$)")
 ax6.set_xscale("log")
-ax6.legend(frameon=False, ncol=2)
+ax6.legend(ncol=2)
 
 ax7 = plt.subplot(4, 2, 7)
 
@@ -450,7 +450,7 @@ for model, c in zip(["simple", "gene"], [colors[6], colors[7]]):
             label=rf"{pop[:3]}, {model_type}",
         )
 
-ax7.legend(frameon=False, ncol=2)
+ax7.legend(ncol=2)
 ax7.set_xlim(ax1.get_xlim())
 ax7.set_ylabel(f"$\sigma_d^1$")
 ax7.set_title(r"Dominance (with $\rho=1$)")
@@ -477,10 +477,16 @@ ax8.set_xlim(ax2.get_xlim())
 ax8.set_title(r"Dominance (with $\rho=1$)")
 ax8.set_xscale("log")
 ax8.set_xlabel("Time ago (years)")
-ax8.legend(frameon=False, ncol=2)
+ax8.legend(ncol=2)
 
 fig.tight_layout()
-
-# fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.98, "A", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.98, "B", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.73, "C", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.73, "D", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.48, "E", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.48, "F", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.23, "G", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.23, "H", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"fig4_n0_{n}_toy_relate.pdf")

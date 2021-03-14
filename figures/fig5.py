@@ -224,4 +224,11 @@ plot_between(pop, data, bs, ax5)
 
 fig.tight_layout()
 fig.subplots_adjust(hspace=0.3)
+fig.text(0.02, 0.95, "A", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.70, "B", fontsize=8, ha="center", va="center")
+fig.text(0.06, 0.38, "C", fontsize=8, ha="center", va="center")
+fig.text(0.30, 0.38, "D", fontsize=8, ha="center", va="center")
+fig.text(0.54, 0.38, "E", fontsize=8, ha="center", va="center")
+fig.text(0.77, 0.38, "F", fontsize=8, ha="center", va="center")
+
 plt.savefig(f"fig5.pdf")

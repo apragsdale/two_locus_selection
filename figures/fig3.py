@@ -143,7 +143,9 @@ ax1.set_title(r"$\gamma=-1$")
 ax2.set_title(r"$\gamma=-5$")
 
 fig.tight_layout()
-#fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")
-#fig.text(0.05, 0.47, "B", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.98, "A", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.98, "B", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.48, "C", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.48, "D", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"fig3_n0_{n0}.pdf")

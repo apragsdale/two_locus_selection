@@ -155,9 +155,9 @@ ax3.set_ylim(-1.2, 1.2)
 ax4.set_ylim(ax3.get_ylim())
 
 fig.tight_layout()
-#fig.subplots_adjust(hspace=0.5, top=0.98)
-
-#fig.text(0.05, 0.97, "A", fontsize=8, ha="center", va="center")
-#fig.text(0.05, 0.45, "B", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.98, "A", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.98, "B", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.48, "C", fontsize=8, ha="center", va="center")
+fig.text(0.52, 0.48, "D", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"fig2_n0_{n0}.pdf")

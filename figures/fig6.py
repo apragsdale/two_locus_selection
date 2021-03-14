@@ -311,5 +311,9 @@ ax4 = plt.subplot2grid((5, 3), (3, 2), rowspan=2)
 plot_inside_outside("KHV", ax4)
 
 fig.tight_layout()
+fig.text(0.02, 0.95, "A", fontsize=8, ha="center", va="center")
+fig.text(0.05, 0.38, "B", fontsize=8, ha="center", va="center")
+fig.text(0.38, 0.38, "C", fontsize=8, ha="center", va="center")
+fig.text(0.70, 0.38, "D", fontsize=8, ha="center", va="center")
 
-plt.savefig(f"fig6_multipanel.pdf")
+plt.savefig(f"fig6.pdf")
