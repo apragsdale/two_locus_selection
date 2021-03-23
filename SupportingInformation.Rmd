@@ -473,6 +473,14 @@ kable_styling(latex_options = c("HOLD_position", "repeat_header"))
 
 # Supplementary Figures
 
+```{r hudson, echo=F, fig.cap="(ref:fighudson)", fig.align="center"}
+knitr::include_graphics("figures/hudson_comparison.pdf")
+```
+
+(ref:fighudson) **Hudson comparison, caption to be filled in!!!** And also
+include an extra few panels and direct comparison to computations under the
+Hudson program...
+
 ```{r jackknife, echo=F, fig.cap="(ref:figjackknife)", fig.align="center"}
 knitr::include_graphics("figures/jackknife.pdf")
 ```
