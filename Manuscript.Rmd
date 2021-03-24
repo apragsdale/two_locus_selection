@@ -214,30 +214,24 @@ allow for arbitrary and unequal selection and dominance at the two loci.
 knitr::include_graphics("figures/fig1.pdf")
 ```
 
-(ref:fig1cap) \textbf{Additive selection and epistasis.} (A and B) The
-distribution at stationarity of $AB$ haplotype counts in a sample size of 30,
-in which we observe 10 $A$ alleles at the left locus, and 10 $B$ alleles at the
-right locus. (C) The decay of normalized squared LD ($\sigma_d^2$) with
-recombination distance ($\rho=4N_er$) for pairs of variants with a given
-selection coefficient. The dashed line is the neutral expectation from
-@Ohta1971-yd, given in Equation \@ref(eq:ohta). (D) The decay of
-$\sigma_d^1=\E[D]/ \E[p(1-p)q(1-q)]$ for pairs of variants. The negative LD
-effect of Hill-Robertson interference is strongest for intermediate selection,
-with $\gamma\sim-1$ to $-5$, where $\gamma=4N_es$. **[The text does not refer
-to specific panels, 1c should give the equation for $\sigma_d^2$, and not sure
-what we get from 1a and 1b. Define rho in caption, and place other parameters
-in parentheses]** **[Move a, b to supp, consolidate c and d with fig 2]** And
-from figure 2 previously ...(A, B) Synergistic epistasis decreases
-$\sigma_d^2$, while antagonistic epistasis increases $\sigma_d^2$, though both
-are decreased in comparison to neutral expectations. (C, D) Epistasis expected
-signed LD away from zero, an effect which can extend over large recombination
-distances. Here, $\gamma$ is the selection coefficient for derived alleles $A$
-and $B$, assuming selection is equal at the two loci. $\epsilon=0$ is the case
-of pure additive selection with no epistasis, and $\gamma_{AB}=(\gamma_A +
-\gamma_B)(1+\epsilon)$. Dashed lines are expectations under neutrality for both
-$\sigma_d^2$ and $\sigma_d^1$. **[More explicitly define that positive e is
-synergistic, negative is antagonistic, and define formula in the methods]**
-**[caption for C, D reads a little trailing]**
+(ref:fig1cap) \textbf{Additive selection and epistasis.} Left panels show
+expectations for the decay of $\sigma_d^2 = \E[D^2] / \E[p(1-p)q(1-q)]$ with
+recombination distance, and right panels show expectations for $\sigma_d^1 =
+\E[D] / \E[p(1-p)q(1-q)]$. The scaled recombination rate is given by
+$\rho=4N_er$, where $r$ is the probability of recombination between two loci.
+All expectations are at stationarity, and dashed lines are expectations under
+neutrality (Equation \@ref(eq:ohta)). (A-B) Additive selection, with equal
+selection strength at both loci. Stronger selection reduces $\sigma_d^2$ (A),
+and in (B), we see that the negative LD effect of Hill-Robertson interference
+is strongest for intermediate selection ($\gamma \approx -1$ to $-5$, where
+$\gamma=4N_es$). (C-F) Epistasis with additive selection. Synergistic epistasis
+(\(\epsilon < 0\)) decreases $\sigma_d^2$ while antagonistic epistasis
+(\(\epsilon > 0\)) increases it compared to expectations under a multiplicative
+fitness model ($\epsilon=0$). Epistasis also pushes signed LD ($\sigma_d^1$)
+away from zero, with synergistic epistasis decreasing LD for negatively
+selected mutations and antagonistic epistasis increasing LD. The deviation of
+$\sigma_d^1$ from zero under epistasis can extend for long recombination
+distances, particularly for stronger selection.
 
 ### Additive selection and epistasis
 
@@ -253,13 +247,13 @@ With epistasis, mean signed LD is large for both weakly and strongly selected
 variants, with sign depending on the direction of epistatic interactions
 (Figure \@ref(fig:fig1)). Synergistic epistasis results in negative LD while
 antagonistic epistasis results in positive LD, and large positive LD can occur
-even when the epistatic effect is relatively weak **[example in supp]**.
-Epistasis-induced LD can extend over long distances, especially for strongly
-deleterious mutations. For example, in Figure \@ref(fig:fig1)F even moderately
-deleterious mutations with population-size-scaled selection coefficients of
-$\gamma=-10$ show large mean LD that extends well beyond 100 kilobases. More
-strongly deleterious interacting mutations are expected to show large signed LD
-over much larger recombination distances.
+even when the epistatic effect is relatively weak. Epistasis-induced LD can
+extend over long distances, especially for strongly deleterious mutations. For
+example, in Figure \@ref(fig:fig1)F even moderately deleterious mutations with
+population-size-scaled selection coefficients of $\gamma=-10$ show large mean
+LD that extends well beyond 100 kilobases. More strongly deleterious
+interacting mutations are expected to show large signed LD over much larger
+recombination distances.
 
 ### Dominance
 
@@ -288,23 +282,21 @@ negative LD than the additive case.
 knitr::include_graphics("figures/fig2.pdf")
 ```
 
-(ref:fig2cap) **Dominance effects.** (A-B) Pairs of recessive mutations
+(ref:fig2cap) **Dominance effects.** (A and C) Pairs of recessive mutations
 ($h<0.5$) have higher squared LD than additive mutations, while pairs of
-dominant alleles have lower expected $D^2$. (C-D) Pairs of recessive, strongly
+dominant mutations have lower expected $D^2$. (B and D) Pairs of recessive
 deleterious mutations can have large negative LD, although this correlation
 decays more rapidly with larger recombination than LD under epistasis (Figure
-\@ref(fig:fig1)D and F). Notably, there is no simple relationship between strength of
-selection and dominance, particularly when $s$ is $O(1/N)$. **[Epistasis is
-zero in this setup, and rearrange panels to match figure 1]**
+\@ref(fig:fig1)D and F). Notably, there is no simple relationship between
+strength of selection and dominance, particularly when $s$ is $O(1/N)$. Note
+that this setup does not include epistatic effects (i.e., $\epsilon=0$).
 
 ### General selection and gene-based dominance
 
-**[Struggled a bit with this section, make clearer and easier to parse]**
-
 While dominance and epistasis are well-characterized models of selection, a
 large family of selection models can be specified by assigning unique
-selection coefficients to possible diploid pairs of haplotypes. If we assume
-the diploid genotype that is homozygous for the ancestral allele ($ab/ab$) has
+selection coefficients to each possible diploid pairs of haplotypes. If we assume
+the diploid genotype that is homozygous for the ancestral alleles ($ab/ab$) has
 fitness 1, then there are nine other possible diploid two-locus genotypes that
 could be given unique fitnesses (Table \@ref(tab:selmodels)), noting that
 $AB/ab$ and $Ab/aB$ genotypes can have differing fitness effects.
@@ -318,9 +310,9 @@ type (a simple implementation of this model is given in the final column in
 Table \@ref(tab:selmodels)). Such a gene-based fitness model gives similar
 expected positive signed LD to the model of antagonistic epistasis (compare
 Figure \@ref(fig:fig3)E-F to G-H), although the interpretation of those two
-models can differ. It shows that with a highly parameterized space of possible
-general diploid selection models, multiple models with different biological
-interpretations can give similar patterns of expected $D$.
+models can differ. With a highly parameterized space of possible general
+diploid selection models, multiple models with different biological
+interpretations can give similar patterns of expected signed LD.
 
 ## The effect of population size changes on signed LD
 
@@ -385,7 +377,7 @@ Synonymous and missense mutations show similar levels of positive LD when
 considering pairs of mutations within the same gene. Loss-of-function mutations
 instead have more negative LD, suggesting differing modes of selective
 interactions for loss-of-function and missense mutations (Figure
-\@ref(fig:fig4)). Within each population, large measurement noise gives 95\%
+\@ref(fig:fig4)). Within each population, measurement noise gives 95\%
 confidence intervals that overlap with zero across mutation class, although the
 pattern is remarkably consistent across African, European, and East Asian
 populations in the Thousand Genomes dataset. Comparing mean LD within genes in
@@ -619,36 +611,36 @@ at finer scales.
 
 ## Clustered mutations account for positive LD among synonymous mutations
 
-**[Mashaal points out that simulations with structure leading to inbreeding, in which subpopulations have differing load, can lead to positive LD]**
-
 In a single randomly mating population, neutral mutations are expected to have
 average signed LD of zero, but across all populations analyzed here, LD between
 synonymous mutations is positive. While selection on some subset of synonymous
 variants is possible, it should be much weaker on average than between missense
 mutations, and any interference between selected synonymous variants should
-lead to negative LD. @Sandler2020-vk proposed that spatial population structure
-may be responsible for the increase of LD for both synonymous and missense
-variants. They argued that every natural population lives in some geography
-that will necessarily induce some structure, and that migration, admixture, or
-spatial structure could increase average signed LD above zero.
+lead to negative LD.
 
-Under standard population genetic assumptions of constant mutation and
-recombination rates and independent mutation events, however, migration and
-admixture do not result in nonzero $\E[D]$. Rather, for a set of mutations with
-*given* differences in allele frequencies between source populations, $D$ can
-be nonzero in an admixed population between those particular mutations even
-when $D$ is zero in the source populations [@Cavalli-Sforza1971-jv]. But this
-result relies on conditioning on directional differences in allele frequencies
-between populations. Expected mean allele frequency difference in the source
+One proposal is that spatial population structure may be responsible for the
+increase of LD observed between synonymous variants, as every natural
+population lives in some geography that will necessarily induce some structure.
+However, neutral evolution alone cannot create this effect. Under standard
+population genetic assumptions of constant mutation and recombination rates and
+independent mutation events, migration, admixture, and spatial structure do not
+result in nonzero $\E[D]$. Rather, for a set of mutations with *given*
+differences in allele frequencies between source populations, $D$ can be
+nonzero in an admixed population between those particular mutations even when
+$D$ is zero in the source populations [@Cavalli-Sforza1971-jv]. But this result
+relies on conditioning on directional differences in allele frequencies between
+populations. Expected mean allele frequency difference in the source
 populations is zero ($\E[(p_1-p_2)(q_1-q_2)] = 0$), as differences are equally
 likely to be positive or negative, and resulting $\E[D]$ is still zero when
-taking genome-wide averages. Furthermore, @Sandler2020-vk used forward
-simulations with an explicit spatial model and a multiplicative fitness
-function to explore the joint effect of structure and interference, and the
-positive LD they observed under these scenarios extends over much larger
-distances than observed in the data. Instead, positive LD between synonymous
-mutations decays to zero within just a few hundred base (Figures
-\@ref(fig:lddecay) and \@ref(fig:lddecaydomain)).
+taking genome-wide averages. Instead, @Sohail2017-zq and @Sandler2020-vk used
+forward simulations under multi-population or explicitly spatial models and a
+multiplicative fitness function to explore the joint effect of structure,
+assortative mating, and interference, scenarios that can lead to nonzero LD.
+@Sandler2020-vk find positive LD among neutral mutations in their simulation,
+although it extends over much larger distances than observed in the data.
+Instead, positive LD in data between synonymous mutations decays to zero within
+just a few hundred bases (see Figures \@ref(fig:lddecay) and
+\@ref(fig:lddecaydomain), and Figure 5 from @Sandler2020-vk).
 
 Nonrandom mutational processes provide an alternative explanation for positive
 LD between neutral variants separated by short distances, in which clusters of
@@ -671,16 +663,23 @@ expectation of zero.
 
 ## Challenges to distinguishing highly parameterized models of selective interactions
 
-**[Need to point out that confidence intervals are wide, and while the signal
-is consistent across populations, shared evolutionary history makes formal
-testing of significance difficult.]**
+When partitioning measurements of LD by mutation classes or regions within
+genes, the decreasing number of pairwise comparisons leads to large estimated
+measurement noise. Within each population, confidence intervals of observed
+$\sigma_d^1$ often overlap with zero or overlap with that of other classes of
+mutations. While observed patterns are remarkably consistent across the 15
+populations considered here, their joint evolutionary histories make formal
+testing of significance difficult due to shared variation, so that cannot be
+treated as independent measurements. Extensive forward simulations will likely
+be required to more thoroughly assess significance.
 
-In exploring or inferring multi-locus selective models, the number of plausible
-selection scenarios becomes quite large as we relax the strict assumptions of
-additivity and multiplicative fitness effects. The inclusion of dominance
-effects, epistasis, or other interactions leads to a rapid increase in the
-number of parameters to consider. This makes performing forward simulations
-that span the range of all such selective interaction scenarios burdensome.
+From a modeling perspective, in exploring or inferring multi-locus selective
+models, the number of plausible selection scenarios becomes quite large as we
+relax the strict assumptions of additivity and multiplicative fitness effects.
+The inclusion of dominance effects, epistasis, or other interactions leads to a
+rapid increase in the number of parameters to consider. This makes performing
+forward simulations that span the range of all such selective interaction
+scenarios burdensome.
 
 Instead, closed, numerical approaches to compute expectations for two-locus
 statistics under a wide range of selection models, as presented here or in
@@ -902,8 +901,8 @@ of each haploid copy, where haplotype $Ab$ has fitness $1 + s_{A}$, $aB$ has
 fitness $1 + s_{B}$, and $AB$ has fitness $1 + s_{AB}$. We assume the doubly
 ancestral haplotype $ab$ has fitness $1$, so fitnesses are relative to that of
 $ab$ haplotypes. The standard multiplicative fitness function assumes that
-$s_{AB} \approx s_{A} + s_{B}$, and the effect of epistasis can be written as
-$s_{AB} = (s_{A} + s_{B}) (1 + \epsilon)$, so that $\epsilon > 0$ implies
+$s_{AB} \approx s_{A} + s_{B}$, and a model for epistasis can be written as
+\[s_{AB} = (s_{A} + s_{B}) (1 + \epsilon),\] so that $\epsilon > 0$ implies
 synergistic epistasis, while $\epsilon < 0$ implies antagonistic epistasis.
 
 To obtain the recursion equation under selection we consider drawing $n$

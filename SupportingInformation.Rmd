@@ -477,9 +477,9 @@ kable_styling(latex_options = c("HOLD_position", "repeat_header"))
 knitr::include_graphics("figures/hudson_comparison.pdf")
 ```
 
-(ref:fighudson) **Hudson comparison, caption to be filled in!!!** And also
-include an extra few panels and direct comparison to computations under the
-Hudson program...
+(ref:fighudson) The distribution at stationarity of AB haplotype counts in a
+sample size of 30, in which we observe 10 A alleles at the left locus, and 10 B
+alleles at the right locus.
 
 ```{r jackknife, echo=F, fig.cap="(ref:figjackknife)", fig.align="center"}
 knitr::include_graphics("figures/jackknife.pdf")
