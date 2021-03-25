@@ -9,9 +9,9 @@ output:
       in_header: "sipreamble.tex"
     extra_dependencies: ["float"]
 bibliography: "references.bib"
-title: Supporting Information for "Can we distinguish model of selective interactions using linkage disequilibrium?"
+title: Supporting Information for "Can we distinguish modes of selective interactions using linkage disequilibrium?"
 author:
-  - Aaron P. Ragsdale
+  - Aaron P. Ragsdale^[\url{aaronpeaceragsdale@gmail.com}]
 date:
   - \today
 ---
@@ -30,10 +30,10 @@ options(tinytex.clean = FALSE)
 # The diffusion equation and moment system for the two-locus sampling distribution
 
 The two-locus diffusion equation with additive selection was first described by
-@Kimura1955-qe studied extensively in the 1960s and 70s, including by
-@Hill1966-gv and @Ohta1969-ie. The continuous distribution $\psi(x_1, x_2,
-x_3)$ of haplotype frequencies in a population, where $x_1$ is the frequency of
-$AB$, $x_2$ of $Ab$, and $x_3$ of $aB$, is governed by the multi-dimensional
+@Kimura1955-qe and studied extensively in the 1960s and 70s [e.g.,
+@Hill1966-gv; @Ohta1969-ie]. The continuous distribution $\psi(x_1, x_2, x_3)$
+of haplotype frequencies in a population, where $x_1$ is the frequency of $AB$,
+$x_2$ of $Ab$, and $x_3$ of $aB$, is governed by the multi-dimensional
 Fokker-Planck equation:
 \begin{align} \label{eq:diffeq}
 \frac{\partial \psi}{\partial \tau} = &
@@ -56,9 +56,9 @@ Fokker-Planck equation:
 \end{align}
 $D$ is the standard covariance measure of linkage disequilibrium, \[D=x_1 -
 (x_1+x_2)(x_1+x_3) = x_1 x_4 - x_2 x_3,\] $\gamma_A$ and $\gamma_B$ are the
-scaled selection coefficients at the left and right locus, and $\rho$ is the
-scaled recombination rate between the two loci. Time $\tau$ is measured in
-$2N_e$ generations, and $\nu(\tau)$ is the population size relative
+(additive) scaled selection coefficients at the left and right locus, and
+$\rho$ is the scaled recombination rate between the two loci. Time $\tau$ is
+measured in $2N_e$ generations, and $\nu(\tau)$ is the population size relative
 to the ancestral size or some reference size at time $\tau$.
 
 Given a function $\psi$ that solves Equation \ref{eq:diffeq}, the two-locus
@@ -85,16 +85,16 @@ the form
 \frac{1}{2\nu(\tau)}\mathcal{D}_{n}\Psi_n
 + \frac{\rho}{2}\mathcal{R}_{n}\Psi_n
 + \frac{\theta}{2}\mathcal{U}_{n}\Psi_n
-+ \mathcal{S}_{n, \mathbf{\gamma}, \mathbf{h}}\Psi_n.
++ \mathcal{S}_{n, \boldsymbol{\gamma}, \mathbf{h}}\Psi_n.
 \end{equation}.
 
-Alternatively, we arrive at this same linear system of equations by considering
-tracking the expected sampling distribution over $n$ lineages within the full
-population and how that changes over time by drawing lineages from one
-generation to the next in the style of @Wright1931-wy. Both @Jouganous2017-pq,
-for the single-locus SFS, and @Ragsdale2019-nt drew this connection in detail,
-so I refer readers to that previous work for a fuller description of those
-derivations and discussion. In the next section I repeat the results for
+Alternatively, we arrive at this same linear system of equations by tracking
+the expected sampling distribution over $n$ lineages within the full population
+and how that changes over time by drawing lineages from one generation to the
+next in the style of @Wright1931-wy. Both @Jouganous2017-pq, for the
+single-locus SFS, and @Ragsdale2019-nt drew this connection in detail, so I
+refer readers to those previous papers for a fuller description of those
+derivations and discussion. In the next section I simply repeat the results for
 $\mathcal{D}$, $\mathcal{R}$, and $\mathcal{U}$, briefly describe the moment
 closure approximation (which is the same as presented in @Ragsdale2019-nt), and
 then describe the selection operator $\mathcal{S}$ for selection with
@@ -133,7 +133,7 @@ If a lineage in our sample of size $n$ recombines in a given generation, which
 occurs with probability $nr$, we need to draw an extra lineage from the full
 population for it to recombine with. This means we need $\Psi_{n+1}$ in the
 previous generation. After drawing that extra lineage, $\Psi_n$ changes as we
-draw one of the two recombinant types (each with probability $1/2$$ instead of
+draw one of the two recombinant types (each with probability $1/2$) instead of
 the lineage that was chosen to recombine.
 
 \begin{align}
@@ -170,13 +170,14 @@ system from @Jouganous2017-pq.
 
 We use a jackknife approximation to write the entries of $\Psi_{n+1}$ and
 $\Psi_{n+2}$ as linear combinations of entries in $\Psi_n$. The general
-strategy is to assume the underlying continuous distribution $\psi(x, y, z)$
-can be approximated locally as a quadratic, and then use entries in $\Psi_n$
-that are close in frequency to a given entry in $\Psi_{n+l}$ to estimate the
-coefficients of that quadratic using the multinomial sampling formula. Then
-this quadratic local approximation to $\psi$ can be used to compute
-$\Psi_{n+l}(i, j, k)$ using Eq. \@ref(eq:multinomial). Readers should refer to
-section S1.3.5 in the Supporting material for @Ragsdale2019-nt for details.
+strategy is to assume the underlying continuous distribution $\psi(x_1, x_2,
+x_3)$ can be approximated locally as a quadratic, and then use entries in
+$\Psi_n$ that are close in frequency to a given entry in $\Psi_{n+l}$ to
+estimate the coefficients of that quadratic using the multinomial sampling
+formula. Then this quadratically local approximation to $\psi$ can be used to
+compute $\Psi_{n+l}(i, j, k)$ using Eq. \@ref(eq:multinomial). Readers should
+refer to section S1.3.5 in the Supporting material for @Ragsdale2019-nt for
+details.
 
 ## Selection
 
@@ -214,6 +215,7 @@ lineage $Ab$ and selected against, and then replaced by an $aB$ haplotype is
 k+1).\] There are now many more possible selective events to consider, but
 after accounting for all possible diploid pairs and replacements (90 in total)
 and simplifying, we find
+
 \begin{align}
 \mathcal{S}_{n}(i, j, k)\Psi_n = &
 \frac{n-i-j-k+2}{n+2}\frac{n-i-j-k+1}{n+1}\left(
@@ -298,9 +300,9 @@ $\gamma$ instead of $s$.
 Loss-of-function (LOF) variants show a dramatic skew toward low-frequency
 variants across all human populations (Table \@ref(tab:tajimasD)). Here, using
 the folded SFS for synonymous, missense, and LOF mutations across all autosomal
-genes, I infer DFEs for missense and LOF mutations independently. I consider a
-few different dominance coefficients to explore the effect of the assumed
-recessivity of the two classes of mutations.
+genes, I inferred DFEs for missense and LOF mutations independently. I
+considered a few different dominance coefficients to explore the effect of the
+assumed recessivity of the two classes of mutations.
 
 The standard SFS approach to fitting the DFE involves first inferring a
 demographic history for the population using putatively neutral variants (here,
@@ -311,23 +313,23 @@ the total mutation rate of the different mutation classes, as much of the
 signal for strongly selected mutations comes from observing fewer mutations
 than expected given a known mutation rate (with the assumption that selection
 purges some fraction of strongly deleterious mutations which are unseen in the
-sample). Here, I fit demography and DFEs to the SFS from the Mende in Sierra
-Leone (MSL) using *moments* [@Jouganous2017-pq].
+sample). Here, I fit demography and DFEs to the folded SFS from the Mende in
+Sierra Leone (MSL) using *moments* version 1.1.0 [@Jouganous2017-pq].
 
 I used the mutation model from @Karczewski2020-le to estimate the total
 mutation rate across autosomal genes ($uL$, where $u$ is the per-base mutation
-rate, and $L$ is the total length of the coding genome). These values were
-$(0.1442, 0.3426, 0.0256)$ for synonymous, missense, and LOF mutations,
-respectively. Roughly two thirds of new mutations in coding regions are
-expected to be missense mutations, while only 5\% of new mutations are LOF. I
-fit a demographic model to the synonymous variants, which included a population
-expansion in the deeper past and exponential growth in the recent past (Figure
-\@ref(fig:msldfe)A). Using the inferred optimal scaled mutation rate,
-$\theta=4N_euL$, I estimated $Ne\approx12,300$, and assuming an average
+rate of a given mutation class, and $L$ is the total length of the coding
+genome). These values were $(0.1442, 0.3426, 0.0256)$ for synonymous, missense,
+and LOF mutations, respectively. Roughly two thirds of new mutations in coding
+regions are expected to be missense mutations, while only 5\% of new mutations
+are LOF. I fit a demographic model to the synonymous variants, which included a
+population expansion in the deeper past and exponential growth in the recent
+past (Figure \@ref(fig:msldemogdfe)A). Using the inferred optimal scaled mutation
+rate, $\theta=4N_euL$, I estimated $Ne\approx12,300$, and assuming an average
 generation time of 29 years I converted the inferred genetic units to physical
 units. The best-fit model had a roughly two-fold expansion 400 thousand years
 ago, and then exponential growth over the past 20-30 thousand years, with a
-current effective size of $\sim 63,000$.
+current effective size of $\approx 63,000$.
 
 Under this demographic model, I fit a gamma distribution for the distribution
 of fitness effects to missense and LOF mutations (Table \@ref(tab:msldfe)). For
@@ -335,7 +337,7 @@ each fit, I fixed the scaled mutation rate for each mutation class, so that
 $\theta_{mis} = \frac{u_{mis}}{u_{syn}} \hat\theta_{syn}$ and $\theta_{lof} =
 \frac{u_{lof}}{u_{syn}} \hat\theta_{syn}$, where values of $u$ were found using
 the GNOMAD mutation model [@Karczewski2020-le]. I tested three values for the
-dominance coefficient $h$, $0$, $0.2$ and $0.5$. For missense mutations, $h=0$
+dominance coefficient $h$: $0$, $0.2$ and $0.5$. For missense mutations, $h=0$
 gave a poor fit to the data, and $h=0.5$ fit best among the three tested
 dominance coefficients. For LOF variants, $h=0$ also fit poorly, but $h=0.2$
 and $h=0.5$ gave similar likelihoods, highlighting that inferring dominance
@@ -350,15 +352,17 @@ Multinucleotide mutations (MNMs) are complex mutational events that result in
 multiple mutations occurring on the same haplotype background in a single
 generation. Because MNMs fall on the same haplotype, those mutations will be in
 positive LD, and LD between those pairs that are very tightly linked will not
-be broken down all that rapidly. MNMs are expected to occur over relatively short
-distances, on the order of 10s or 100s of base pairs, making them a likely culprit
-of the observed positive LD among synonymous mutations at short distances.
+be broken down all that rapidly. MNMs are expected to occur over relatively
+short distances, on the order of 10s or 100s of base pairs, making them a
+likely culprit of the observed positive LD among synonymous mutations at short
+distances.
 
-Multinucleotide mutations can be easily incorporated into the moment system with
-a simple adjustment to the mutation operator. Instead of all mutations occurring
-independently in haplotypes with mutations already segregating at the other locus,
-some fraction of new mutations could instead occur spontaneously and create a new
-pair of mutations with initial counts $n_{AB} = 1$ and $n_{ab} = n-1$.
+MNM events can be easily incorporated into the moment system with a simple
+adjustment to the mutation operator. Instead of all mutations occurring
+independently in haplotypes with mutations already segregating at the other
+locus, some fraction of new mutations could instead occur spontaneously and
+create a new pair of mutations with initial counts $n_{AB} = 1$ and $n_{ab} =
+n-1$.
 
 Here, I fit a simple exponential model for the fraction of new mutations at a
 given distance that arose through a MNM event, so that $P(MNM | d) =
@@ -369,10 +373,10 @@ a demographic control. This left two parameters to be fit, $A$ and $\lambda$,
 which I fit to the binned decay curve of $\sigma_d^1$. I needed to assume an
 average per-base recombination rate $r$ across gene regions, and tested a
 number of values between $10^{-9}$ and $2\times 10^{-8}$. The optimization was
-insensitive to the chosen value or $r$, because the decay of positive LD occurs
-rapidly. For any plausible value of $r$, the $\sigma_d^1$ decays to zero well
-before distances between pairs have scaled recombination rates $\rho=4 N_e r
-d$, and expected statistics for $\rho \ll 1$ vary only negligibly.
+insensitive to the chosen value of $r$, because the decay of positive LD occurs
+rapidly. For any plausible value of $r$, $\sigma_d^1$ decays to zero well
+before distances between pairs have scaled recombination rates $\rho=4 N_e r d
+\sim 1$, and expected statistics for $\rho \ll 1$ vary only negligibly.
 
 In fitting the LD decay of $\sigma_d^1$, the best fit parameters were
 $A=0.132$, and $\lambda=0.0103$. An exponential scaling of $0.01$ implies that
@@ -380,24 +384,24 @@ the vast majority of new mutations *pairs* do not occur via MNMs for distances
 greater than 200 bp, though a substantial fraction ($10-15\%$) occur via MNMs
 for very tightly linked loci with distances on the order $0-50$ base pairs. It
 is important to note that this does not mean that $10-15\%$ of new mutations
-occur via MNMs, since this fraction is contitioned on two mutations occurring
+occur via MNMs, since this fraction is conditioned on two mutations occurring
 at short distances.
 
 ## Grouping Thousand Genomes populations based on clustering
 
 The large confidence intervals for measurements of signed LD could be driven by
 either averaging over relatively few observed pairs of mutations, or due to
-small sample sizes that make each individual measurement noisy estimates of the
-LD for that pair of mutations in the full population. To explore the underlying
-cause of measurement uncertainty in the @1000_Genomes_Project_Consortium2015-zq
-data, I considered larger sets of samples by combining populations that
-consistently cluster together in PCA and UMAP space and have low
-differentiation [@Diaz-Papkovich2020-ee]. I took combinations of CEU/GBR,
-CHB/CHS, CDX/KHV, and MSL/GWD. While recognizing that residual population
-structure in these population combinations could alter expected LD statistics
-compared to the respective single-population estimates, I was more interested
-in the effect that increasing the sample sizes would have on estimated
-measurement error.
+small sample sizes that make each individual measurement a noisy estimate of
+the LD for that pair of mutations in the full population. To explore the
+underlying cause of measurement uncertainty in the
+@1000_Genomes_Project_Consortium2015-zq data, I considered larger sets of
+samples by combining populations that consistently cluster together in PCA and
+UMAP space and have low differentiation [@Diaz-Papkovich2020-ee]. I took
+combinations of CEU/GBR, CHB/CHS, CDX/KHV, and MSL/GWD. While recognizing that
+residual population structure in these population combinations could alter
+expected LD statistics compared to the respective single-population estimates,
+I was more interested in the effect that increasing the sample sizes would have
+on estimated measurement error.
 
 Across each of the four combinations tested, confidence intervals were roughly
 equivalent to those of each of the individual populations. This suggests that
@@ -459,14 +463,9 @@ library(kableExtra)
 dfes <- read.csv("tables/msl_dfes.txt", sep=";", header=TRUE, check.names=FALSE)
 knitr::kable(dfes, "latex", booktabs=T, escape=FALSE,
     linesep = c("", "", "\\addlinespace"),
-    caption="DFEs inferred for missense and loss-of-function variants in MSL for varying values of $h$. General patterns are consistent across different chosen values of $h$, although for $h=0$ results in poorer fits for both missense and LOF variants. Columns to the right of the log-likelihood (LL) column show proportions of new mutations with $|s|$ in each given bin.") %>%
+    caption="DFEs inferred for missense and loss-of-function variants in MSL for varying values of $h$. General patterns are consistent across different chosen values of $h$, although $h=0$ results in poorer fits for both missense and LOF variants. Columns to the right of the log-likelihood (LL) column show proportions of new mutations with $|s|$ in each given bin.") %>%
 kable_styling(latex_options = c("HOLD_position", "repeat_header"))
 ```
-
-
-
-
-
 
 \clearpage
 \newpage
@@ -478,8 +477,8 @@ knitr::include_graphics("figures/hudson_comparison.pdf")
 ```
 
 (ref:fighudson) The distribution at stationarity of AB haplotype counts in a
-sample size of 30, in which we observe 10 A alleles at the left locus, and 10 B
-alleles at the right locus.
+sample size of 30, in which we observe 10 $A$ alleles at the left locus, and 10
+$B$ alleles at the right locus.
 
 ```{r jackknife, echo=F, fig.cap="(ref:figjackknife)", fig.align="center"}
 knitr::include_graphics("figures/jackknife.pdf")
@@ -493,13 +492,11 @@ $\rho\approx30$. While increasing sample size leads to more accurate solutions,
 it comes at the cost of both increased runtime and memory usage. Most analyses
 performed in this paper used $n$ between 40 and 70.
 
-
 ```{r genespops, echo=F, fig.cap="(ref:figgenespopscap)", fig.align="center"}
 knitr::include_graphics("figures/supp_gene_wide_all_pops.pdf")
 ```
 
 (ref:figgenespopscap) **LD within and between protein-coding genes.**
-
 
 ```{r domainspops, echo=F, fig.cap="(ref:figdomainspopscap)", fig.align="center"}
 knitr::include_graphics("figures/supp_domain_all_pops.pdf")
@@ -508,14 +505,12 @@ knitr::include_graphics("figures/supp_domain_all_pops.pdf")
 (ref:figdomainspopscap) **LD within and between coding domains and pairs
 outside domains at matched distances.**
 
-
 ```{r lddecaydomain, echo=F, fig.cap="(ref:figlddecaydomain)", fig.align="center"}
 knitr::include_graphics("figures/supp_ld_decay_in_domain.pdf")
 ```
 
 (ref:figlddecaydomain) **LD decay for synonymous and missense mutations for pairs
 of mutations that fall inside the same domains.** 
-
 
 ```{r lddecay, echo=F, fig.cap="(ref:figlddecay)", fig.align="center"}
 knitr::include_graphics("figures/supp_ld_decay.pdf")
@@ -524,15 +519,14 @@ knitr::include_graphics("figures/supp_ld_decay.pdf")
 (ref:figlddecay) **LD decay for synonymous and missense mutations for pairs
 of mutations that fall outside of domains.** 
 
-
 ```{r msldemogdfe, echo=F, fig.cap="(ref:figmsldfe)", fig.align="center"}
 knitr::include_graphics("figures/msl_demography_dfes.pdf")
 ```
 
 (ref:figmsldfe) **Demography and DFE for MSL.** A demographic model was fit to
 the folded synonymous SFS, and DFEs were fit to missense and loss-of-function
-SFS. Shown here are DFEs fit with $h=0.5$.
-
+SFS. Shown here are DFEs fit with $h=0.5$. See Table \@ref(tab:msldfe) for
+inferred best-fit parameters.
 
 ```{r mslmnms, echo=F, fig.cap="(ref:figmslmnm)", fig.align="center"}
 knitr::include_graphics("figures/msl_mnms.pdf")
@@ -543,8 +537,6 @@ multinucleotide mutations by distance.** A simple exponential function was fit
 to describe the probability that a pair of mutations arose through a MSM event
 at a given distance $d$, as $Ae^{-\lambda d}$. Across all recombination rates
 tested, the best fit parameters were $A=0.13$ and $\lambda=0.010$.
-
-
 
 \clearpage
 \newpage
