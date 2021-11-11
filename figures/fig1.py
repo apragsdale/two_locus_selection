@@ -278,3 +278,4 @@ fig.text(0.02, 0.32, "E", fontsize=8, ha="center", va="center")
 fig.text(0.52, 0.32, "F", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"fig1_combo.pdf")
+plt.savefig(f"fig1_combo.png", dpi=300)

@@ -141,8 +141,8 @@ ax2.set_ylabel(r"$\sigma_d^1$")
 ax3.set_ylabel(r"$\sigma_d^2$")
 ax4.set_ylabel(r"$\sigma_d^1$")
 
-ax3.set_xlabel(r"$\rho$")
-ax4.set_xlabel(r"$\rho$")
+ax3.set_xlabel(r"$\rho = 4 N_e r$ (recomb. distance)")
+ax4.set_xlabel(r"$\rho = 4 N_e r$ (recomb. distance)")
 
 ax1.set_title(r"$\gamma=-1$")
 ax2.set_title(r"$\gamma=-1$")
@@ -155,4 +155,5 @@ fig.text(0.52, 0.98, "B", fontsize=8, ha="center", va="center")
 fig.text(0.02, 0.48, "C", fontsize=8, ha="center", va="center")
 fig.text(0.52, 0.48, "D", fontsize=8, ha="center", va="center")
 
-plt.savefig(f"fig2.pdf")
+#plt.savefig(f"fig2.pdf")
+plt.savefig(f"fig2.png", dpi=300)

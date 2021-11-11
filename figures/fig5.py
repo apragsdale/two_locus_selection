@@ -316,4 +316,5 @@ fig.text(0.05, 0.38, "B", fontsize=8, ha="center", va="center")
 fig.text(0.38, 0.38, "C", fontsize=8, ha="center", va="center")
 fig.text(0.70, 0.38, "D", fontsize=8, ha="center", va="center")
 
-plt.savefig(f"fig6.pdf")
+#plt.savefig(f"fig6.pdf")
+plt.savefig(f"fig6.png", dpi=300)

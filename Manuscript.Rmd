@@ -22,6 +22,8 @@ header-includes:
          National Laboratory of Genomics for Biodiversity, Irapuato, Mexico \\
          }
   ```
+- \usepackage{lineno}
+- \linenumbers
 date: \today
 ---
 
