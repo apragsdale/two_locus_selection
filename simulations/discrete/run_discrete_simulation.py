@@ -84,7 +84,7 @@ def make_parser():
 
 def draw_mutation_pairs_discrete(U, XA, XB):
     if len(XA) > 0:
-        nA = np.random.choice(XA, size=np.random.poisson(U))
+        nA = np.random.choice(XA, size=np.random.poisson(U / 2.))
         nAB = (np.random.rand(len(nA)) < nA / 2 / Ne).astype("int")
         nAb = nA - nAB
         naB = np.ones(len(nA), dtype=np.int) - nAB
@@ -93,7 +93,7 @@ def draw_mutation_pairs_discrete(U, XA, XB):
     else:
         new_pairs_A = np.empty((0, 4), dtype=np.int)
     if len(XB) > 0:
-        nB = np.random.choice(XB, size=np.random.poisson(U))
+        nB = np.random.choice(XB, size=np.random.poisson(U / 2.))
         nAB = (np.random.rand(len(nB)) < nB / 2 / Ne).astype("int")
         naB = nB - nAB
         nAb = np.ones(len(nB), dtype=np.int) - nAB
@@ -170,8 +170,8 @@ def run_sim(Ne, n, theta, sAB, sA, sB, args):
     eprint(current_time(), "starting simulation")
     for gen in range(total_gens):
         # draw single site background mutations
-        XA = np.concatenate((XA, np.ones(np.random.poisson(theta), dtype=np.int)))
-        XB = np.concatenate((XB, np.ones(np.random.poisson(theta), dtype=np.int)))
+        XA = np.concatenate((XA, np.ones(np.random.poisson(theta / 2.), dtype=np.int)))
+        XB = np.concatenate((XB, np.ones(np.random.poisson(theta / 2.), dtype=np.int)))
 
         # draw new pairs of mutations
         new_pairs = draw_mutation_pairs_discrete(theta, XA, XB)
@@ -233,14 +233,15 @@ if __name__ == "__main__":
         sA, epsilon=args.epistasis_coefficient, Ne=Ne
     )
 
-    E_F = moments.TwoLocus.Demographics.equilibrium(n, rho, sel_params=sel_params)
-    E_F.mask_fixed()
+    #E_F = moments.TwoLocus.Demographics.equilibrium(n, rho, sel_params=sel_params)
+    #E_F.mask_fixed()
 
-    E_F *= F.sum() / E_F.sum()
+    #E_F *= F.sum() / E_F.sum()
 
     if args.out is True:
         with open(
             f"outputs/Ne_{Ne}_n_{args.sample_size}_s_{args.selection_coefficient}_e_{args.epistasis_coefficient}.bp",
             "wb+",
         ) as fout:
-            pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)
+            #pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)
+            pickle.dump({"args": args, "simulation": F}, fout)
