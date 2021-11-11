@@ -12,11 +12,11 @@ Scenarios:
 
 gamma = -0.1, -2, -20
 
-(with N = 1000, s = gamma / 2 / N, so s = -5e-5, -1e-3, -1e-2)
+(with N = 5000, s = gamma / 2 / N, so s = -1e-5, -2e-4, -2e-3)
 
 rho = 0.1, 1, 20
 
-(with N = 1000, r = rho / 4 / N, so r = 2.5e-5, 2.5e-4, 5e-3)
+(with N = 5000, r = rho / 4 / N, so r = 5e-6, 5e-5, 1e-3)
 
 This gives 9 combinations of gamma x rho (assuming selection is
 equal at the left and right loci).

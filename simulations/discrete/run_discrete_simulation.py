@@ -36,7 +36,7 @@ def make_parser():
         "-s",
         type=float,
         default=0,
-        help="gamma = 2 * Ne * s",
+        help="gamma = -2 * Ne * s. Note that we set the abs value",
     )
     parser.add_argument(
         "--epistasis_coefficient",
@@ -56,7 +56,7 @@ def make_parser():
         "--mutation_rate",
         "-u",
         type=float,
-        default=5e-4,
+        default=1e-3,
     )
     parser.add_argument(
         "--recombination_rate",
@@ -67,12 +67,12 @@ def make_parser():
     parser.add_argument(
         "--num_replicates",
         type=int,
-        default=10000,
+        default=100000,
     )
     parser.add_argument(
         "--spacing",
         type=int,
-        default=10,
+        default=100,
     )
     parser.add_argument(
         "--out",
@@ -165,7 +165,7 @@ def run_sim(Ne, n, theta, sAB, sA, sB, args):
     XB = np.empty((0,), dtype=np.int)
 
     r = args.recombination_rate
-    burnin_gens = 40 * Ne
+    burnin_gens = 80 * Ne
     total_gens = burnin_gens + args.num_replicates * args.spacing
     eprint(current_time(), "starting simulation")
     for gen in range(total_gens):
@@ -220,11 +220,11 @@ if __name__ == "__main__":
     rho = 4 * Ne * args.recombination_rate
     theta = 4 * Ne * args.mutation_rate
 
-    sA = sB = args.selection_coefficient
+    sA = sB = -args.selection_coefficient
     sAB = (sA + sB) * (1 + args.epistasis_coefficient)
 
     eprint("Scaled parameters:")
-    eprint("gamma:", 2 * Ne * args.selection_coefficient)
+    eprint("gamma:", -2 * Ne * args.selection_coefficient)
     eprint("rho:", 4 * Ne * args.recombination_rate)
     eprint("theta:", 4 * Ne * args.mutation_rate)
     F = run_sim(Ne, n, theta, sAB, sA, sB, args)
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     if args.out is True:
         with open(
-            f"outputs/Ne_{Ne}_s_{args.selection_coefficient}_e_{args.epistasis_coefficient}_n_{args.sample_size}_nreps_{args.num_replicates}.bp",
+            f"outputs/Ne_{Ne}_n_{args.sample_size}_s_{args.selection_coefficient}_e_{args.epistasis_coefficient}.bp",
             "wb+",
         ) as fout:
             pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)
