@@ -9,9 +9,9 @@ def get_residuals(model, data):
     Return an array of Anscombe residuals, unordered.
     """
     resids = moments.Inference.Anscombe_Poisson_residual(
-        model[model.mask == False], data[data.mask == False]
+        data[model.mask == False], model[data.mask == False]
     )
-    return resids[resids.mask == False].data
+    return -resids[resids.mask == False].data
 
 
 def plot_residuals(resids, ax=None):
@@ -78,10 +78,26 @@ def plot_grid(model, data, args):
 
 if __name__ == "__main__":
     all_data = pickle.load(
-        open("outputs/Ne_1000_s_-0.0125_e_0_n_50_nreps_1000000.bp", "rb")
+        open("outputs/Ne_100_n_10_r_0.0025_s_0_e_0.bp", "rb")
     )
     data = all_data["simulation"]
-    model = all_data["expectation"]
+    args = all_data["args"]
+
+    Ne = args.population_size
+    theta = 4 * Ne * args.mutation_rate
+    rho = 4 * Ne * args.recombination_rate
+    gamma = - 2 * Ne * args.selection_coefficient
+    sel_params = [2 * gamma * (1 + args.epistasis_coefficient), gamma, gamma]
+
+    model = moments.TwoLocus.Demographics.equilibrium(
+        args.sample_size,
+        rho=rho,
+        theta=theta,
+        sel_params=sel_params
+    ) * args.num_replicates
+
+    data.mask_fixed()
+    model.mask_fixed()
 
     plot_grid(model, data, all_data["args"])
     plt.show()
