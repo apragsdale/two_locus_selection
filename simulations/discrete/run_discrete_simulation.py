@@ -84,7 +84,7 @@ def make_parser():
 
 def draw_mutation_pairs_discrete(U, XA, XB):
     if len(XA) > 0:
-        nA = np.random.choice(XA, size=np.random.poisson(U / 2.))
+        nA = np.random.choice(XA, size=np.random.poisson(len(XA) * U / 2.0))
         nAB = (np.random.rand(len(nA)) < nA / 2 / Ne).astype("int")
         nAb = nA - nAB
         naB = np.ones(len(nA), dtype=np.int) - nAB
@@ -93,7 +93,7 @@ def draw_mutation_pairs_discrete(U, XA, XB):
     else:
         new_pairs_A = np.empty((0, 4), dtype=np.int)
     if len(XB) > 0:
-        nB = np.random.choice(XB, size=np.random.poisson(U / 2.))
+        nB = np.random.choice(XB, size=np.random.poisson(len(XB) * U / 2.0))
         nAB = (np.random.rand(len(nB)) < nB / 2 / Ne).astype("int")
         naB = nB - nAB
         nAb = np.ones(len(nB), dtype=np.int) - nAB
@@ -136,13 +136,13 @@ def remove_fixed(X):
     return X
 
 
-generator = np.random.Generator(np.random.PCG64(np.random.randint(1000000)))
+#generator = np.random.Generator(np.random.PCG64(np.random.randint(1000000)))
 
 
 def sample(X, ns, F):
     for ii, x in enumerate(X):
-        # [nAB, nAb, naB, nab] = np.random.multinomial(ns, x / 2 / Ne)
-        [nAB, nAb, naB, nab] = generator.multivariate_hypergeometric(x, ns)
+        [nAB, nAb, naB, nab] = np.random.multinomial(ns, x / 2 / Ne)
+        # [nAB, nAb, naB, nab] = generator.multivariate_hypergeometric(x, ns)
         F[nAB, nAb, naB] += 1
     return F
 
@@ -165,13 +165,13 @@ def run_sim(Ne, n, theta, sAB, sA, sB, args):
     XB = np.empty((0,), dtype=np.int)
 
     r = args.recombination_rate
-    burnin_gens = 80 * Ne
+    burnin_gens = 160 * Ne
     total_gens = burnin_gens + args.num_replicates * args.spacing
     eprint(current_time(), "starting simulation")
     for gen in range(total_gens):
         # draw single site background mutations
-        XA = np.concatenate((XA, np.ones(np.random.poisson(theta / 2.), dtype=np.int)))
-        XB = np.concatenate((XB, np.ones(np.random.poisson(theta / 2.), dtype=np.int)))
+        XA = np.concatenate((XA, np.ones(np.random.poisson(theta / 2.0), dtype=np.int)))
+        XB = np.concatenate((XB, np.ones(np.random.poisson(theta / 2.0), dtype=np.int)))
 
         # draw new pairs of mutations
         new_pairs = draw_mutation_pairs_discrete(theta, XA, XB)
@@ -206,7 +206,7 @@ def run_sim(Ne, n, theta, sAB, sA, sB, args):
     F[0, :, 0] = FA
     F[0, 0, :] = FB
     F.mask[0, 0, 0] = F.mask[-1, 0, 0] = F.mask[0, -1, 0] = F.mask[0, 0, -1] = True
-    F.mask_fixed()
+    F.mask_infeasible()
     return F
 
 
@@ -229,19 +229,18 @@ if __name__ == "__main__":
     eprint("theta:", 4 * Ne * args.mutation_rate)
     F = run_sim(Ne, n, theta, sAB, sA, sB, args)
 
-    sel_params = moments.TwoLocus.Util.additive_epistasis(
-        sA, epsilon=args.epistasis_coefficient, Ne=Ne
-    )
+    #sel_params = moments.TwoLocus.Util.additive_epistasis(
+    #    sA, epsilon=args.epistasis_coefficient, Ne=Ne
+    #)
 
-    #E_F = moments.TwoLocus.Demographics.equilibrium(n, rho, sel_params=sel_params)
-    #E_F.mask_fixed()
-
-    #E_F *= F.sum() / E_F.sum()
+    #E_F = moments.TwoLocus.Demographics.equilibrium(
+    #    n, rho, sel_params=sel_params, theta=theta
+    #) * args.num_replicates
 
     if args.out is True:
         with open(
             f"outputs/Ne_{Ne}_n_{args.sample_size}_s_{args.selection_coefficient}_e_{args.epistasis_coefficient}.bp",
             "wb+",
         ) as fout:
-            #pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)
+            # pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)
             pickle.dump({"args": args, "simulation": F}, fout)
