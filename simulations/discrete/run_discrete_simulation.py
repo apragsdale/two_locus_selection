@@ -56,7 +56,7 @@ def make_parser():
         "--mutation_rate",
         "-u",
         type=float,
-        default=1e-3,
+        default=1e-4,
     )
     parser.add_argument(
         "--recombination_rate",
@@ -67,12 +67,12 @@ def make_parser():
     parser.add_argument(
         "--num_replicates",
         type=int,
-        default=100000,
+        default=500000,
     )
     parser.add_argument(
         "--spacing",
         type=int,
-        default=100,
+        default=50,
     )
     parser.add_argument(
         "--out",
@@ -227,6 +227,8 @@ if __name__ == "__main__":
     eprint("gamma:", -2 * Ne * args.selection_coefficient)
     eprint("rho:", 4 * Ne * args.recombination_rate)
     eprint("theta:", 4 * Ne * args.mutation_rate)
+    eprint("epsilon:", args.epistasis_coefficient)
+    
     F = run_sim(Ne, n, theta, sAB, sA, sB, args)
 
     #sel_params = moments.TwoLocus.Util.additive_epistasis(
