@@ -118,8 +118,9 @@ def sel_rec(X, S, r):
     xaBaB = x[:, 2] ** 2
     xaBab = 2 * x[:, 2] * x[:, 3]
     xabab = x[:, 3] ** 2
-    assert np.all(
-        xABAB + xABAb + xABaB + xABab + xAbAb + xAbaB + xAbab + xaBaB + xaBab + xabab == 1
+    assert np.allclose(
+        xABAB + xABAb + xABaB + xABab + xAbAb + xAbaB + xAbab + xaBaB + xaBab + xabab,
+        1
     )
     # select on diploids
     sel_fac = 1 / (
@@ -137,8 +138,9 @@ def sel_rec(X, S, r):
     yaBaB = xaBaB * (1 + saBaB) * sel_fac
     yaBab = xaBab * (1 + saBab) * sel_fac
     yabab = xabab * sel_fac
-    assert np.all(
-        yABAB + yABAb + yABaB + yABab + yAbAb + yAbaB + yAbab + yaBaB + yaBab + yabab == 1
+    assert np.allclose(
+        yABAB + yABAb + yABaB + yABab + yAbAb + yAbaB + yAbab + yaBaB + yaBab + yabab,
+        1
     )
     # recombination
     pAB = yABAB + yABAb / 2 + yABaB / 2 + (1 - r) * yABab / 2 + r * yAbaB / 2
@@ -147,7 +149,7 @@ def sel_rec(X, S, r):
     pab = (1 - r) * yABab / 2 + r * yAbaB / 2 + yAbab / 2 + yaBab / 2 + yabab
     # check sums to one
     sums = pAB + pAb + paB + pab
-    assert np.all(sums == 1)
+    assert np.allclose(sums, 1)
     return np.array([pAB, pAb, paB, pab]).T
 
 
@@ -263,7 +265,7 @@ if __name__ == "__main__":
 
     eprint("Scaled parameters:")
     eprint("gamma:", 2 * Ne * s)
-    eprint("dominance": h)
+    eprint("dominance:", h)
     eprint("rho:", rho)
     eprint("theta:", theta)
     
