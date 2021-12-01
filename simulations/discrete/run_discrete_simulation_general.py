@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     if args.out is True:
         with open(
-            f"outputs/Ne_{Ne}_n_{args.sample_size}_r_{args.recombination_rate}_s_{args.selection_coefficient}_e_{args.epistasis_coefficient}.bp",
+            f"outputs/Ne_{Ne}_n_{args.sample_size}_r_{args.recombination_rate}_s_{args.selection_coefficient}_h_{args.dominance_coefficient}.bp",
             "wb+",
         ) as fout:
             # pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)

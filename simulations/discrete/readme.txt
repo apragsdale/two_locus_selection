@@ -28,6 +28,6 @@ e = -0.5, 0, 0.5 (with h = 0.5)
 (or model is sAB = (sA + sB) * (1 + e), so e > 0 is synergistic
 and e < 0 is diminishing returns)
 
-h = 0, 0.1 (with e = 0)
+h = 0.1 (with e = 0)
 
 This results in 45 different scenarios.
