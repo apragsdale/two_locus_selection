@@ -23,7 +23,7 @@ def current_time():
 
 def make_parser():
     ADHF = argparse.ArgumentDefaultsHelpFormatter
-    parser = argparse.ArgumentParser("run_discrete_comparison.py", formatter_class=ADHF)
+    parser = argparse.ArgumentParser("run_discrete_simulation.py", formatter_class=ADHF)
     parser.add_argument(
         "--population_size",
         "-N",

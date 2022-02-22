@@ -11,14 +11,15 @@ output:
     extra_dependencies: ["float"]
 bibliography: "references.bib"
 biblio-style: "genetics"
-title: Can we distinguish modes of selective interactions using linkage disequilibrium?
+title: Working title -- A heterogeneous landscape of selection and epistasis in protein-coding genes
 author:
 header-includes:
 - |
   ```{=latex}
   \usepackage{authblk}
-  \author{Aaron P. Ragsdale \\ aaronpeaceragsdale@gmail.com}
-  \affil{Department of Human Genetics, McGill University, Montreal, Canada \\
+  \author{Aaron P. Ragsdale \\ apragsdale@wisc.edu}
+  \affil{Department of Integrative Biology, University of Wisconsin--Madison, WI \\
+         Department of Human Genetics, McGill University, Montreal, Canada \\
          National Laboratory of Genomics for Biodiversity, Irapuato, Mexico \\
          }
   ```
@@ -33,7 +34,7 @@ date: \today
 \begin{abstract}
 
 Selected mutations interfere and interact with evolutionary processes at nearby
-loci, distorting allele frequency trajectories and correlations between pairs
+loci, distorting allele frequency trajectories and creating correlations between pairs
 of mutations. A number of recent studies have used patterns of linkage
 disequilibrium (LD) between selected variants to test for selective
 interference and epistatic interactions, with some disagreement over
@@ -62,12 +63,13 @@ that pursuit.
 # Introduction
 
 Most new mutations that affect fitness are deleterious and tend to be
-eliminated from a population. The amount of time that a deleterious mutation
+eliminated from a population **Citations**. The amount of time that a deleterious mutation
 segregates depends on the strength of selection against genomes that carry it,
 with very damaging mutations kept at low frequencies and purged relatively
 rapidly. In the time between mutation and fixation or loss, selected variants,
 both beneficial and damaging, can dramatically impact patterns of variation in
-nearby linked regions. This distortion away from neutral expectations is now
+nearby linked regions **Citations**.
+This distortion away from neutral expectations is now
 empirically documented using sequencing data from an ever-growing set of study
 systems, but questions remain about the primary mode of interactions between
 multiple linked variants and their joint effects on genome-wide patterns of
@@ -121,6 +123,7 @@ annotated domains. I show that while synonymous and missense variants display
 similar slightly positive average LD within genes, for missense mutations this
 signal is driven by correlations between pairs of mutations within, but not
 between, protein-coding domains, suggesting an importance for antagonistic
+(or "diminishing-returns")
 epistasis or a prevalence of compensatory nonsynonymous mutations within
 conserved elements. Finally, I discuss how well we can expect to discriminate
 between modes of selective interactions using genome-wide patterns of LD.
@@ -131,11 +134,13 @@ The most direct way to test for interactions between linked selected variants
 is through deep mutation scanning experiments, in which many distinct mutations
 are introduced within a target gene and then organismal fitness or some protein
 function is experimentally measured [@Romero2009-yi; @Bank2015-vq;
-@Puchta2016-rx; @Steinberg2016-is]. For example, using the model system of the
-TEM-1 $\beta$-lactamase gene in *E. coli*, @Bershtein2006-bk found evidence for
-synergistic epistasis, where multiple deleterious mutations had a greater
-effect on fitness than the multiplication of the observed effects of the
-individual mutations. The scale of mutation scanning experiments continues to
+@Puchta2016-rx; @Steinberg2016-is].
+For example, using the model system of the TEM-1 $\beta$-lactamase gene in
+*E. coli*, @Bershtein2006-bk found evidence for synergistic epistasis,
+in which the combined effect of multiple deleterious mutations 
+on individual fitness was larger than would be expected from multiplying
+the independent observed effects of each individual mutation.
+The scale of mutation scanning experiments continues to
 improve dramatically, promising greater resolution of the fitness landscape in
 such model systems that can be compared to evolutionary theory
 [@Otwinowski2018-zk].
@@ -190,17 +195,29 @@ In the Methods, I expand on the moment system developed in @Ragsdale2019-nt to
 compute the expected sampling distribution $\Psi_n$ of two-locus haplotypes
 under a general model of selective interactions. This sampling distribution
 stores the expected density or observed counts of pairs of biallelic loci with
-each possible haplotype frequency configuration in a sample of size $n$. In
-many cases it is simpler to visualize summaries such as the expectation or
+each possible haplotype frequency configuration in a sample of size $n$.
+Below, we compute expectations for $\Psi_n$ under varying scenarios of
+selection and interaction between pairs of loci.
+It is not possible in this framework to include the effects of additional
+selection mutations, such as background selection due to many linked variants.
+Individual-based forward simulations are still needed for such scenarios
+(e.g., Figure \@ref(fig:fwdpy11)).
+
+In many cases it is simpler to visualize summaries such as the expectation or
 variance of $D$ or slices of the distribution (e.g., Figures \@ref(fig:fig1),
 \@ref(fig:fig2) and \@ref(fig:hudson)) instead of the full three-dimensional
 distribution. Here I focus on low-order LD statistics including $\E[D]$ and
 $\E[D^2]$ and their decay with recombination distance, as these are statistics
-that are commonly used to test for interactions between loci. Instead of
-unnormalized $\E[D^2]$ and $\E[D]$ I consider expectations for $\sigma_d^2 =
-\E[D^2]/\E[p(1-p)q(1-q)]$ and $\sigma_d^1 = \E[D]/\E[p(1-p)q(1-q)]$, where $p$
-and $q$ are the derived allele frequencies at the left ($A/a$) and right
-($B/b$) loci, respectively. These normalized statistics have two benefits:
+that are commonly used to test for interactions between loci.
+For pairs of biallelic loci, with alleles $A/a$ at the left locus and $B/b$ at the
+right locus, $D=f_{AB}-f_A f_B$ is the standard covariance measure of LD,
+where $f_{AB}$ is the frequency of haplotypes carrying both $A$ and $B$, and
+$f_A$ and $f_B$ are the marginal allele frequencies of $A$ and $B$.
+
+Instead of unnormalized $\E[D^2]$ and $\E[D]$ I consider expectations for
+$\sigma_d^2 = \E[D^2]/\E[f_A(1-f_A)f_B(1-f_B)]$ and
+$\sigma_d^1 = \E[D]/\E[f_A(1-f_A)f_B(1-f_B)]$.
+Such normalized statistics have two benefits:
 first, the mutation rate cancels so that expectations are robust to assumptions
 about the per-base mutation rate, and second, analytic expectations for these
 quantities are available under neutrality at constant population size for
@@ -217,7 +234,8 @@ allow for arbitrary and unequal selection and dominance at the two loci.
 knitr::include_graphics("figures/fig1.pdf")
 ```
 
-(ref:fig1cap) \textbf{Additive selection and epistasis.} Left panels show
+(ref:fig1cap) \textbf{Additive selection and epistasis.}
+Left panels show
 expectations for the decay of $\sigma_d^2 = \E[D^2] / \E[p(1-p)q(1-q)]$ with
 recombination distance, and right panels show expectations for $\sigma_d^1 =
 \E[D] / \E[p(1-p)q(1-q)]$. The scaled recombination rate is given by
@@ -228,8 +246,9 @@ selection strength at both loci. Stronger selection reduces $\sigma_d^2$ (A),
 and in (B), we see that the negative LD effect of Hill-Robertson interference
 is strongest for intermediate selection ($\gamma \approx -1$ to $-5$, where
 $\gamma=4N_es$). (C-F) Epistasis with additive selection. Synergistic epistasis
-(\(\epsilon < 0\)) decreases $\sigma_d^2$ while antagonistic epistasis
-(\(\epsilon > 0\)) increases it compared to expectations under a multiplicative
+(\(\epsilon > 0\)) decreases $\sigma_d^2$ while antagonistic epistasis
+(\(\epsilon < 0\)) increases $\sigma_d^2$
+compared to expectations under a multiplicative
 fitness model ($\epsilon=0$). (See Methods for the definition of the
 epistasis model.) Epistasis also pushes signed LD ($\sigma_d^1$) away from
 zero, with synergistic epistasis decreasing LD for negatively selected
@@ -249,15 +268,19 @@ that they are unlikely to interfere with each other [@McVean2000-ox].
 
 With epistasis, mean signed LD is large for both weakly and strongly selected
 variants, with sign depending on the direction of epistatic interactions
-(Figure \@ref(fig:fig1)). Synergistic epistasis results in negative LD while
-antagonistic epistasis results in positive LD, and large positive LD can occur
+(Figure \@ref(fig:fig1)).
+Synergistic epistasis (in which the effect of two mutations together is larger than
+the product of each individual mutation's effect) results in negative LD while
+antagonistic epistasis (in which the combined effect is less than the product of
+independent effects) results in positive LD, and large positive LD can occur
 even when the epistatic effect is relatively weak. Epistasis-induced LD can
 extend over long distances, especially for strongly deleterious mutations. For
 example, in Figure \@ref(fig:fig1)F even moderately deleterious mutations with
 population-size-scaled selection coefficients of $\gamma=-10$ show large mean
-LD that extends well beyond 100 kilobases. More strongly deleterious
-interacting mutations are expected to show large signed LD over much larger
-recombination distances.
+LD that extends to values of $\rho$ much greater than 1 (for humans, assuming
+roughly 1 cM/Mb, this is on the order of 100 kilobases or more).
+More strongly deleterious interacting mutations are expected to show large
+signed LD over much larger recombination distances.
 
 ### Dominance
 
@@ -265,12 +288,11 @@ The effects of epistasis on LD have been widely studied. However, the combined
 effect of non-additive selection within a locus and interference has received
 less attention. @Garcia2020-zn used large-scale forward simulations to explore
 the effect of dominance on patterns of LD, showing that LD depends on both the
-magnitude of the selection and dominance coefficients in a nonlinear way, but
+magnitude of the selection and dominance coefficients in a nonlinear way, but they
 note that expensive large-scale simulations are needed to explore these effects
-as no closed form approach to computing those expectations exist. The method
-presented here provides such a closed form approach, so that expectations of
-signed LD and other two-locus statistics can be computed more efficiently and
-accurately.
+as no closed form approach to computing those expectations exist.
+The numerical method presented here provides such a closed form approach, so that expectations of signed LD and other two-locus statistics can be computed more
+efficiently and accurately.
 
 The combined effect of the strength of selection and dominance on interference
 is indeed nontrivial, and some parameter regimes can cause strong negative LD
@@ -286,14 +308,17 @@ negative LD than the additive case.
 knitr::include_graphics("figures/fig2.pdf")
 ```
 
-(ref:fig2cap) **Dominance effects.** (A and C) Pairs of recessive mutations
-($h<0.5$) have higher squared LD than additive mutations, while pairs of
-dominant mutations have lower expected $D^2$. (B and D) Pairs of recessive
+(ref:fig2cap) **The effects of dominance on LD.**
+(A and C) Pairs of recessive mutations
+($h<0.5$) have higher expected squared LD than additive mutations, while pairs of
+dominant mutations have lower expected $\sigma_d^2$.
+(B and D) Pairs of recessive
 deleterious mutations can have large negative LD, although this correlation
 decays more rapidly with larger recombination than LD under epistasis (Figure
 \@ref(fig:fig1)D and F). Notably, there is no simple relationship between
 strength of selection and dominance, particularly when $s$ is $O(1/N)$. Note
-that this setup does not include epistatic effects (i.e., $\epsilon=0$).
+that the expected values shown here do not include epistatic effects
+(i.e., $\epsilon=0$).
 
 ### General selection and gene-based dominance
 
@@ -728,7 +753,8 @@ forward for distinguishing between modes of selective interactions.
 
 Many well-known properties of two-locus dynamics and equilibrium LD come from
 early work on the multi-locus diffusion approximation [@Kimura1955-qe;
-@Hill1968-vu; @Ohta1969-ie; @Ohta1971-yd]. This includes the result that
+@Hill1968-vu; @Ohta1969-ie; @Ohta1971-yd].
+This includes the result that
 genome-wide averages of signed LD are expected to be zero under neutrality.
 Under a two-locus biallelic model, where the left locus allows alleles $A$ and
 $a$ and the right locus allows alleles $B$ and $b$, the standard covariance
@@ -745,13 +771,16 @@ heterozygosity of the two loci, is \begin{equation} (\#eq:ohta) \sigma_d^2 =
 \frac{\E[D^2]}{\E[f_A(1-f_A)f_B(1-f_B)]}\approx\frac{5 + \rho / 2}{11 + 13\rho
 / 2 + \rho^2 / 2}, \end{equation} where $\rho = 4N_e r$.
 
-Analytic progress beyond these results has come haltingly. In the
-1980s, recursions were developed to compute the two-locus sampling distribution
-under neutrality, that is, the probability of observing given counts of
-two-locus haplotypes in a sample of size $n$ [@Golding1984-pu]. This approach
-would continue to be developed and later form the foundation for the inference
-of local recombination rates from population genetic data [@Hudson2001-sg;
-@McVean2004-gj].
+Analytic progress beyond these results has come haltingly. In the 1980s,
+recursions were developed to compute the two-locus sampling distribution under
+neutrality, that is, the probability of observing given counts of two-locus
+haplotypes in a sample of size $n$ [@Golding1984-pu]. This approach would
+continue to be developed and later form the foundation for the inference of
+local recombination rates from population genetic data [@Hudson2001-sg;
+@McVean2004-gj]. More recently, @Song2007-qk computed $\E[r^2]$ using a
+diffusion approximation approach, although their solution involves the
+summation of infinitely many terms and is restricted to neutrality and
+steady-state demography.
 
 To include selection, however, there have been relatively few advances beyond
 the Monte Carlo simulation approach taken by @Hill1966-gv, albeit now with more
