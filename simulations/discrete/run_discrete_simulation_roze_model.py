@@ -2,7 +2,8 @@ import moments.TwoLocus
 import numpy as np
 import sys, os
 import pickle
-
+import gzip
+import time
 
 import argparse
 from datetime import datetime
@@ -73,6 +74,12 @@ def make_parser():
         "--out",
         "-o",
         action="store_true",
+    )
+    parser.add_argument(
+        "--index",
+        "-i",
+        default=None,
+        type=int,
     )
     return parser
 
@@ -252,6 +259,18 @@ def run_sim(Ne, n, theta, s, h, args):
 if __name__ == "__main__":
     parser = make_parser()
     args = parser.parse_args(sys.argv[1:])
+    
+    if args.index is not None:
+        i = args.index
+        # get sh, dominance, and r from external file
+        arg_options = []
+        with open("inputs.txt", "r") as fin:
+            for line in fin:
+                arg_options.append([float(x) for x in line.split()])
+        args.compound_coefficient = arg_options[i - 1][0]
+        args.dominance_coefficient = arg_options[i - 1][1]
+        args.recombination_rate = arg_options[i - 1][2]
+    
     eprint("Input arguments:", args)
 
     n = args.sample_size
@@ -271,10 +290,11 @@ if __name__ == "__main__":
     
     F = run_sim(Ne, n, theta, s, h, args)
 
+    eprint("Finished simulation")
+
     if args.out is True:
-        with open(
-            f"outputs/Ne_{Ne}_n_{args.sample_size}_r_{args.recombination_rate}_sh_{args.compound_coefficient}_h_{args.dominance_coefficient}.bp",
-            "wb+",
-        ) as fout:
+        t = int(time.time())
+        fname = f"outputs/Ne_{Ne}_n_{args.sample_size}_r_{args.recombination_rate}_sh_{args.compound_coefficient}_h_{args.dominance_coefficient:0.2f}_time_{t}.bp.gz"
+        with gzip.open(fname, "wb+") as fout:
             # pickle.dump({"args": args, "simulation": F, "expectation": E_F}, fout)
             pickle.dump({"args": args, "simulation": F}, fout)
