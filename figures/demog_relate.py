@@ -11,6 +11,7 @@ import moments.TwoLocus
 import matplotlib.pylab as plt
 import numpy as np
 import pickle
+import copy
 
 # set font sizes
 import matplotlib
@@ -41,10 +42,7 @@ def piecewise_constant(
     conditions=[],
 ):
     if track_stats:
-        stats = {"t": [], "sd1": {"all": [],}, "sd2": {"all": [],}}
-        for cond in conditions:
-            stats["sd1"][cond] = []
-            stats["sd2"][cond] = []
+        spectra = {"t": [], "data": []}
     if gamma == 0:
         sel_params = None
         sel_params_general = None
@@ -64,12 +62,8 @@ def piecewise_constant(
         n, rho=rho, sel_params=sel_params, sel_params_general=sel_params_general
     )
     if track_stats:
-        stats["t"].append(0)
-        stats["sd1"]["all"].append(F.D() / F.pi2())
-        stats["sd2"]["all"].append(F.D2() / F.pi2())
-        for cond in conditions:
-            stats["sd1"][cond].append(F.D(nA=cond, nB=cond) / F.pi2(nA=cond, nB=cond))
-            stats["sd2"][cond].append(F.D2(nA=cond, nB=cond) / F.pi2(nA=cond, nB=cond))
+        spectra["t"].append(0)
+        spectra["data"].append(copy.deepcopy(F))
 
     print("o" * len(nus), flush=True)
     for nu, T in zip(nus, Ts):
@@ -92,18 +86,10 @@ def piecewise_constant(
                     sel_params=sel_params,
                     sel_params_general=sel_params_general,
                 )
-                stats["t"].append(stats["t"][-1] + T_sub)
-                stats["sd1"]["all"].append(F.D() / F.pi2())
-                stats["sd2"]["all"].append(F.D2() / F.pi2())
-                for cond in conditions:
-                    stats["sd1"][cond].append(
-                        F.D(nA=cond, nB=cond) / F.pi2(nA=cond, nB=cond)
-                    )
-                    stats["sd2"][cond].append(
-                        F.D2(nA=cond, nB=cond) / F.pi2(nA=cond, nB=cond)
-                    )
+                spectra["t"].append(spectra["t"][-1] + T_sub)
+                spectra["data"].append(copy.deepcopy(F))
     print()
-    return F, stats
+    return spectra
 
 
 # load them:
@@ -126,21 +112,6 @@ def load_relate_curves(fname, pop0, pop1):
                 N1 = 1 / 2 / np.array([float(x) for x in coal1])
     return t, N0, N1
 
-
-## Toy demography:
-# t in generations, Ne ~ 1e4
-nu_expand = 3.0
-nu_B = 0.1
-nu_F = 2.0
-Ne = 1e4
-t_bottle = [0, 1000, 2000, 4000]
-t_expand = [0, 3000, 4000]
-N_bottle = [nu_F * Ne, nu_B * Ne, Ne, Ne, Ne]
-N_expand = [nu_expand * Ne, Ne, Ne]
-Ts_bottle = [0.2, 0.1, 0.1]
-nus_bottle = [1, nu_B, nu_F]
-Ts_expand = [0.1, 0.3]
-nus_expand = [1, nu_expand]
 
 ## Relate demography:
 pop0 = "YRI"

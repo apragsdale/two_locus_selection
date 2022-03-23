@@ -6,16 +6,15 @@ import pickle
 import numpy as np
 import moments.TwoLocus
 
-data = pickle.load(open("parsed_data_v2/MSL.unphased.all.bp", "rb"))
-SEs = pickle.load(open("parsed_data_v2/MSL.unphased.all.SEs.bp", "rb"))
+data = pickle.load(open("parsed_data_v2/MSL.unphased.MNM_data.bp", "rb"))
 
-bin_edges = data["bin_edges"]
-bin_mids = np.mean(bin_edges, axis=1)
+bin_edges = data["data"]["bin_edges"]
+bin_mids = np.mean(bin_edges, axis=1)[:-2]
 
-sd1 = np.array(data["bins"]["all_sites"]["synonymous"]["sd1"])
-sd2 = np.array(data["bins"]["all_sites"]["synonymous"]["sd2"])
-v1 = np.array([SEs["bins"]["all_sites"]["synonymous"][b]["sd1"] for b in bin_edges])
-v2 = np.array([SEs["bins"]["all_sites"]["synonymous"][b]["sd2"] for b in bin_edges])
+sd1 = np.array(data["data"]["bins"]["all_sites"]["synonymous"]["sd1"])[:-2]
+sd2 = np.array(data["data"]["bins"]["all_sites"]["synonymous"]["sd2"])[:-2]
+v1 = np.array([data["SEs"]["bins"]["all_sites"]["synonymous"][b]["sd1"] for b in bin_edges])[:-2]
+v2 = np.array([data["SEs"]["bins"]["all_sites"]["synonymous"][b]["sd2"] for b in bin_edges])[:-2]
 
 demo_params = [2.194, 5.145, 0.579, 0.0400]
 Ne = 12314.8
