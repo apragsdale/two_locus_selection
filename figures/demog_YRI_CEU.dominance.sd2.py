@@ -437,4 +437,10 @@ for i in range(1, 6):
     axes[i].set_xticks([1e6, 1e5, 1e4, 1e3])
 
 fig.tight_layout()
+fig.text(0.02, 0.95, "A", fontsize=8, va="center", ha="center")
+fig.text(0.37, 0.95, "B", fontsize=8, va="center", ha="center")
+fig.text(0.70, 0.95, "C", fontsize=8, va="center", ha="center")
+fig.text(0.02, 0.49, "D", fontsize=8, va="center", ha="center")
+fig.text(0.37, 0.49, "E", fontsize=8, va="center", ha="center")
+fig.text(0.70, 0.49, "F", fontsize=8, va="center", ha="center")
 plt.savefig("demog_YRI_CEU.dominance.sd2.pdf")

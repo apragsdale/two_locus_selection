@@ -453,4 +453,11 @@ for i in range(1, 6):
     axes[i].set_xticklabels(axes[0].get_xticklabels())
 
 fig.tight_layout()
+
+fig.text(0.03, 0.95, "A", fontsize=8, va="center", ha="center")
+fig.text(0.37, 0.95, "B", fontsize=8, va="center", ha="center")
+fig.text(0.70, 0.95, "C", fontsize=8, va="center", ha="center")
+fig.text(0.03, 0.49, "D", fontsize=8, va="center", ha="center")
+fig.text(0.37, 0.49, "E", fontsize=8, va="center", ha="center")
+fig.text(0.70, 0.49, "F", fontsize=8, va="center", ha="center")
 plt.savefig("demog_bottle_expand.pdf")

@@ -54,7 +54,7 @@ for continent, pops in populations.items():
         SE_dom[pop] = se_pop
 
 
-ms = 3
+ms = 2
 lw = 0.5
 markers = ["o", "s"]
 colors = Colorblind[8]
@@ -152,7 +152,7 @@ def plot_domain_data(pops, categ, ax, legend=False):
     ax.set_xticks(np.mean(xx.reshape(len(pops), 4), axis=1))
     ax.set_xticklabels(pops)
     if legend:
-        ax.legend(fontsize=5, frameon=False)
+        ax.legend(fontsize=5, frameon=False, loc="upper left")
 
 
 fig = plt.figure(5, figsize=(6.5, 4.5))
@@ -309,117 +309,208 @@ plot_domain_data(pops, "all", ax2, legend=True)
 ax2.set_ylabel("$\sigma_d^1$")
 ax2.set_xlabel("Populations")
 ax2.set_title("All pairs")
+ax2.set_ylim(-0.2, 1)
+
+#ax3 = plt.subplot2grid(dims, (5, 1), rowspan=3)
+#plot_domain_data(pops, "leq2", ax3)
+#ax3.set_xlabel("Populations")
+#ax3.set_title("$n_A, n_B \leq 2$")
+#
+#ax4 = plt.subplot2grid(dims, (5, 2), rowspan=3)
+#plot_domain_data(pops, "3to8", ax4)
+#ax4.set_xlabel("Populations")
+#ax4.set_title("$3 \leq n_A, n_B \leq 8$")
 
 ax3 = plt.subplot2grid(dims, (5, 1), rowspan=3)
-plot_domain_data(pops, "leq2", ax3)
+plot_domain_data(pops, "geq9", ax3)
 ax3.set_xlabel("Populations")
-ax3.set_title("$n_A, n_B \leq 2$")
+ax3.set_title("$n_A, n_B \geq 9$")
+ax3.sharey(ax2)
 
+## plots of LD decay within and outside of domains for AFR populations
 ax4 = plt.subplot2grid(dims, (5, 2), rowspan=3)
-plot_domain_data(pops, "3to8", ax4)
-ax4.set_xlabel("Populations")
-ax4.set_title("$3 \leq n_A, n_B \leq 8$")
+
+decay_data = {}
+for c, ps in populations.items():
+    for p in ps:
+        decay_data[p] = pickle.load(
+            open(f"../analysis/parsed_data_v2/{p}.unphased.domains.bp", "rb")
+        )
+
+bins = decay_data[p]["bin_edges"]
+bin_mids = np.mean(bins, axis=1)
+
+pops = populations["Africa"]
+label_syn = "Synonymous"
+label_mis = "Missense"
+ax4.plot(bin_mids[:-4], 0 * bin_mids[:-4], "k--", lw=lw)
+for pop in pops:
+    sd1_syn = decay_data[pop]["bins"]["within"]["synonymous"]["sd1"]
+    sd1_mis = decay_data[pop]["bins"]["within"]["missense"]["sd1"]
+    ax4.plot(
+        bin_mids[:-4],
+        sd1_syn[:-4],
+        "o--",
+        color=colors[0],
+        ms=ms,
+        lw=lw,
+        label=label_syn,
+    )
+    ax4.plot(
+        bin_mids[:-4],
+        sd1_mis[:-4],
+        "s--",
+        color=colors[1],
+        ms=ms,
+        lw=lw,
+        label=label_mis,
+    )
+    label_syn = None
+    label_mis = None
+
+ax4.set_xscale("log")
+ax4.set_title("LD decay in domains")
+ax4.set_xlabel("bp distance")
+ax4.legend(fontsize=5,frameon=False)
 
 ax5 = plt.subplot2grid(dims, (5, 3), rowspan=3)
-plot_domain_data(pops, "geq9", ax5)
-ax5.set_xlabel("Populations")
-ax5.set_title("$n_A, n_B \geq 9$")
+
+decay_data = {}
+for c, ps in populations.items():
+    for p in ps:
+        decay_data[p] = pickle.load(
+            open(f"../analysis/parsed_data_v2/{p}.unphased.domains.bp", "rb")
+        )
+
+bins = decay_data[p]["bin_edges"]
+bin_mids = np.mean(bins, axis=1)
+
+pops = populations["Africa"]
+label_syn = "Synonymous"
+label_mis = "Missense"
+ax5.plot(bin_mids[:-4], 0 * bin_mids[:-4], "k--", lw=lw)
+for pop in pops:
+    sd1_syn = decay_data[pop]["bins"]["outside"]["synonymous"]["sd1"]
+    sd1_mis = decay_data[pop]["bins"]["outside"]["missense"]["sd1"]
+    ax5.plot(
+        bin_mids[:-4],
+        sd1_syn[:-4],
+        "o--",
+        color=colors[0],
+        ms=ms,
+        lw=lw,
+        mfc="white",
+        label=label_syn,
+    )
+    ax5.plot(
+        bin_mids[:-4],
+        sd1_mis[:-4],
+        "s--",
+        color=colors[1],
+        ms=ms,
+        lw=lw,
+        mfc="white",
+        label=label_mis,
+    )
+    label_syn = None
+    label_mis = None
+
+ax5.set_xscale("log")
+ax5.set_title("Decay outside domains")
+ax5.set_xlabel("bp distance")
 
 fig.tight_layout()
 fig.subplots_adjust(hspace=0.5)
-# fig.text(0.02, 0.95, "A", fontsize=8, ha="center", va="center")
-# fig.text(0.02, 0.67, "B", fontsize=8, ha="center", va="center")
-# fig.text(0.06, 0.33, "C", fontsize=8, ha="center", va="center")
-# fig.text(0.30, 0.33, "D", fontsize=8, ha="center", va="center")
-# fig.text(0.54, 0.33, "E", fontsize=8, ha="center", va="center")
-# fig.text(0.77, 0.33, "F", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.97, "A", fontsize=8, ha="center", va="center")
+fig.text(0.02, 0.72, "B", fontsize=8, ha="center", va="center")
+fig.text(0.04, 0.43, "C", fontsize=8, ha="center", va="center")
+fig.text(0.29, 0.43, "D", fontsize=8, ha="center", va="center")
+fig.text(0.54, 0.43, "E", fontsize=8, ha="center", va="center")
+fig.text(0.77, 0.43, "F", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"data_compact.pdf")
 
 
 
 ## unplotted populations, domain info
-fig2 = plt.figure(98765, figsize=(6.5, 6))
+fig2 = plt.figure(98765, figsize=(6.5, 7))
 fig2.clf()
 i = 0
 for pop in populations["Africa"]:
-    if pop != pop_afr:
-        for categ in ["all", "leq2", "3to8", "geq9"]:
-            ax = plt.subplot(4, 4, i + 1)
-            if i == 0:
-                ax.set_title("All pairs")
-            elif i == 1:
-                ax.set_title(r"$n_A, n_B \leq 2$")
-            elif i == 2:
-                ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
-            elif i == 3:
-                ax.set_title(r"$n_A, n_B \geq 9$")
-            plot_domain_data([pop], categ, ax)
-            if i % 4 == 0:
-                ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
-            ax.set_xticks([1, 2, 3, 4])
-            if i < 12:
-                ax.set_xticklabels([])
-            else:
-                ax.set_xticklabels(["Syn.\nw/in", "Mis.\nw/in", "Syn.\nout.", "Mis.\nout."])
-            i += 1
+    for categ in ["all", "leq2", "3to8", "geq9"]:
+        ax = plt.subplot(5, 4, i + 1)
+        if i == 0:
+            ax.set_title("All pairs")
+        elif i == 1:
+            ax.set_title(r"$n_A, n_B \leq 2$")
+        elif i == 2:
+            ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
+        elif i == 3:
+            ax.set_title(r"$n_A, n_B \geq 9$")
+        plot_domain_data([pop], categ, ax)
+        if i % 4 == 0:
+            ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
+        ax.set_xticks([1, 2, 3, 4])
+        if i < 16:
+            ax.set_xticklabels([])
+        else:
+            ax.set_xticklabels(["Syn.\nw/in", "Mis.\nw/in", "Syn.\nout.", "Mis.\nout."])
+        i += 1
 
 
 plt.tight_layout()
 plt.savefig("data_domains_afr.pdf")
 
-fig3 = plt.figure(98764, figsize=(6.5, 6))
+fig3 = plt.figure(98764, figsize=(6.5, 7))
 fig3.clf()
 i = 0
 for pop in populations["Europe"]:
-    if pop != pop_eur:
-        for categ in ["all", "leq2", "3to8", "geq9"]:
-            ax = plt.subplot(4, 4, i + 1)
-            if i == 0:
-                ax.set_title("All pairs")
-            elif i == 1:
-                ax.set_title(r"$n_A, n_B \leq 2$")
-            elif i == 2:
-                ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
-            elif i == 3:
-                ax.set_title(r"$n_A, n_B \geq 9$")
-            plot_domain_data([pop], categ, ax)
-            if i % 4 == 0:
-                ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
-            ax.set_xticks([1, 2, 3, 4])
-            if i < 12:
-                ax.set_xticklabels([])
-            else:
-                ax.set_xticklabels(["Syn.\nw/in", "Mis.\nw/in", "Syn.\nout.", "Mis.\nout."])
-            i += 1
+    for categ in ["all", "leq2", "3to8", "geq9"]:
+        ax = plt.subplot(5, 4, i + 1)
+        if i == 0:
+            ax.set_title("All pairs")
+        elif i == 1:
+            ax.set_title(r"$n_A, n_B \leq 2$")
+        elif i == 2:
+            ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
+        elif i == 3:
+            ax.set_title(r"$n_A, n_B \geq 9$")
+        plot_domain_data([pop], categ, ax)
+        if i % 4 == 0:
+            ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
+        ax.set_xticks([1, 2, 3, 4])
+        if i < 16:
+            ax.set_xticklabels([])
+        else:
+            ax.set_xticklabels(["Syn.\nw/in", "Mis.\nw/in", "Syn.\nout.", "Mis.\nout."])
+        i += 1
 
 plt.tight_layout()
 plt.savefig("data_domains_eur.pdf")
 
-fig4 = plt.figure(98763, figsize=(6.5, 6))
+fig4 = plt.figure(98763, figsize=(6.5, 7))
 fig4.clf()
 i = 0
 for pop in populations["East Asia"]:
-    if pop != pop_eas:
-        for categ in ["all", "leq2", "3to8", "geq9"]:
-            ax = plt.subplot(4, 4, i + 1)
-            if i == 0:
-                ax.set_title("All pairs")
-            elif i == 1:
-                ax.set_title(r"$n_A, n_B \leq 2$")
-            elif i == 2:
-                ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
-            elif i == 3:
-                ax.set_title(r"$n_A, n_B \geq 9$")
-            plot_domain_data([pop], categ, ax)
-            if i % 4 == 0:
-                ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
-            ax.set_xticks([1, 2, 3, 4])
-            if i < 12:
-                ax.set_xticklabels([])
-            else:
-                ax.set_xticklabels(["Syn.\nw/in", "Mis.\nw/in", "Syn.\nout.", "Mis.\nout."])
-            i += 1
+    for categ in ["all", "leq2", "3to8", "geq9"]:
+        ax = plt.subplot(5, 4, i + 1)
+        if i == 0:
+            ax.set_title("All pairs")
+        elif i == 1:
+            ax.set_title(r"$n_A, n_B \leq 2$")
+        elif i == 2:
+            ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
+        elif i == 3:
+            ax.set_title(r"$n_A, n_B \geq 9$")
+        plot_domain_data([pop], categ, ax)
+        if i % 4 == 0:
+            ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
+        ax.set_xticks([1, 2, 3, 4])
+        if i < 16:
+            ax.set_xticklabels([])
+        else:
+            ax.set_xticklabels(["Syn.\nw/in", "Mis.\nw/in", "Syn.\nout.", "Mis.\nout."])
+        i += 1
 
 plt.tight_layout()
 plt.savefig("data_domains_eas.pdf")

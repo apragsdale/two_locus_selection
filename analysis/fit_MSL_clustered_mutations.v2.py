@@ -13,8 +13,12 @@ bin_mids = np.mean(bin_edges, axis=1)[:-2]
 
 sd1 = np.array(data["data"]["bins"]["all_sites"]["synonymous"]["sd1"])[:-2]
 sd2 = np.array(data["data"]["bins"]["all_sites"]["synonymous"]["sd2"])[:-2]
-v1 = np.array([data["SEs"]["bins"]["all_sites"]["synonymous"][b]["sd1"] for b in bin_edges])[:-2]
-v2 = np.array([data["SEs"]["bins"]["all_sites"]["synonymous"][b]["sd2"] for b in bin_edges])[:-2]
+v1 = np.array(
+    [data["SEs"]["bins"]["all_sites"]["synonymous"][b]["sd1"] for b in bin_edges]
+)[:-2]
+v2 = np.array(
+    [data["SEs"]["bins"]["all_sites"]["synonymous"][b]["sd2"] for b in bin_edges]
+)[:-2]
 
 demo_params = [2.194, 5.145, 0.579, 0.0400]
 Ne = 12314.8
@@ -81,12 +85,12 @@ def ll_normal(data, model, variances):
         - 1 / 2 * np.log(2 * np.pi * len(sd1))
         - 1 / 2 * np.log(v1)
     )
-    #ll_sd2 = np.sum(
+    # ll_sd2 = np.sum(
     #    -1 / 2 * (sd2 - Esd2) ** 2 / v2
     #    - 1 / 2 * np.log(2 * np.pi * len(sd2))
     #    - 1 / 2 * np.log(v2)
-    #)
-    return ll_sd1 #+ ll_sd2
+    # )
+    return ll_sd1  # + ll_sd2
 
 
 def object_func_log(log_params, *args, **kwargs):
@@ -115,7 +119,13 @@ _counter = 0
 
 
 def object_func(
-    params, model_func, data, variances, verbose=0, lower_bound=None, upper_bound=None,
+    params,
+    model_func,
+    data,
+    variances,
+    verbose=0,
+    lower_bound=None,
+    upper_bound=None,
 ):
     global _counter
     _counter += 1
@@ -165,17 +175,19 @@ for r in rs:
         Esd1 = []
         Esd2 = []
         for w, b in zip(weights, bin_mids):
+            w_ism = theta ** 2
+            w_mnm = w * theta
             Esd1.append(
-                (w * stats["mnm"][b]["D"] + (1 - w) * stats["ism"][b]["D"])
-                / (w * stats["mnm"][b]["pi2"] + (1 - w) * stats["ism"][b]["pi2"])
+                (w_mnm * stats["mnm"][b]["D"] + w_ism * stats["ism"][b]["D"])
+                / (w_mnm * stats["mnm"][b]["pi2"] + w_ism * stats["ism"][b]["pi2"])
             )
             Esd2.append(
-                (w * stats["mnm"][b]["D2"] + (1 - w) * stats["ism"][b]["D2"])
-                / (w * stats["mnm"][b]["pi2"] + (1 - w) * stats["ism"][b]["pi2"])
+                (w_mnm * stats["mnm"][b]["D2"] + w_ism * stats["ism"][b]["D2"])
+                / (w_mnm * stats["mnm"][b]["pi2"] + w_ism * stats["ism"][b]["pi2"])
             )
         return np.array(Esd1), np.array(Esd2)
 
-    p0 = [0.1, 0.1]
+    p0 = [0.001, 0.1]
     lower_bound = [0, 0]
     upper_bound = [1, 1]
 
@@ -197,3 +209,70 @@ for r in rs:
     fout.write(f"{r}\t{opt_params[0]}\t{opt_params[1]}\t{LL}\n")
 
 fout.close()
+
+
+## plot the best fit
+import matplotlib.pylab as plt
+import matplotlib
+
+plt.rcParams["legend.title_fontsize"] = "xx-small"
+matplotlib.rc("xtick", labelsize=6)
+matplotlib.rc("ytick", labelsize=6)
+matplotlib.rc("axes", labelsize=7)
+matplotlib.rc("axes", titlesize=7)
+matplotlib.rc("legend", fontsize=6)
+
+from bokeh.palettes import Colorblind
+
+colors = Colorblind[8]
+
+theta = 0.00018718496
+r = 6e-9
+opt_params = [2.44188595e-05, 9.19179792e-03]
+
+cache = cache_spectra(demo_params, Ne, bin_mids, r)
+stats = {}
+for mut_type in cache.keys():
+    stats[mut_type] = {}
+    for b, F in cache[mut_type].items():
+        stats[mut_type][b] = {"D": F.D(), "D2": F.D2(), "pi2": F.pi2()}
+
+
+def model_func(params):
+    A, lam = params
+    weights = A * np.exp(-lam * bin_mids)
+    Esd1 = []
+    Esd2 = []
+    for w, b in zip(weights, bin_mids):
+        w_ism = theta ** 2
+        w_mnm = w * theta
+        Esd1.append(
+            (w_mnm * stats["mnm"][b]["D"] + w_ism * stats["ism"][b]["D"])
+            / (w_mnm * stats["mnm"][b]["pi2"] + w_ism * stats["ism"][b]["pi2"])
+        )
+        Esd2.append(
+            (w_mnm * stats["mnm"][b]["D2"] + w_ism * stats["ism"][b]["D2"])
+            / (w_mnm * stats["mnm"][b]["pi2"] + w_ism * stats["ism"][b]["pi2"])
+        )
+    return np.array(Esd1), np.array(Esd2)
+
+
+model = model_func(opt_params)
+
+fig = plt.figure(123459872, figsize=(5, 4))
+fig.clf()
+
+ax = plt.subplot(1, 1, 1)
+
+ax.plot([0, 1e4], [0, 0], "k--", lw=0.5, label=None)
+ax.plot(bin_mids, sd1, "o--", color=colors[0], ms=3, lw=1, label="Data (synonymous)")
+ax.errorbar(bin_mids, sd1, yerr=v1, linestyle="None", color="gray", linewidth=1)
+
+ax.plot(bin_mids, model[0], "x-", color=colors[1], ms=5, lw=1, label="Model fit")
+
+ax.set_xscale("log")
+ax.set_ylabel(r"$\sigma_d^1$")
+ax.set_xlabel("Base pair distance")
+ax.legend()
+ax.set_xlim(right=1e4)
+plt.savefig("../figures/msl_mnms.v2.pdf")

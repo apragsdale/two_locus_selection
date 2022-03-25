@@ -160,13 +160,13 @@ plot_data(pop_eas, categ, ax12)
 plt.tight_layout()
 plt.savefig("data_domains.pdf")
 
-fig2 = plt.figure(98765, figsize=(6.5, 6))
+fig2 = plt.figure(98765, figsize=(6.5, 7))
 fig2.clf()
 i = 0
 for pop in populations["Africa"]:
-    if pop != pop_afr:
+    #if pop != pop_afr:
         for categ in ["all", "leq2", "3to8", "geq9"]:
-            ax = plt.subplot(4, 4, i + 1)
+            ax = plt.subplot(5, 4, i + 1)
             if i == 0:
                 ax.set_title("All pairs")
             elif i == 1:
@@ -189,11 +189,11 @@ for pop in populations["Africa"]:
 plt.tight_layout()
 plt.savefig("data_domains_afr.pdf")
 
-fig3 = plt.figure(98764, figsize=(6.5, 6))
+fig3 = plt.figure(98764, figsize=(6.5, 7))
 fig3.clf()
 i = 0
 for pop in populations["Europe"]:
-    if pop != pop_eur:
+    #if pop != pop_eur:
         for categ in ["all", "leq2", "3to8", "geq9"]:
             ax = plt.subplot(4, 4, i + 1)
             if i == 0:
@@ -217,11 +217,11 @@ for pop in populations["Europe"]:
 plt.tight_layout()
 plt.savefig("data_domains_eur.pdf")
 
-fig4 = plt.figure(98763, figsize=(6.5, 6))
+fig4 = plt.figure(98763, figsize=(6.5, 7))
 fig4.clf()
 i = 0
 for pop in populations["East Asia"]:
-    if pop != pop_eas:
+    #if pop != pop_eas:
         for categ in ["all", "leq2", "3to8", "geq9"]:
             ax = plt.subplot(4, 4, i + 1)
             if i == 0:

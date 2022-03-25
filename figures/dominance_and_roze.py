@@ -7,7 +7,7 @@
 import moments.TwoLocus
 import matplotlib.pylab as plt
 import numpy as np
-import pickle
+import pickle, gzip
 
 # set font sizes
 import matplotlib
@@ -75,13 +75,15 @@ colors = Colorblind[8]
 fig = plt.figure(19382, figsize=(6.5, 4.5))
 fig.clf()
 
-grid = (5, 2)
+grid = (5, 6)
 # sigma_d^1 for gamma = -1 and -5
-ax1 = plt.subplot2grid(grid, (0, 0), rowspan=2)
-ax2 = plt.subplot2grid(grid, (0, 1), rowspan=2)
+ax1 = plt.subplot2grid(grid, (0, 0), rowspan=2, colspan=2)
+ax2 = plt.subplot2grid(grid, (0, 2), rowspan=2, colspan=2)
 # roze comparisons
-ax3 = plt.subplot2grid(grid, (2, 0), rowspan=3)
-ax4 = plt.subplot2grid(grid, (2, 1), rowspan=3)
+ax3 = plt.subplot2grid(grid, (2, 0), rowspan=3, colspan=3)
+ax4 = plt.subplot2grid(grid, (2, 3), rowspan=3, colspan=3)
+# varying gamma (upper right)
+ax5 = plt.subplot2grid(grid, (0, 4), rowspan=2, colspan=2)
 
 ax1.plot(rhos, 0 * ok, "k--", lw=1, label=None)
 ax2.plot(rhos, 0 * ok, "k--", lw=1, label=None)
@@ -104,6 +106,21 @@ for ii, h in enumerate(hs):
         label=rf"$h={h}$",
     )
 
+
+data_vary = pickle.load(gzip.open("data/dominance_vary_gamma.bp.gz", "rb"))
+gammas = data_vary["gammas"]
+hs = sorted(data_vary["sd1"].keys())
+
+ax5.plot(-gammas, 0*gammas, "k--", lw=1, label=None)
+for h in hs:
+    ax5.plot(-gammas, data_vary["sd1"][h], lw=1, label=rf"$h={h}$")
+
+ax5.set_title(r"$\rho=0$")
+ax5.set_xlabel(r"$\gamma=2Ns$")
+ax5.set_xscale("log")
+ax5.legend(fontsize=6, loc="lower left")
+ax5.set_xticks([0.1, 1, 10])
+ax5.set_xticklabels([-0.1, -1, -10])
 
 # roze data
 N = 1000
@@ -150,7 +167,7 @@ for sh in shs[::-1]:
 ax1.set_xscale("log")
 ax2.set_xscale("log")
 ax1.set_ylabel(r"$\sigma_d^1$")
-ax2.set_ylabel(r"$\sigma_d^1$")
+#ax2.set_ylabel(r"$\sigma_d^1$")
 ax1.legend()
 ax2.legend()
 ax1.set_title(r"$2Ns = -1$")
@@ -161,7 +178,7 @@ ax1.set_ylim([-0.4, 0.1])
 ax2.set_ylim([-1.2, 0.1])
 
 ax3.set_ylabel(r"$\sigma_d^1$")
-ax4.set_ylabel(r"$\sigma_d^1$")
+#ax4.set_ylabel(r"$\sigma_d^1$")
 ax3.legend(title="$sh$", ncol=2, fontsize=6, loc="lower right")
 ax3.set_xlim(0, 0.55)
 ax3.set_ylim(-0.51, 0.11)
@@ -174,10 +191,11 @@ ax3.set_xlabel(r"$h$")
 ax4.set_xlabel(r"$h$")
 
 fig.tight_layout()
-fig.text(0.04, 0.95, "A", fontsize=8, ha="center", va="center")
-fig.text(0.53, 0.95, "B", fontsize=8, ha="center", va="center")
-fig.text(0.04, 0.48, "C", fontsize=8, ha="center", va="center")
-fig.text(0.53, 0.48, "D", fontsize=8, ha="center", va="center")
+fig.text(0.04, 0.97, "A", fontsize=8, ha="center", va="center")
+fig.text(0.37, 0.97, "B", fontsize=8, ha="center", va="center")
+fig.text(0.68, 0.97, "C", fontsize=8, ha="center", va="center")
+fig.text(0.04, 0.57, "D", fontsize=8, ha="center", va="center")
+fig.text(0.53, 0.57, "E", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"dominance_roze.pdf")
 plt.savefig(f"dominance_roze.png", dpi=300)

@@ -10,7 +10,8 @@
 \usepackage{amsmath,amssymb}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
-
+\usepackage[numbib]{tocbibind} % makes the references have a section number
+\renewcommand{\bibname}{Supporting references}
 
 % cross-reference with main text
 \usepackage{xr}
@@ -30,13 +31,13 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thesection}{S\arabic{section}}
 \setcounter{figure}{0}
 \setcounter{table}{0}
 \setcounter{equation}{0}
+\setcounter{section}{0}
 
-\small
 \tableofcontents
-\normalsize
 \newpage
 
 \clearpage
@@ -114,9 +115,9 @@ closure approximation (which is the same as presented in \citet{Ragsdale2019-nt}
 then describe the selection operator \(\mathcal{S}\) for selection with
 epistasis, both with and without dominance.
 
-\subsection{Drift, mutation, recombination, and moment closure}\label{drift-mutation-recombination-and-moment-closure}
+\subsection{Drift, mutation, recombination, and moment closure}
 
-\subsubsection{Drift}\label{drift}
+\subsubsection{Drift}
 
 Drift for an entry \((i, j, k)\) depends only on \(\Psi_n\) and therefore closes.
 The entries of \(\mathcal{D}\) are found by considering the possibility of a
@@ -141,7 +142,7 @@ such event occurs in any given generation.
 & - 2\left( i ( n - i - j - k) + i k + i j + j (n - i - j - k) + j k + k(n - i - j - k)\right)\Psi_n(i, j, k)
 \end{align}
 
-\subsubsection{Recombination}\label{recombination}
+\subsubsection{Recombination}
 
 If a lineage in our sample of size \(n\) recombines in a given generation, which
 occurs with probability \(nr\), we need to draw an extra lineage from the full
@@ -162,7 +163,7 @@ the lineage that was chosen to recombine.
 & - \frac{i (n - i - j - k + 1}{n + 1}\Psi_{n+1}(i, j, k)
 \end{align}
 
-\subsubsection{Mutation}\label{mutation}
+\subsubsection{Mutation}
 
 We assume an infinite sites mutation (ISM) model where new mutations occur at
 previously unmutated loci. In the two-locus ISM model, two-locus pairs of
@@ -192,7 +193,7 @@ compute \(\Psi_{n+l}(i, j, k)\) using Eq. \eqref{eq:multinomial}. Readers should
 refer to section S1.3.5 in the Supporting material for \citet{Ragsdale2019-nt} for
 details.
 
-\subsection{Selection}\label{selection}
+\subsection{Selection}
 
 First consider the case of no dominance, so that the haplotypes \(Ab\), \(aB\),
 and \(AB\) have selection coefficients \(s_{Ab}\), \(s_{aB}\), and \(s_{AB}\),
@@ -306,15 +307,78 @@ s_{AB/Ab}i + s_{Ab/aB}k + s_{Ab/ab}(n-i-j-k) - s_{Ab/Ab}(n-j)
 Multiplying through by \(2N_{ref}\) gives us selection operators in terms of
 \(\gamma\) instead of \(s\).
 
-\subsection{Validation against simulation}\label{validation-against-simulation}
+\subsection{Validation against simulation}
 
-\subsection{Background selection and associative overdominance}\label{background-selection-and-associative-overdominance}
+To assess the accuracy of the numerical approximation, I carried out discrete
+two-locus simulations over a range of recombination rates and selection
+parameterizations. Such discrete simulations track allele and haplotype
+frequencies in a population of a given size, with offspring generations
+constructed via multinomial sampling from the haplotype frequencies in the
+parental generation. Because we only track the two focal loci, these
+simulations do not contain any additional effects of linked selection (see
+Section~\ref{sec:bgs} for simulations with many linked loci).
 
-\subsection{Frequency dependence of signed LD}\label{frequency-dependence-of-signed-ld}
+Simulations had diploid population sizes of 5000 and I drew haploid sample
+sizes of 50 (25 diploids), with recombination rates varying from \(0\) to
+\(0.001\) (or \(\rho=0-10\)). I tested selection coefficients of \(s\) of 0,
+\(-2\times10^{-5}\), \(-2\times10^{-4}\), and \(-2\times10^{-3}\) (or
+\(\gamma=0\), \(-0.2\), \(-2\), and \(-10\)). Epistasis was set to
+\(\epsilon=0\), \(-0.5\), and \(0.5\). Conditional distributions of the
+two-locus sampling distribution show good agreement between numerical solutions
+and simulations, and residuals do not show any directional bias
+(Figures~\ref{fig:validation}--\ref{fig:last_validation}).
 
-\section{Data analysis}\label{data-analysis}
+To assess the accuracy under dominance, I simulated under the
+\citet{Roze2021-cf} scenarios (\(N=1000\), \(r=0.0001\) and \(0.001\), and
+\(sh=-0.0001\), \(-0.0004\), \(-0.001\), and \(-0.01\)). Note that \(sh=-0.01\)
+is extremely strong selection, especially for small \(h\), and \texttt{moments}
+was unstable in that parameter regime. For weak and moderate selection, there
+good agreement between simulated data and \texttt{moments} solutions
+(Figure~\ref{fig:dominance}D, E).
 
-\subsection{DFE for missense and LOF variants}\label{dfe-for-missense-and-lof-variants}
+\subsection{Background selection and associative overdominance}\label{sec:bgs}
+
+To explore the effects of many linked selected loci on patterns of LD, I used
+\texttt{fwdpy11} \citep{Thornton2014-pn,Thornton2019-qc} to simulate large
+genomic segments with many selected mutations. Each simulation had population
+size of \(N=1000\), a sequence length of 1Mb, with mutation and recombination
+rates both \(u=r=10^{-8}\). I considered four scenarios for selected mutaions:
+additive selection \(h=0.5\) with \(s=-0.0005\) and \(s=-0.01\) (\(\gamma=-1\)
+and \(-20\)), and recessivity \(h=0.0\) or \(h=0.1\) with the same selection
+coefficients. These sets of parameters should give rise to strong effects of
+linked selection, as there are many cosegregating, tightly linked selected
+variants. For each setting, I examined site-frequency spectra and LD decay for
+both selected and neutral mutations across the region.
+
+For each simulation, I ran a large number of replicates (100 independent
+replicates, and within each replicate, I sampled 25 diploid individuals every
+100 generations for a total of 20,000 samples from each replicate, after
+burn-in of \(100N\) generations). Additive selection caused minor distortions
+to the SFS, and reduced observed \(\sigma_d^1\) and \(\sigma_d^2\) in the case
+of weak selection (\(\gamma=-1\)) (Figure~\ref{fig:bgs1}). LD was largely
+unaffected in the stronger selection scenario, consistent with intuition that
+interference (including interference from additional linked sites) is most
+noticeable for \(s\approx1/N\) (Figure~\ref{fig:bgs2}).
+
+Larger deviations from two-locus expectations were observed for recessive
+mutations. For recessive weakly deleterious mutations (Figure~\ref{fig:bgs3}),
+there is a large excess of neutral and selected mutations at common frequencies
+(due to associative overdominance \citep{Zhao2016-bb}). \(\sigma_d^2\) for
+neutral and selected mutations is also increased over two-locus expectations.
+Stronger recessive mutations (Figure~\ref{fig:bgs4}) also show distorted allele
+frequencies, though the distortion to LD is not as strong as observed for weak
+recessive variants.
+
+\subsection{Frequency dependence of signed LD}
+
+\begin{itemize}
+    \item Why did we do it
+    \item How did we do it.. quite simple
+\end{itemize}
+
+\section{Data analysis}
+
+\subsection{DFE for missense and LOF variants}
 
 Loss-of-function (LOF) variants show a dramatic skew toward low-frequency
 variants across all human populations (Table \ref{tab:tajimasD}). Here, using
@@ -336,35 +400,36 @@ sample). Here, I fit demography and DFEs to the folded SFS from the Mende in
 Sierra Leone (MSL) using \emph{moments} version 1.1.0 \citep{Jouganous2017-pq}.
 
 I used the mutation model from \citet{Karczewski2020-le} to estimate the total
-mutation rate across autosomal genes (\(uL\), where \(u\) is the per-base mutation
-rate of a given mutation class, and \(L\) is the total length of the coding
-genome). These values were \((0.1442, 0.3426, 0.0256)\) for synonymous, missense,
-and LOF mutations, respectively. Roughly two thirds of new mutations in coding
-regions are expected to be missense mutations, while only 5\% of new mutations
-are LOF. I fit a demographic model to the synonymous variants, which included a
-population expansion in the deeper past and exponential growth in the recent
-past (Figure \ref{fig:msldemogdfe}A). Using the inferred optimal scaled mutation
-rate, \(\theta=4N_euL\), I estimated \(Ne\approx12,300\), and assuming an average
-generation time of 29 years I converted the inferred genetic units to physical
-units. The best-fit model had a roughly two-fold expansion 400 thousand years
-ago, and then exponential growth over the past 20-30 thousand years, with a
-current effective size of \(\approx 63,000\).
+mutation rate across autosomal genes (\(uL\), where \(u\) is the per-base
+mutation rate of a given mutation class, and \(L\) is the total length of the
+coding genome). These values were \((0.1442, 0.3426, 0.0256)\) for synonymous,
+missense, and LOF mutations, respectively. Roughly two thirds of new mutations
+in coding regions are expected to be missense mutations, while only 5\% of new
+mutations are LOF. I fit a demographic model to the synonymous variants, which
+included a population expansion in the deeper past and exponential growth in
+the recent past (Figure \ref{fig:msldemogdfe}A). Using the inferred optimal
+scaled mutation rate, \(\theta=4N_euL\), I estimated \(Ne\approx12,300\), and
+assuming an average generation time of 29 years I converted the inferred
+genetic units to physical units. The best-fit model had a roughly two-fold
+expansion 400 thousand years ago, and then exponential growth over the past
+20-30 thousand years, with a current effective size of \(\approx 63,000\).
 
 Under this demographic model, I fit a gamma distribution for the distribution
 of fitness effects to missense and LOF mutations (Table \ref{tab:msldfe}). For
 each fit, I fixed the scaled mutation rate for each mutation class, so that
-\(\theta_{mis} = \frac{u_{mis}}{u_{syn}} \hat\theta_{syn}\) and \(\theta_{lof} = \frac{u_{lof}}{u_{syn}} \hat\theta_{syn}\), where values of \(u\) were found using
-the GNOMAD mutation model \citep{Karczewski2020-le}. I tested three values for the
-dominance coefficient \(h\): \(0\), \(0.2\) and \(0.5\). For missense mutations, \(h=0\)
-gave a poor fit to the data, and \(h=0.5\) fit best among the three tested
-dominance coefficients. For LOF variants, \(h=0\) also fit poorly, but \(h=0.2\)
-and \(h=0.5\) gave similar likelihoods, highlighting that inferring dominance
-using the SFS is poorly constrained. Regardless of the dominance coefficient
-assumed, however, the vast majority of LOF variants were inferred to be
-strongly deleterious, with only \(\sim10\%\) of new mutations having selection
-coefficients on the order \(1/N_e\) or less.
+\(\theta_{mis} = \frac{u_{mis}}{u_{syn}} \hat\theta_{syn}\) and \(\theta_{lof}
+= \frac{u_{lof}}{u_{syn}} \hat\theta_{syn}\), where values of \(u\) were found
+using the GNOMAD mutation model \citep{Karczewski2020-le}. I tested three
+values for the dominance coefficient \(h\): \(0\), \(0.2\) and \(0.5\). For
+missense mutations, \(h=0\) gave a poor fit to the data, and \(h=0.5\) fit best
+among the three tested dominance coefficients. For LOF variants, \(h=0\) also
+fit poorly, but \(h=0.2\) and \(h=0.5\) gave similar likelihoods, highlighting
+that inferring dominance using the SFS is poorly constrained. Regardless of the
+dominance coefficient assumed, however, the vast majority of LOF variants were
+inferred to be strongly deleterious, with only \(\sim10\%\) of new mutations
+having selection coefficients on the order \(1/N_e\) or less.
 
-\subsection{Multinucleotide mutations and positive LD between linked synonymous variants}\label{multinucleotide-mutations-and-positive-ld-between-linked-synonymous-variants}
+\subsection{Multinucleotide mutations and positive LD between linked synonymous variants}
 
 Multinucleotide mutations (MNMs) are complex mutational events that result in
 multiple mutations occurring on the same haplotype background in a single
@@ -379,31 +444,67 @@ MNM events can be easily incorporated into the moment system with a simple
 adjustment to the mutation operator. Instead of all mutations occurring
 independently in haplotypes with mutations already segregating at the other
 locus, some fraction of new mutations could instead occur spontaneously and
-create a new pair of mutations with initial counts \(n_{AB} = 1\) and \(n_{ab} = n-1\).
+create a new pair of mutations with initial counts \(n_{AB}=1\) and
+\(n_{ab}=n-1\). We can partition $\Psi_n$ into pairs of mutations due to MNM
+events (\(\Psi_n^{MNM}\)) and those due to sequential mutation events
+(\(\Psi_n^{ISM}\)), so that \(\Psi_n=\Psi_n^{MNM}+\Psi_n^{ISM}\). For given
+scaled mutation rates \(\theta=4N_e\mu\), \(\Psi_n^{ISM}\propto\theta^2\) and
+\(\Psi_n^{MNM}\propto p_{MNM}\theta\), where \(p_{MNM}\) is the probability
+that a mutational event causes a multinucleotide mutation. This difference in
+scaling means that \(\Psi_n\) is sensitive to both the overall mutation rate
+\(\theta\) as well as the probability that a mutation is a MNM at a given
+distance.
+
+\subsubsection{Optimization details}
 
 Here, I fit a simple exponential model for the fraction of new mutations at a
-given distance that arose through a MNM event, so that \(P(MNM | d) = Ae^{-\lambda d}\), where \(d\) is the distance separating pairs of mutations. I
-considered all synonymous mutations within genes in the MSL population and used
-the same population size history model as inferred in the DFE section above for
-a demographic control. This left two parameters to be fit, \(A\) and \(\lambda\),
-which I fit to the binned decay curve of \(\sigma_d^1\). I needed to assume an
-average per-base recombination rate \(r\) across gene regions, and tested a
-number of values between \(10^{-9}\) and \(2\times 10^{-8}\). The optimization was
-insensitive to the chosen value of \(r\), because the decay of positive LD occurs
-rapidly. For any plausible value of \(r\), \(\sigma_d^1\) decays to zero well
-before distances between pairs have scaled recombination rates \(\rho=4 N_e r d \sim 1\), and expected statistics for \(\rho \ll 1\) vary only negligibly.
+given distance that give rise to a MNM event, so that \(p_{MNM,d} = P(MNM | d)
+= Ae^{-\lambda d}\), where \(d\) is the distance separating pairs of mutations
+in base pairs. I considered all synonymous mutations within genes in the MSL
+data and used the same population size history model as inferred in the DFE
+section above for a demographic control. This left two parameters to be fit,
+\(A\) and \(\lambda\), which I fit to the binned decay curve of \(\sigma_d^1\)
+using the midpoint of each bin as the distance for that bin. I needed to assume
+an average per-base recombination rate \(r\) across gene regions, and tested a
+number of values between \(10^{-9}\) and \(2\times 10^{-8}\). Optimization was
+insensitive to the chosen value of \(r\), because the decay of positive LD
+occurs rapidly. For any plausible value of \(r\), \(\sigma_d^1\) decays to zero
+well before distances between pairs have scaled recombination rates \(\rho=4
+N_e r d \sim 1\), and expected statistics for \(\rho \ll 1\) vary negligibly.
+
+To perform optimization, I assumed a Guassian likelihood function within each
+bin using variances estimated via bootstrap replicates from sampling genes with
+replacement. A composite likelihood was computed by taking the product of
+likelihoods across bins. I used the estimate of \(Ne\approx12,300\) from the
+DFE optimization using MSL data, a coding mutation rate of
+\(\mu=1.33\times10^{-8}\) \citep{Karczewski2020-le}, and the fraction of coding
+mutations that result in synonymous mutations was assumed to be (assuming a
+ration of nonsynonymous mutations to synonymous mutations of 2.5:1). Thus, the
+scaled mutation rate was \(\theta=4\times
+N_e\times\mu\times\frac{1}{3.5}\approx1.87\times10^{-4}\).
+
+\subsubsection{MNM optimization results and discussion}
 
 In fitting the LD decay of \(\sigma_d^1\), the best fit parameters were
-\(A=0.132\), and \(\lambda=0.0103\). An exponential scaling of \(0.01\) implies that
-the vast majority of new mutations \emph{pairs} do not occur via MNMs for distances
-greater than 200 bp, though a substantial fraction (\(10-15\%\)) occur via MNMs
-for very tightly linked loci with distances on the order \(0-50\) base pairs. It
-is important to note that this does not mean that \(10-15\%\) of new mutations
-occur via MNMs, since this fraction is conditioned on two mutations occurring
-at short distances.
+\(A=2.44\times10^{-5}\), and \(\lambda=0.00919\). Thus, only a small fraction
+of new mutations were inferred to cause MNM events (\(\ll1\%\)), and
+\(1/\lambda\approx 100\) means that the proportion of mutation events that
+cause MNM decays quickly within a few hundred base pairs.
+
+However, because of the differences in scaling of \(\Psi_n^{ISM}\) and
+\(\Psi_n^{MNM}\) (with the square of \(\theta\) vs linearly as
+\(p_{MNM}\theta\)), the number of \emph{observed} pairs of mutations at a given
+distance that arose due to a MNM event is much larger. A rough estimate given
+the assumed mutation rate and inferred parameters is that \(p_{MNM}\theta /
+\theta^2 \approx 10\%\) of pairs of synonymous mutations observed at
+\(d\approx0\) are due to MNM events, roughly \(p_{MNM}e^{-\lambda 100}\theta /
+\theta^2 \approx 4\%\) at \(d=100\) base pairs, and only about
+\(p_{MNM}e^{-\lambda 400}\theta / \theta^2 \approx 0.25\%\) at \(d=400\) base
+pairs. This inference is very sensitive to the assumed mutation rate and the
+proportion of mutations that cause synonymous vs nonsynonymous variants, and
+future work will be needed to refine these estimates.
 
 \subsection{Grouping Thousand Genomes populations based on clustering}
-\label{grouping-thousand-genomes-populations-based-on-clustering}
 
 The large confidence intervals for measurements of signed LD could be driven by
 either averaging over relatively few observed pairs of mutations, or due to
@@ -432,15 +533,13 @@ fundamentally limited by evolutionary history and genome biology (i.e.~past
 population sizes, mutation and recombination rates) than by sample sizes.
 
 
-\addcontentsline{toc}{section}{References}
 \bibliographystyle{genetics}
 \bibliography{paper}
 
 \clearpage
 \newpage
 
-\addcontentsline{toc}{section}{Supporting tables}
-\section*{Supporting tables}
+\section{Supporting tables}
 
 \begin{table}[ht!]
     \centering
@@ -708,15 +807,16 @@ KHV & Synonymous & All & -0.576\\
 \clearpage
 \newpage
 
-\addcontentsline{toc}{section}{Supporting Figures}
-\section*{Supporting figures}
+\section{Supporting figures}
+
+\textbf{all supporting figures need captions}
 
 \begin{figure}[ht!]
     \centering
     \includegraphics{../figures/jackknife}
     \caption{
-        \textbf{Accuracy of the jackknife approximation and runtime} Small
-        sample sizes can lead to large error in the moment-closure
+        \textbf{Accuracy of the jackknife approximation and runtime.}
+        Small sample sizes can lead to large error in the moment-closure
         approximation for larger recombination distances or selection
         coefficients. Generally, the jackknife approximation breaks down for
         recombination rates greater than \(\rho\approx30\). While increasing
@@ -725,6 +825,20 @@ KHV & Synonymous & All & -0.576\\
         used sample sizes between 40 and 80.
     }
     \label{fig:jackknife}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    %\includegraphics{}
+    \caption{\textbf{Validation figures.}}
+    \label{fig:validation}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    %\includegraphics{}
+    \caption{\textbf{Validation figures.}}
+    \label{fig:last_validation}
 \end{figure}
 
 \begin{figure}[ht!]
@@ -880,6 +994,15 @@ KHV & Synonymous & All & -0.576\\
 
 \begin{figure}[ht!]
     \centering
+    \includegraphics[width=\textwidth]{../figures/data_within_between}
+    \caption{
+        \textbf{Within vs between.}
+    }
+    \label{fig:between_domains}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
     \includegraphics{../figures/mutations_in_genes}
     \caption{
         \textbf{Correlation between numbers of missense and synonymous mutations
@@ -912,13 +1035,13 @@ KHV & Synonymous & All & -0.576\\
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics{../figures/msl_mnms}
+    \includegraphics{../figures/msl_mnms.v2}
     \caption{
         \textbf{Optimization of fraction of new mutations arising via
         multinucleotide mutations by distance.} A simple exponential function was fit
         to describe the probability that a pair of mutations arose through a MSM event
         at a given distance \(d\), as \(Ae^{-\lambda d}\). Across all recombination rates
-        tested, the best fit parameters were \(A=0.13\) and \(\lambda=0.010\).
+        tested, the best fit parameters were \(A=0.11\) and \(\lambda=0.0085\).
     }
     \label{fig:mslmnms}
 \end{figure}
