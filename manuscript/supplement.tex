@@ -320,13 +320,18 @@ Section~\ref{sec:bgs} for simulations with many linked loci).
 
 Simulations had diploid population sizes of 5000 and I drew haploid sample
 sizes of 50 (25 diploids), with recombination rates varying from \(0\) to
-\(0.001\) (or \(\rho=0-10\)). I tested selection coefficients of \(s\) of 0,
-\(-2\times10^{-5}\), \(-2\times10^{-4}\), and \(-2\times10^{-3}\) (or
-\(\gamma=0\), \(-0.2\), \(-2\), and \(-10\)). Epistasis was set to
-\(\epsilon=0\), \(-0.5\), and \(0.5\). Conditional distributions of the
+\(0.001\) (or \(\rho=0-20\)). I tested selection coefficients of \(s\) of 0,
+\(-1\times10^{-5}\), \(-2\times10^{-4}\), and \(-2\times10^{-3}\) (or
+\(\gamma=0\), \(-0.1\), \(-2\), and \(-20\)). Epistasis was set to
+\(\epsilon=0\), \(-0.5\), and \(0.5\), and dominance was set to either
+\(h=0.5\) (additive) or \(0.1\) (recessive). Conditional distributions of the
 two-locus sampling distribution show good agreement between numerical solutions
 and simulations, and residuals do not show any directional bias
-(Figures~\ref{fig:validation}--\ref{fig:last_validation}).
+(Figures~\ref{fig:validation}--\ref{fig:last_validation}). The Support Figures
+includes a handful of these comparisons, and the full set of comparisons (over
+40 in total across the range of parameters listed above), simulation, and
+plotting scripts in Python are available at
+\url{https://github.com/apragsdale/two_locus_selection}.
 
 To assess the accuracy under dominance, I simulated under the
 \citet{Roze2021-cf} scenarios (\(N=1000\), \(r=0.0001\) and \(0.001\), and
@@ -371,10 +376,32 @@ recessive variants.
 
 \subsection{Frequency dependence of signed LD}
 
-\begin{itemize}
-    \item Why did we do it
-    \item How did we do it.. quite simple
-\end{itemize}
+Mutations at different frequencies are expected to have different signs and
+magnitudes of LD. For example, rare mutations show highly positive LD, even for
+pairs of neutral mutations \citep{Good2022-ot}. Mutations of different
+functional classes (synonymous, missense, and loss-of-function, for example)
+are expected to segregate at different average frequencies, and average
+selection pressures are observed to be greater within annotated conserved
+domains, with stronger purifying selection driving allele frqeuencies to
+relatively lower levels among missense and loss-of-function variants. Since
+mutations of difference classes and locations have different average
+frequencies, this may drive differences in patterns of LD when comparing
+between them.
+
+One approach to lessen the impact of differing allele frequencies when
+comparing between classes of mutations is to condition on allele frequencies.
+From sampling data with observed derived allele counts, it is simplest to
+condition on those allele counts \citep[e.g.,\(n_A,n_B=2\),][]{Garcia2021-zn},
+and to compute \(\sigma_d^1\) and \(\sigma_d^2\) from pairs of mutations that
+satisfy that condition. In the simulations with haploid sample sizes \(n=50\)
+(Figures~\ref{fig:toy},~\ref{fig:relate_dom},~\ref{fig:toy_sd2}--\ref{fig:relate_dom_sd2}),
+I partitioned allele counts as uncommon (\(n_A, n_B \leq 4\), or \(\hat{f_A},
+\hat{f_B} \leq 0.08\)), or common (\(n_A, n_B \geq 5\)). In the
+\citet{1000_Genomes_Project_Consortium2015-zq} data, in which most populations
+have diploid sample sizes between 80 and 100, I considered \(n_A, n_B \geq 2\),
+\(3\leq n_A, n_B \leq 8\), and \(n_A, n_B \geq 9\) (or rare, uncommon, and
+common (\(\gtrsim 0.05\))). Functions to compute allele-count-conditioned
+statistics from \(\Psi_n\) are packaged within \texttt{moments}.
 
 \section{Data analysis}
 
@@ -430,6 +457,7 @@ inferred to be strongly deleterious, with only \(\sim10\%\) of new mutations
 having selection coefficients on the order \(1/N_e\) or less.
 
 \subsection{Multinucleotide mutations and positive LD between linked synonymous variants}
+\label{sec:mnm}
 
 Multinucleotide mutations (MNMs) are complex mutational events that result in
 multiple mutations occurring on the same haplotype background in a single
@@ -560,7 +588,11 @@ population sizes, mutation and recombination rates) than by sample sizes.
         $ab$ / $ab$ & $1$ & $1$ & $1$\\
         \bottomrule
     \end{tabular}
-    \caption{General selection model for diploids and dominance models.}
+    \caption{
+        \textbf{General selection model for diploids and dominance models.}
+        Different dominance and interactive effects can be implemented by
+        assigning the appropriate values of $s$.
+    }
     \label{tab:selmodels}
 \end{table}
 
@@ -577,7 +609,7 @@ population sizes, mutation and recombination rates) than by sample sizes.
         $ab$ & $1$\\
         \bottomrule
     \end{tabular}
-    \caption{Haploid epistasis model.}
+    \caption{\textbf{Haploid epistasis model.}}
     \label{tab:epistasis}
 \end{table}
 
@@ -606,17 +638,28 @@ population sizes, mutation and recombination rates) than by sample sizes.
         KHV & Kinh in Ho Chi Minh City, Vietnam & East Asia\\
         \bottomrule
     \end{tabular}
-    \caption{Thousand Genomes Project population descriptions for populations used in this study.}
+    \caption{
+        \textbf{
+            Thousand Genomes Project population descriptions
+            for populations used in this study.
+        }
+    }
     \label{tab:1kgpops}
 \end{table}
 
 \begin{longtable}[t]{lllr}
-\caption{\label{tab:tajimasD}Tamija's $D$ for classes of coding mutations, both within annotated domains and outside of domains.}\\
+\caption{\label{tab:tajimasD}
+\textbf{Tamija's $D$ for classes of coding mutations.} Here, we partitioned by
+synonymous, missense, and nonsense mutationsi, and considered all mutations gene-wide,
+mutations falling within annotated conserved elements,
+and mutations falling outside of those
+elements.}\\
 \toprule
 Population & Mutation type & Region & Tajima's D\\
 \midrule
 \endfirsthead
-\caption[]{\label{tab:tajimasD}Tamija's $D$ for classes of coding mutations, both within annotated domains and outside of domains. \textit{(continued)}}\\
+\caption[]{\label{tab:tajimasD}Tamija's $D$ for classes of coding mutations.
+\textit{(continued)}}\\
 \toprule
 Population & Mutation type & Region & Tajima's D\\
 \midrule
@@ -795,6 +838,7 @@ KHV & Synonymous & All & -0.576\\
         \bottomrule
     \end{tabular}
     \caption{
+        \textbf{Distribution of fitness effects inferred for nonsynonymous mutations.}
         DFEs inferred for missense and loss-of-function variants in MSL for varying
         values of $h$. General patterns are consistent across different chosen values
         of $h$, although $h=0$ results in poorer fits for both missense and LOF variants.
@@ -809,8 +853,6 @@ KHV & Synonymous & All & -0.576\\
 
 \section{Supporting figures}
 
-\textbf{all supporting figures need captions}
-
 \begin{figure}[ht!]
     \centering
     \includegraphics{../figures/jackknife}
@@ -819,7 +861,8 @@ KHV & Synonymous & All & -0.576\\
         Small sample sizes can lead to large error in the moment-closure
         approximation for larger recombination distances or selection
         coefficients. Generally, the jackknife approximation breaks down for
-        recombination rates greater than \(\rho\approx30\). While increasing
+        recombination rates greater than \(\rho\gtrsim50\), depending on
+        the sample size. While increasing
         sample size leads to more accurate solutions, it comes at the cost of
         both increased runtime and memory usage. Most analyses in this paper
         used sample sizes between 40 and 80.
@@ -829,16 +872,70 @@ KHV & Synonymous & All & -0.576\\
 
 \begin{figure}[ht!]
     \centering
-    %\includegraphics{}
-    \caption{\textbf{Validation figures.}}
-    \label{fig:validation}
+    \includegraphics[width=\textwidth]{../simulations/discrete/plots/comp_Ne_5000_n_50_r_0.0_s_0.0_e_0.0.pdf}
+    \caption{
+        \textbf{Comparison between numerics and simulations for fully linked neutral loci.}
+        With no recombination (\(r=0\)) and no selection, the moments solution is
+        exact, and computing \(sigma_d^2\) from \(\Psi_n\) gives 5/11, the analytic
+        solution from \citet{Ohta1969-ie}.
+        Discrepancies between numerical expectations and the simulations are
+        due to simulation noise, with Anscombe Poisson residuals roughly normally
+        distributed around zero \citep{Pierce1986-um}.
+        In the bar plots, ``E'' (blue) are expectations from \texttt{moments} and
+        ``D'' are simulated data.
+    }
+    \label{fig:validation1}
 \end{figure}
 
 \begin{figure}[ht!]
     \centering
-    %\includegraphics{}
-    \caption{\textbf{Validation figures.}}
-    \label{fig:last_validation}
+    \includegraphics[width=\textwidth]{../simulations/discrete/plots/comp_Ne_5000_n_50_r_0.001_s_0.002_e_0.pdf}
+    \caption{
+        \textbf{Comparison to simulations for loosely linked additively selected loci.}
+        \(Ne=5000\), \(r=0.001\), and \(s=-0.002\) (\(\rho=20\) and \(\gamma=-20\)
+        at both loci), with no epistatic interactions (\(\epsilon=0\)).
+        E: \texttt{moments} expectations, D: simulated data.
+    }
+    \label{fig:validation2}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../simulations/discrete/plots/comp_Ne_5000_n_50_r_5e-05_s_0.0002_e_-0.5.pdf}
+    \caption{
+        \textbf{Comparison to simulations with antagonistic epistasis.}
+        \(Ne=5000\), \(r=0.00005\), \(s=-0.0002\) (\(\rho=1\) and \(\gamma=-2\)
+        at both loci), and \(\epsilon=-0.5\).
+        E: \texttt{moments} expectations, D: simulated data.
+    }
+    \label{fig:validation3}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../simulations/discrete/plots/comp_Ne_5000_n_50_r_5e-05_s_0.0002_e_-0.5.pdf}
+    \caption{
+        \textbf{Comparison to simulations with synergistic epistasis.}
+        \(Ne=5000\), \(r=0.00005\), \(s=-0.0002\) (\(\rho=1\) and \(\gamma=-2\)
+        at both loci), and \(\epsilon=0.5\).
+        E: \texttt{moments} expectations, D: simulated data.
+    }
+    \label{fig:validation4}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../simulations/discrete/plots/comp_Ne_5000_n_50_r_5e-06_s_0.0002_h_0.1.pdf}
+    \caption{
+        \textbf{Comparison to simulations with site-wise dominance.}
+        \(Ne=5000\), \(r=5\times10^{-6}\), and \(s=-0.0002\) (\(\rho=0.1\) and
+        \(\gamma=-2\)), with \(h=0.1\) at both loci and no
+        epistatic interactions (\(\epsilon=0\)).
+        E: \texttt{moments} expectations, D: simulated data.
+        Additional comparisons to simulated data are availabe at
+        \texttt{https://github.com/apragsdale/two\_locus\_selection}.
+    }
+    \label{fig:validation5}
 \end{figure}
 
 \begin{figure}[ht!]
@@ -846,7 +943,14 @@ KHV & Synonymous & All & -0.576\\
     \includegraphics{../figures/bgs_gamma_-1.0_h_0.5_n_50}
     \caption{
         \textbf{Background selection with slightly deleterious mutations.}
-        Using an individual based forward simulator
+        Using an individual based forward simulator \citep{Thornton2019-qc}, I
+        simulated many replicates of 1Mb regions with high mutation rates of
+        selected mutations (see Section~\ref{sec:bgs} for details). Here,
+        many linked additive weakly selected mutations slightly distort the
+        SFS for both selected and neutral mutations. \(\sigma_d^2\) is reduced
+        relative to two-locus expectations within background selection, and
+        Hill-Robertson interference effects are slightly diminished with
+        \(\sigma_d^1\) not as strongly negative as expected.
     }
     \label{fig:bgs1}
 \end{figure}
@@ -856,6 +960,11 @@ KHV & Synonymous & All & -0.576\\
     \includegraphics{../figures/bgs_gamma_-20.0_h_0.5_n_50}
     \caption{
         \textbf{Background selection with moderately deleterious mutations.}
+        In the case of many linked strongly selected additive mutations, neither
+        selected nor neutral statistics deviate dramatically from two-locus expectations.
+        The SFS from the simulated data matches expectations, with a slight excess
+        of selected mutations. LD is also largely unaffected, with \(\sigma_d^2\)
+        matching expectations and \(\sigma_d^1\) fluctuating near zero as expected.
     }
     \label{fig:bgs2}
 \end{figure}
@@ -865,6 +974,13 @@ KHV & Synonymous & All & -0.576\\
     \includegraphics{../figures/bgs_gamma_-1.0_h_0.0_n_50}
     \caption{
         \textbf{Associative overdominance due to slightly deleterious recessive mutations.}
+        The presence of many linked weakly selected recessive mutations can cause
+        measues of diversity to have large increases over single- and two-locus
+        expectations. The SFS for both neutral and selected mutations both show
+        a very large excess of common variants (note the log scale), and \(\sigma_d^2\)
+        are also increased over two-locus expectations for both classes of mutations.
+        Still, \(\sigma_d^1\) remains 0 for neutral mutations and is not as strongly
+        negative for pairs of selected mutations.
     }
     \label{fig:bgs3}
 \end{figure}
@@ -874,6 +990,13 @@ KHV & Synonymous & All & -0.576\\
     \includegraphics{../figures/bgs_gamma_-20.0_h_0.1_n_80}
     \caption{
         \textbf{Background selection with moderately deleterious recessive mutations.}
+        More strongly deleterious recessive mutations do not show as dramatic of
+        deviations from expectations as the case of weakly deleterious recessive
+        mutations. The neutral SFS is reduced, and we observe more selected mutations
+        at higher frequencies than expected. LD is also only weakly distorted from
+        two-locus expectations. Notably, we see positive LD (matching between
+        simulations and expectations) for strongly deleterious recessive mutations,
+        as predicted in \citet{Roze2021-cf}.
     }
     \label{fig:bgs4}
 \end{figure}
@@ -882,7 +1005,11 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics{../figures/demog_bottle_expand.sd2}
     \caption{
-        \textbf{.}
+        \textbf{Time series of squared LD under bottleneck 
+        and expansion histories with epistasis.}
+        Bottlenecks increase \(\sigma_d^2\) (squared LD),
+        while expansions tend to decrease squared LD.
+        Dashed lines show neutral expectations.
     }
     \label{fig:toy_sd2}
 \end{figure}
@@ -891,7 +1018,13 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics{../figures/demog_bottle_expand.dominance}
     \caption{
-        \textbf{.}
+        \textbf{Time series of signed LD under bottleneck 
+        and expansion histories with dominance.}
+        Gene-based dominance, unlike site-wise dominance effects, can cause
+        large positive signed LD, similar to compensatory mutations or
+        antagonistic epistasis. In general, common variants are more
+        stable under population size changes than rare variants.
+        Dashed lines show neutral expectations.
     }
     \label{fig:toy_dom}
 \end{figure}
@@ -900,7 +1033,11 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics{../figures/demog_bottle_expand.dominance.sd2}
     \caption{
-        \textbf{.}
+        \textbf{Time series of squared LD under bottleneck 
+        and expansion histories with dominance.}
+        Similar to the cases with epistasis, bottlenecks tend to increase
+        \(\sigma_d^2\) and expansions decrease squared LD.
+        Dashed lines show neutral expectations.
     }
     \label{fig:toy_dom_sd2}
 \end{figure}
@@ -909,7 +1046,15 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics{../figures/demog_YRI_CEU}
     \caption{
-        \textbf{.}
+        \textbf{Time series of signed LD under inferred models of human population
+        size history with with epistasis.}
+        Similar to the instantaneous size changes in the toy models
+        (Figure~\ref{fig:toy}), bottlenecks tend to make signed LD more extreme.
+        However, in the case of strong selection and antagonistic epistasis,
+        the CEU \(\sigma_d^1\) trajector decreases relative to the YRI
+        trajectory. Again, statistics for rare variants fluctuate more rapidly
+        than common variants.
+        Dashed lines show neutral expectations.
     }
     \label{fig:relate}
 \end{figure}
@@ -918,7 +1063,11 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics{../figures/demog_YRI_CEU.sd2}
     \caption{
-        \textbf{.}
+        \textbf{Time series of squared LD under inferred models of human population
+        size history with with epistasis.}
+        Size reductions, such as bottlenecks in the recent past of Eurasian populations,
+        increase squared LD.
+        Dashed lines show neutral expectations.
     }
     \label{fig:relate_sd2}
 \end{figure}
@@ -927,7 +1076,11 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics{../figures/demog_YRI_CEU.dominance.sd2}
     \caption{
-        \textbf{.}
+        \textbf{Time series of squared LD under inferred models of human population
+        size history with with dominance.}
+        Again, bottlenecks increase squared LD relative to populations that did
+        not experience such strong size reductions in their history.
+        Dashed lines show neutral expectations.
     }
     \label{fig:relate_dom_sd2}
 \end{figure}
@@ -938,6 +1091,13 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{LD decay for pairs of synonymous and missense mutations
         in the same gene.}
+        When taking gene-wide averages of LD, there are no obvious differences
+        between the LD decay curves of synonymous and missense mutations.
+        Each panel contains five LD decay curves for each mutation class, one for
+        each \citet{1000_Genomes_Project_Consortium2015-zq} population in the
+        continental groupings. Shared demographic history leads to strong
+        correlation in statistics between populations in the same continental
+        groups.
     }
     \label{fig:LDgene}
 \end{figure}
@@ -948,6 +1108,11 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{LD decay for pairs of synonymous and missense mutations
         that fall inside the same domain.}
+        At short distances between SNPs that both fall within sthe same conserved
+        annotated domain, missense mtuations show consistently
+        larger signed LD than synonymous variants. This may be caused by
+        antagonistic epistasis or compensatory effects between pairs of
+        nearby missense mutations.
     }
     \label{fig:LDwithin}
 \end{figure}
@@ -958,6 +1123,12 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{LD decay for pairs of synonymous and missense mutations
         outside of domains.}
+        Outside of conserved domains,
+        missense mutations have reduced signed LD at short distances
+        compared to synonymous mutations,
+        opposite the pattern observed within domains (Figure~\ref{fig:LDwithin}).
+        This pattern is consistent with Hill-Robertson interference between
+        missense mutations outside of conserved elements.
     }
     \label{fig:LDoutside}
 \end{figure}
@@ -968,6 +1139,11 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{LD for pairs of synonymous and missense mutations within the
         same domain and outside domains at matched distances.}
+        Showing the five populations in the Thousand Genomes African group.
+        We observe increased LD between missense mutations within domains,
+        but decrased LD outside of domains at matched distances. This pattern
+        holds when conditioning on non-rare variation (\(n_A, n_B \geq 9\),
+        MAF \(\gtrsim 0.05\)).
     }
     \label{fig:domainsAFR}
 \end{figure}
@@ -978,6 +1154,11 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{LD for pairs of synonymous and missense mutations within the
         same domain and outside domains at matched distances.}
+        Showing the five populations in the Thousand Genomes European group.
+        We again observe increased LD between missense mutations within domains,
+        but decrased LD outside of domains at matched distances. And again,
+        this pattern holds when conditioning on non-rare variation
+        (\(n_A, n_B \geq 9\), MAF \(\gtrsim 0.05\)).
     }
     \label{fig:domainsEUR}
 \end{figure}
@@ -988,6 +1169,12 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{LD for pairs of synonymous and missense mutations within the
         same domain and outside domains at matched distances.}
+        Showing the five populations in the Thousand Genomes East Asian group.
+        As with the African and European data,
+        wobserve increased LD between missense mutations within domains,
+        but decrased LD outside of domains at matched distances. And again,
+        this pattern holds when conditioning on non-rare variation
+        (\(n_A, n_B \geq 9\), MAF \(\gtrsim 0.05\)).
     }
     \label{fig:domainsEAS}
 \end{figure}
@@ -996,7 +1183,16 @@ KHV & Synonymous & All & -0.576\\
     \centering
     \includegraphics[width=\textwidth]{../figures/data_within_between}
     \caption{
-        \textbf{Within vs between.}
+        \textbf{LD for pairs of synonymous and missense mutations both within the same
+        domain and in differing domains.}
+        In each panel (one for each population), the left two data points show signed
+        LD between mutations that fall within the same domain, and the right two
+        data points show signed LD between mutations falling within domains but
+        in \emph{different} domains within the same protein-coding gene. Distances
+        are not matched between these data classes (as between-domain pairs are
+        typically more distant than within-domain pairs). Increased LD between
+        missense mutations is only observed for pairs of mutations within the same
+        domain, but not between domains.
     }
     \label{fig:between_domains}
 \end{figure}
@@ -1007,6 +1203,10 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Correlation between numbers of missense and synonymous mutations
         within each gene.}
+        Human genes have different sizes and sequence content, so they may differ in the
+        numbers of missense and synonymous mutations observed within them.
+        The number of missense mutations within a gene is predicted well by
+        the number of synonymous mutations (\(r=0.86\)).
     }
     \label{fig:mutCorrGene}
 \end{figure}
@@ -1017,6 +1217,11 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Correlation between numbers of missense and synonymous mutations
         within each annotated domain.}
+        Domains are typically much smaller than the average gene-size, and while
+        the number of synonymous mutations within a domain is moderately predictive
+        of the number of missense mutations within the same domain (\(r=0.57\)),
+        this correlation is weaker than the correlation in gene-wide mutation
+        counts (Figure~\ref{fig:mutCorrGene}).
     }
     \label{fig:mutCorrDomain}
 \end{figure}
@@ -1038,10 +1243,16 @@ KHV & Synonymous & All & -0.576\\
     \includegraphics{../figures/msl_mnms.v2}
     \caption{
         \textbf{Optimization of fraction of new mutations arising via
-        multinucleotide mutations by distance.} A simple exponential function was fit
-        to describe the probability that a pair of mutations arose through a MSM event
-        at a given distance \(d\), as \(Ae^{-\lambda d}\). Across all recombination rates
-        tested, the best fit parameters were \(A=0.11\) and \(\lambda=0.0085\).
+        multinucleotide mutations by distance.} 
+        A simple exponential function was fit to LD decay of synonymous mutations,
+        to describe the probability that a given mutation event is a multinucleotide
+        mutation event that spontaneously gives rise to a pair of perfectly linked
+        mutations at count \(1/2N\).
+        Fitting \(Ae^{-\lambda d}\) to mutations (see Section~\ref{sec:mnm}),
+        the best fit parameters across all recombination rates
+        tested were \(A=2.4\times10^{-5}\) and \(\lambda=0.0092\), showing that even
+        small rates of multinucleotide mutation events can cause increased signed
+        LD at short distances.
     }
     \label{fig:mslmnms}
 \end{figure}
