@@ -31,23 +31,23 @@ populations = {
 for continent, pops in populations.items():
     for pop in pops:
         ld_pop = pickle.load(
-            open(f"../analysis/parsed_data_v2/{pop}.unphased.all.bp", "rb")
+            open(f"../analysis/parsed_data_v2/{pop}.unphased.all.0.02_to_0.1.bp", "rb")
         )
         data[pop] = ld_pop
         se_pop = pickle.load(
             open(
-                f"../analysis/parsed_data_v2/{pop}.unphased.all.SEs.bp",
+                f"../analysis/parsed_data_v2/{pop}.unphased.all.SEs.0.02_to_0.1.bp",
                 "rb",
             )
         )
         SE[pop] = se_pop
         ld_pop = pickle.load(
-            open(f"../analysis/parsed_data_v2/{pop}.unphased.domains.bp", "rb")
+            open(f"../analysis/parsed_data_v2/{pop}.unphased.domains.0.02_to_0.1.bp", "rb")
         )
         data_dom[pop] = ld_pop
         se_pop = pickle.load(
             open(
-                f"../analysis/parsed_data_v2/{pop}.unphased.domains.SEs.bp",
+                f"../analysis/parsed_data_v2/{pop}.unphased.domains.0.02_to_0.1.SEs.bp",
                 "rb",
             )
         )
@@ -322,9 +322,9 @@ ax2.set_ylim(-0.2, 1)
 #ax4.set_title("$3 \leq n_A, n_B \leq 8$")
 
 ax3 = plt.subplot2grid(dims, (5, 1), rowspan=3)
-plot_domain_data(pops, "geq9", ax3)
+plot_domain_data(pops, "common", ax3)
 ax3.set_xlabel("Populations")
-ax3.set_title("$n_A, n_B \geq 9$")
+ax3.set_title("$p_A, p_B \gtrsim 0.1$")
 ax3.sharey(ax2)
 
 ## plots of LD decay within and outside of domains for AFR populations
@@ -437,16 +437,16 @@ fig2 = plt.figure(98765, figsize=(6.5, 7))
 fig2.clf()
 i = 0
 for pop in populations["Africa"]:
-    for categ in ["all", "leq2", "3to8", "geq9"]:
+    for categ in ["all", "rare", "uncommon", "common"]:
         ax = plt.subplot(5, 4, i + 1)
         if i == 0:
             ax.set_title("All pairs")
         elif i == 1:
-            ax.set_title(r"$n_A, n_B \leq 2$")
+            ax.set_title("Rare variants\n($p_A, p_B \lesssim 0.02$)")
         elif i == 2:
-            ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
+            ax.set_title("Uncommon variants\n($0.02 \lesssim p_A, p_B \lesssim 0.1$)")
         elif i == 3:
-            ax.set_title(r"$n_A, n_B \geq 9$")
+            ax.set_title("Common variants\n($p_A, p_B \gtrsim 0.1$)")
         plot_domain_data([pop], categ, ax)
         if i % 4 == 0:
             ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
@@ -465,16 +465,16 @@ fig3 = plt.figure(98764, figsize=(6.5, 7))
 fig3.clf()
 i = 0
 for pop in populations["Europe"]:
-    for categ in ["all", "leq2", "3to8", "geq9"]:
+    for categ in ["all", "rare", "uncommon", "common"]:
         ax = plt.subplot(5, 4, i + 1)
         if i == 0:
             ax.set_title("All pairs")
         elif i == 1:
-            ax.set_title(r"$n_A, n_B \leq 2$")
+            ax.set_title("Rare variants\n($p_A, p_B \lesssim 0.02$)")
         elif i == 2:
-            ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
+            ax.set_title("Uncommon variants\n($0.02 \lesssim p_A, p_B \lesssim 0.1$)")
         elif i == 3:
-            ax.set_title(r"$n_A, n_B \geq 9$")
+            ax.set_title("Common variants\n($p_A, p_B \gtrsim 0.1$)")
         plot_domain_data([pop], categ, ax)
         if i % 4 == 0:
             ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
@@ -492,16 +492,16 @@ fig4 = plt.figure(98763, figsize=(6.5, 7))
 fig4.clf()
 i = 0
 for pop in populations["East Asia"]:
-    for categ in ["all", "leq2", "3to8", "geq9"]:
+    for categ in ["all", "rare", "uncommon", "common"]:
         ax = plt.subplot(5, 4, i + 1)
         if i == 0:
             ax.set_title("All pairs")
         elif i == 1:
-            ax.set_title(r"$n_A, n_B \leq 2$")
+            ax.set_title("Rare variants\n($p_A, p_B \lesssim 0.02$)")
         elif i == 2:
-            ax.set_title(r"$3 \leq n_A, n_B \leq 8$")
+            ax.set_title("Uncommon variants\n($0.02 \lesssim p_A, p_B \lesssim 0.1$)")
         elif i == 3:
-            ax.set_title(r"$n_A, n_B \geq 9$")
+            ax.set_title("Common variants\n($p_A, p_B \gtrsim 0.1$)")
         plot_domain_data([pop], categ, ax)
         if i % 4 == 0:
             ax.set_ylabel(f"{pop}\n" + r"$\sigma_d^1$")
