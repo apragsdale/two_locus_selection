@@ -235,7 +235,7 @@ fig.clf()
 
 grids = (2, 10)
 
-ax1 = plt.subplot2grid(grids, (0, 0), colspan=4)
+ax1 = plt.subplot2grid(grids, (0, 0), colspan=5)
 
 fs_neu = moments.Demographics1D.snm([10]) * theta
 ax1.plot(fs_neu, "o--", color=colors[0], ms=3, lw=0.5, label="Neutral")
@@ -268,7 +268,7 @@ ax1.text(
 
 ax1.legend(loc="center right")
 
-ax2 = plt.subplot2grid(grids, (0, 4), colspan=4, projection="3d")
+ax2 = plt.subplot2grid(grids, (0, 5), colspan=3, projection="3d")
 
 plot_3d(ax2, F)
 
@@ -283,7 +283,7 @@ ax2.text(10, -2.5, -1, "10", fontsize=6)
 ax2.text(0, 12, 0, "$n_{aB}$")
 
 fig.text(
-    0.70,
+    0.75,
     0.95,
     "Two-locus haplotype sampling distribution",
     fontsize=7,
@@ -291,7 +291,7 @@ fig.text(
     ha="center",
 )
 fig.text(
-    0.70,
+    0.75,
     0.91,
     r"($2Ns_A = -2, 2Ns_B=-2, \epsilon=0$)",
     fontsize=7,
@@ -299,19 +299,19 @@ fig.text(
     ha="center",
 )
 
-fig.text(0.75, 0.80, "\\underline{Summaries:}", fontsize=6, ha="left", va="center")
-fig.text(0.75, 0.75, rf"$r^2 = {get_r2(F):.3f}$", fontsize=6, ha="left", va="center")
+fig.text(0.8, 0.85, "\\underline{Summaries:}", fontsize=6, ha="left", va="center")
+fig.text(0.8, 0.81, rf"$r^2 = {get_r2(F):.3f}$", fontsize=6, ha="left", va="center")
 fig.text(
-    0.75,
-    0.70,
+    0.8,
+    0.77,
     rf"$\sigma_d^2 = {F.D2() / F.pi2():.3f}$",
     fontsize=6,
     ha="left",
     va="center",
 )
 fig.text(
-    0.75,
-    0.65,
+    0.8,
+    0.73,
     rf"$\sigma_d^1 = {F.D() / F.pi2():.3f}$",
     fontsize=6,
     ha="left",
@@ -355,7 +355,7 @@ ax5.legend(fontsize=5)
 
 fig.tight_layout()
 fig.text(0.02, 0.95, "A", fontsize=8, ha="center", va="center")
-fig.text(0.52, 0.95, "B", fontsize=8, ha="center", va="center")
+fig.text(0.57, 0.95, "B", fontsize=8, ha="center", va="center")
 fig.text(0.04, 0.47, "C", fontsize=8, ha="center", va="center")
 fig.text(0.43, 0.47, "D", fontsize=8, ha="center", va="center")
 fig.text(0.73, 0.47, "E", fontsize=8, ha="center", va="center")

@@ -54,7 +54,7 @@ about the potential of your manuscript.
     made, and I believe that these suggestions have substantially improved the
     paper. Below, my responses to each comment are indented and in blue.
 
-    Some major changes and additions I'd like to highlight:
+    I'd first like to highlight a few of the more substantial changes:
     \begin{itemize}
         \item The addition of a large suite of numerical validations against
             individual-based simulations, as well as a handful of forward
@@ -99,8 +99,8 @@ biases they cause.
     forward simulation. The forward simulations are individual based
     Wright-Fisher simulations, with implementation details in the Supporting
     Material. These comparisons show that the numerical approach introduced in
-    this paper is accurate for weak to moderate recombination and selection
-    strengths ($\rho, \gamma \lesssim 30$).
+    this paper is accurate for the weak to moderate recombination and selection
+    strengths studied in this paper ($\rho, \gamma \lesssim 30$).
     Most simulations only tracked the allele frequencies at the two loci,
     neglecting the background selection-like effects,
     although I also ran a small number of simulations of larger genomic
@@ -146,8 +146,8 @@ bigger impact if it is easy for empirical (not just theoretical!) population
 geneticists to use your scripts.
 
 \begin{response}
-    I fully agree that scripts should be made public, and I have tried to keep
-    and organized an documented/commented repository of all scripts used in the
+    I am happy to make all scripts public, and I have tried to keep
+    an organized an documented/commented repository of all scripts used in the
     analysis here (\url{https://www.github.com/apragsdale/two_locus_selection.git}).
     Additionally, the numerical methods are implemented, documented, and tested
     within the \emph{moments} software (which includes single-locus SFS and
@@ -222,9 +222,11 @@ expected to affect the magnitude.
     In the previous version of the manuscript, I had considered average LD for
     pairs of mutations outside of domains weighted to match the distances between
     mutations observed inside domains. I repeated that analysis here and placed
-    more emphasis on comparing pairs at matching distances. For the LOFs, that
-    is a good point, although how few LOF pairs exist within the same gene makes
-    further subsetting of LOFs difficult. I now include this caveat in the discussion.
+    more emphasis on comparing pairs at matching distances (see Supp Fig 26 for a
+    comparison of density of pairs in differnece classes at given distances).
+    For the LOFs, that is a good point, although how few LOF pairs exist within
+    the same gene makes further subsetting of LOFs difficult.
+    I now include this caveat in the Discussion.
 \end{response}
 
 Some other comments of my own.
@@ -311,13 +313,13 @@ if you can!)
 \begin{response}
     I have extended the methods description for this analysis in the Supplement, as
     well as refined the inference to directy estimate the proportion of mutations
-    that result in MNM events instead of simply fitting the probability that a pair
-    of mutations were caused by a MNM event.
+    that result in MNM events instead of simply fitting the probability that an
+    \emph{observed} pair of mutations at a given distance were caused by a MNM event.
     
     In the previous version of the manuscript, I pointed out (though I think not too
     clearly) that the proportion of pairs of mutations observed at a given distance
-    that arose through a MNM event is different than the proportion of new mutations
-    that are single- vs multi-nucleotide mutation events. The probability that a new
+    that arose through a MNM event is different than the proportion of new mutation events
+    that are single- vs multi-nucleotide mutations. The probability that a new
     mutation results in a MNM can be very small (much less than 1\%), but the proportion
     of mutation pairs we observe that were initially MNM events can be quite high
     (e.g., 5--10\%). I expand on this point in the Supplement.
@@ -395,7 +397,7 @@ for some models, the predictions match up to the simulations.
     and dominance interaction scenarios, comparing the resulting two-locus
     sampling distribution. These are shown in the Supplement and online
     documentation of moments and this manuscript, and show good agreement between
-    simulations and the numerical approach introduced here.
+    simulations (in the absense of BGS) and the numerical approach introduced here.
 \end{response}
 
 3) Analysis of empirical data (Fig 4 and Fig 5): Missense and variants within
@@ -415,11 +417,18 @@ epistasis or compensatory mutations. Matching on allele frequency when
 computing the LD statistics would alleviate this problem.
 
 \begin{response}
-    As described above, I now condition on both alleles being rare, uncommon,
-    or common. From this, we can see that the opposing signals of increased/decreased
+    Thank you for these suggestions. While I had matched pairs of mutations based
+    on distances, I had not matched by allele frequences. As mentioned above,
+    I now condition on both alleles being rare, uncommon, or common and compare
+    LD across these categories.
+    From this, the opposing signals of increased/decreased
     LD between missense mutations within/outside of domains is driven by
-    mutations with frequencies greater than $0.1$. Possible implications of this
-    observation are now expanded on in the Discussion.
+    mutations with frequencies greater than $0.1$. The agreement between
+    high-frequency-conditioned and unconditioned $\sigma_d^1$ is unsurprising,
+    since $\sigma_d^1$ is dominated by mutations at common frequencies (while
+    $r$ and $r^2$ are more sensitive to rare variants).
+    I now include a much larger set of conditioned LD comparisons (in the
+    Supplement, Tables S6--S11 and Figures S20-S24).
 \end{response}
 
 4) Related to point 3 above, when analyzing the empirical data, are the
@@ -484,21 +493,21 @@ deleterious mutations.
 
 4) Caption of Figure 1: I believe that the signs of the synergistic and
 antagonistic epistasis are reversed. Given the definition in Methods, shouldn't
-epsilon be >0 for synergistic epistasis as more deleterious mutations have
+epsilon be $>0$ for synergistic epistasis as more deleterious mutations have
 lower fitness than predicted under multiplicative models? Then, epsilon would
-be <0 for antagonistic epistasis.
+be $<0$ for antagonistic epistasis.
 
 \begin{response}
-    Thank you for catching this, and sorry if it caused any confusion. Caption fixed.
+    Thank you for catching this error, and I'm sorry if it caused any confusion.
+    Caption fixed.
 \end{response}
 
 5) Figures 1-2: I think it would be good to highlight that these plots show the
 expected values of these LD statistics for the given models.
 
 \begin{response}
-    I think the Figure 1 caption was already clear that what is shown are
-    expectations. I have updated the Figure 2 caption to also clarify that
-    it is expectations of LD that are being plotted.
+    I have updated the figure captions to clarify that
+    expectations of LD that are being plotted.
 \end{response}
 
 6) Line 142: When mentioning that mean LD can extend over 100kb, I think it
@@ -526,7 +535,7 @@ distribution.
     A new Figure 1 in this version hopefully provides a more intuitive depiction
     of the two-locus sampling distribution and its summaries (with direct comparison
     to the SFS and some of its summaries). Thank for you this suggestion, and I hope
-    it is helpful in introducing these statistics.
+    the new figure is helpful in introducing these statistics.
 \end{response}
 
 9) Lines 285-289: These lines seem at odds with what Garcia \& Lohmueller
@@ -535,7 +544,7 @@ nonsynonymous mutations and that nonsynonymous variants have more LD than
 synonymous ones.
 
 \begin{response}
-    Thanks for pointing this out, and this is now fixed in the Discussion.
+    Thanks for pointing this out, and this is now clarified in the Discussion.
 \end{response}
 
 10) Line 417: Yun Song has done some theory on expectations of r2 in Song \&
@@ -604,11 +613,12 @@ responsible for these patterns.
     have added extensive validations against simulations for the cases
     of additivity, synergistic epistasis, antagonistic epistasis, and recessive
     mutations. For the parameter values considered here
-    ($\rho, |\gamma| = 0 - 30$), we find very good agreement between simulation
+    ($\rho, |\gamma| \approx 0 - 30$), we find very good agreement between simulation
     and numerical solutions. The condition that $r$ and $s$ are of order $1/N_e$
     is standard in the diffusion approximation, allowing us to neglect terms
     of order $s^2$, $rs$, $s/N_e$, etc. In practice, diffusion methods still
-    provide reasonably accurate results and only break down for very strong
+    provide reasonably accurate results for larger selection and recombination
+    values, and only break down for very strong
     selection beyond the parameter ranges I considered here
     (see, e.g., Krukov and Gravel, bioRxiv 2021)
 
@@ -619,9 +629,8 @@ responsible for these patterns.
     that I consider here are not too large). But that strength of selection is beyond
     the results presented in this paper.
 
-    I have expanded in the Methods on the parameter ranges that this method is
-    applicable for and point to simulation results showing accuracy over this range
-    of parameters. 
+    I have expanded on the parameter ranges that this method is applicable for
+    and point to simulation results showing accuracy over this range of parameters.
 \end{response}
 
 2) More broadly, without more detailed exploration of the parameter space of
@@ -639,8 +648,8 @@ important behaviors of a two locus model.
     causes of variation in patterns of LD seen in the data without a more
     detailed exploration of the relevant parameter space. Ideally, this would
     come in the form of likelihood-based inference of the joint effects of 
-    selection and interactions, which I comment on in the Discussion but leave
-    to future work.
+    selection and interactions, as well as validation against models of BGS.
+    I comment on this in the Discussion but leave it to future work.
 
     I have expanded the theoretical/numerical results to consider additional
     parameters and the dependence on frequency conditioning, though this still
@@ -668,7 +677,7 @@ broader range of contexts.
     the analytical results from Good (2020). I was unable to make much
     progress in such a comparison. For the most part, I was able to replicate
     the results in Figures 3 and 4 in that paper (e.g., see below, though there
-    are qualitative differences between the written formulae and the plots in
+    are noticeable differences between the written formulae and the plots in
     Figure 3 in Good).
     But to compare the analytical results in Good (2020) directly
     to the numerical approximations
@@ -758,13 +767,13 @@ loci, unlike in these other approaches.
 \begin{response}
     Thank you for the suggestion. I now point out that it not possible to include
     the effects of other linked loci above this section, when introducing the
-    method. That seemed a more natural place to discuss that limitation.
+    methods.
 \end{response}
 
 4) Figure 4: consider making the y axis consistent between panels.
 
 \begin{response}
-    There are new figures in this version of the paper, with hopefully cleaner figures.
+    There are new figures in this version of the paper, with hopefully cleaner presentation.
 \end{response}
 
 \end{document}

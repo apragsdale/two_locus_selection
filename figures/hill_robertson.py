@@ -44,7 +44,7 @@ for ii, gamma in enumerate(gammas):
     ax1.plot(
         rhos,
         data["C"][gamma]["all"]["sd2"],
-        #markers[ii] + "-",
+        # markers[ii] + "-",
         "-",
         ms=ms,
         lw=1,
@@ -60,12 +60,12 @@ ax1.set_xlabel(r"$\rho=4Nr$")
 
 ax2 = plt.subplot(1, 3, 2)
 
-ax2.plot(rhos, 0*rhos, "k--", lw=1, label=None)
+ax2.plot(rhos, 0 * rhos, "k--", lw=1, label=None)
 for ii, gamma in enumerate(gammas):
     ax2.plot(
         rhos,
         data["C"][gamma]["all"]["sd1"],
-        #markers[ii] + "-",
+        # markers[ii] + "-",
         "-",
         ms=ms,
         lw=1,
@@ -97,9 +97,9 @@ except IOError:
             print(rho, gamma)
     pickle.dump(sd1s, open(fname, "wb+"))
 
-ax3.plot(gammas, 0*gammas, "k--", lw=1, label=None)
-for rho in rhos:
-    ax3.plot(gammas, sd1s[rho], lw=1, label=rf"$\rho={rho}$")
+ax3.plot(gammas, 0 * gammas, "k--", lw=1, label=None)
+for ii, rho in enumerate(rhos):
+    ax3.plot(gammas, sd1s[rho], color=colors[ii + 4], lw=1, label=rf"$\rho={rho}$")
 
 ax3.set_title("Normalized signed LD ($\sigma_d^1$)")
 ax3.set_ylabel(r"$\sigma_d^1$")
@@ -115,4 +115,4 @@ fig.text(0.36, 0.93, "B", fontsize=8, ha="center", va="center")
 fig.text(0.69, 0.93, "C", fontsize=8, ha="center", va="center")
 
 plt.savefig(f"hill_robertson.pdf")
-plt.savefig(f"hill_robertsonn.png", dpi=300)
+plt.savefig(f"hill_robertson.png", dpi=300)

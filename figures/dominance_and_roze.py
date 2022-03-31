@@ -112,8 +112,8 @@ gammas = data_vary["gammas"]
 hs = sorted(data_vary["sd1"].keys())
 
 ax5.plot(-gammas, 0*gammas, "k--", lw=1, label=None)
-for h in hs:
-    ax5.plot(-gammas, data_vary["sd1"][h], lw=1, label=rf"$h={h}$")
+for ii, h in enumerate(hs):
+    ax5.plot(-gammas, data_vary["sd1"][h], color=colors[ii + 4], lw=1, label=rf"$h={h}$")
 
 ax5.set_title(r"$\rho=0$")
 ax5.set_xlabel(r"$\gamma=2Ns$")

@@ -55,11 +55,10 @@ pairs of mutations that fall within the same annotated conserved domain,
 pointing to compensatory mutations or antagonistic epistasis as the prevailing
 mode of interaction within conserved genic elements. LD between missense
 mutations is reduced outside of conserved domains, as would expected under
-Hill-Robertson interference. The heterogeneous landscape of both mutational
-fitness effects and selective interactions within protein-coding genes calls
-for more refined inferences of the joint distribution of fitness and
-interactive effects, and the methods presented here should prove useful in that
-pursuit.
+Hill-Robertson interference. This variation in both mutational fitness effects
+and selective interactions within protein-coding genes calls for more refined
+inferences of the joint distribution of fitness and interactive effects, and
+the methods presented here should prove useful in that pursuit.
 
 \end{abstract}
 
@@ -71,7 +70,7 @@ segregates depends on the strength of selection against genomes that carry it,
 with very damaging mutations kept at low frequencies and purged relatively
 rapidly. In the time between mutation and fixation or loss, selected variants,
 both beneficial and damaging, can dramatically impact patterns of variation in
-nearby linked regions \citep[e.g.][]{Smith1974-em,Charlesworth1995-dq,Kim2000-on}.
+nearby linked regions \citep[e.g.,][]{Smith1974-em,Charlesworth1995-dq,Kim2000-on}.
 This distortion away from neutral expectations has been empirically documented
 using sequencing data from an ever-growing set of study systems
 \citep{Novembre2009-kc,Cutter2013-mm,Comeron2014-oy}, but questions
@@ -92,7 +91,7 @@ disequilibrium (LD) equal to zero for unlinked sites \citep{Kondrashov1995-va}.
 But for linked loci, those mutations are expected to segregate on different
 haplotypes more often than together, leading to negative, or repulsion, LD,
 although the extent of LD depends non-trivially on the strength of selection
-and probability of recombination separating loci
+and the probability of recombination separating loci
 \citep{Hill1966-gv,McVean2000-ox}.
 
 Non-additive effects, including dominance (i.e., interactions \emph{within} a
@@ -128,8 +127,8 @@ domains. I show that while synonymous and missense variants display similar
 slightly positive average LD within genes, for missense mutations this signal
 is driven by correlations between pairs of mutations within, but not between or
 outside of, protein-coding domains. This suggests an importance for
-antagonistic (or ``diminishing-returns'') epistasis or a prevalence of
-compensatory nonsynonymous mutations within conserved elements.
+antagonistic epistasis or a prevalence of compensatory nonsynonymous mutations
+within conserved elements.
 
 \subsection{Empirical observations}\label{sec:empirical-observations}
 
@@ -148,27 +147,27 @@ that can be compared to evolutionary theory \citep{Otwinowski2018-zk}.
 
 Directed mutational studies are not possible in most natural populations, and
 we must turn to population genetic approaches to infer selective interactions
-between observed segregating polymorphisms. Motivated by theory that linked
-negatively selected mutations will display negative LD due to interference
-\citep{Hill1966-gv}, and that epistasis will drive expected LD away from zero,
-a number of recent studies have used patterns of LD within classes of
-putatively selected variants to infer modes of selective interactions.
-\citet{Callahan2011-ac} observed that pairs of tightly linked nonsynonymous
-mutations cluster together more than expected along the same lineages in the
-\emph{Drosophilid} species complex, and that those clustered mutations tend to
-preserve the charge of the protein and were in positive LD compared to pairs of
-synonymous mutations at the same distance. From this, they proposed that
-compensatory nonsynonymous variants are regularly tolerated and maintained.
-More recently, \citet{Taverner2020-lk} replicated this finding across a diverse
-set of genera, showing that such epistatic interactions are important for
-protein evolution.
+between observed segregating polymorphisms. Motivated by theoretical
+predictions that linked negatively selected mutations will display negative LD
+due to interference \citep{Hill1966-gv} and that epistasis will drive expected
+LD away from zero, a number of recent studies have used patterns of LD within
+classes of putatively selected variants to infer modes of selective
+interactions.  \citet{Callahan2011-ac} observed that pairs of tightly linked
+nonsynonymous mutations cluster together more than expected along the same
+lineages in the \emph{Drosophilid} species complex, and that those clustered
+mutations tend to preserve the charge of the protein and were in positive LD
+compared to pairs of synonymous mutations at the same distance. From this, they
+proposed that compensatory nonsynonymous variants are regularly tolerated and
+maintained.  More recently, \citet{Taverner2020-lk} replicated this finding
+across a diverse set of genera, showing that such epistatic interactions are
+important for protein evolution.
 
 \citet{Sohail2017-zq} observed negative LD between loss-of-function variants in
 protein-coding genes (loss-of-function mutations include stop gains and losses,
 frameshifts, and other nonsense mutations) in both human and fruit fly
 populations. This was interpreted as evidence for widespread synergistic
 epistasis between these mutations, in which the fitness reduction of multiple
-mutations is greater than the product of that of each individual mutations
+mutations is greater than the product of that of each individual mutation
 independently. Both \citet{Sandler2021-of} and \citet{Garcia2021-zn} have
 recently reevaluated patterns of LD between coding variants in humans, fruit
 flies, and \emph{Capsella grandiflora}, and suggested interference and
@@ -178,16 +177,16 @@ different from zero \citep{Sandler2021-of}.
 
 A number of factors impede our interpretation of patterns of signed LD between
 coding variants. First, for strongly deleterious or loss-of-function mutations,
-their low allele frequencies mean that statistical measurement of LD
-and other diversity measures are very noisy. Second, comparisons are based on
-theory with limiting assumptions, such as steady-state demography, simple
-selection and interaction models, or unlinked loci. To generate predictions
-under more complex models, we rely on expensive forward simulations. Such
-simulations can help build intuition and be used to test inference methods, but
-they do not efficiently provide expectations for quantities of interest across
-the range of relevant parameters. Analytical and numerical methods for expected
-haplotype frequencies and LD under general selective interaction models are
-thus crucial for interpreting patterns of variation observed in data.
+their low allele frequencies mean that measurements of LD and other diversity
+statistics are very noisy. Second, comparisons are based on theory with
+limiting assumptions, such as steady-state demography, simple selection and
+interaction models, or unlinked loci. To generate predictions under more
+complex models, we rely on expensive forward simulations. Such simulations can
+help build intuition and be used to test inference methods, but they do not
+efficiently provide expectations for quantities of interest across the range of
+relevant parameters. Analytical and numerical methods for expected haplotype
+frequencies and LD under general selective interaction models are thus crucial
+for interpreting patterns of variation observed in data.
 
 \section{Results}\label{sec:results}
 
@@ -208,12 +207,12 @@ thus crucial for interpreting patterns of variation observed in data.
         between loci, respectively.
         (C) The full two-locus haplotype sampling distribution is a three-dimensional
         object, making it difficult to visualize. We can instead visualize conditional
-        distributions of the full sampling distribution, e.g. conditioned on observing
-        five copies of the $A$ allele at the left locus and five copies of $B$ at the
-        right locus \citep[e.g.][]{Hudson2001-sg}.
+        distributions of the full sampling distribution, e.g., conditioned on observing
+        \(n_A\) copies of the \(A\) allele at the left locus and \(n_B\) copies of
+        \(B\) at the right locus \citep[e.g.,][]{Hudson2001-sg}.
         (D) $\sigma_d^2$, which is closely related to $r^2$, is expected to decay
         with increasing recombination distance between loci \citep{Ohta1969-ie}.
-        Selection distorts the level of squared LD away from neutral expectations.
+        Selection distorts squared LD away from neutral expectations.
         (E) $\sigma_d^1$, refered to as signed LD here, is expected to be zero for
         pairs of neutral mutations \citep{Hill1968-vu}. Interference between linked
         selected mutation causes negative signed LD \citep{Hill1966-gv}, and other
@@ -224,12 +223,12 @@ thus crucial for interpreting patterns of variation observed in data.
 \end{figure}
 
 In the Methods, I expand on the moments system developed in
-\citet{Ragsdale2019-nt} to compute the expected sampling distribution
-\(\Psi_n\) (Figure~\ref{fig:TwoLocusFS}) of two-locus haplotypes under a
-general model of selective interactions. This sampling distribution stores the
-expected density or observed counts of pairs of biallelic loci with each
-possible haplotype frequency configuration in a sample of size \(n\). Below, we
-compute expectations for \(\Psi_n\) under varying scenarios of selection and
+\citet{Ragsdale2019-nt} to compute the expected sampling distribution of
+two-locus haplotypes (\(\Psi_n\), Figure~\ref{fig:TwoLocusFS}) under a general
+model of selective interactions. This sampling distribution stores the expected
+density or observed counts of pairs of biallelic loci with each possible
+haplotype frequency configuration in a sample of size \(n\). Below, we compute
+expectations for \(\Psi_n\) under varying scenarios of selection and
 interaction between pairs of loci. It is not possible in this framework to
 include the effects of additional linked selected mutations, such as background
 selection due to many linked variants, and individual-based forward simulations
@@ -237,16 +236,16 @@ are still needed for such scenarios (e.g.,
 Figures~\ref{fig:bgs1}--\ref{fig:bgs4}).
 
 In many cases it is simpler to visualize summaries such as the expectation or
-variance of \(D\) (Figure~\ref{fig:TwoLocusFS}D, E) or conditional slices of the
-distribution (Figure~\ref{fig:TwoLocusFS}C) instead of the full
-three-dimensional distribution. Here I focus on low-order LD statistics
-including \(\E[D]\) and \(\E[D^2]\) and their decay with recombination
-distance, as these are statistics that are commonly used to test for
-interactions between loci. For pairs of biallelic loci, with alleles labeled
-\(A/a\) at the left locus and \(B/b\) at the right locus, \(D=f_{AB}-f_A f_B\)
-is the standard covariance measure of LD, where \(f_{AB}\) is the frequency of
-haplotypes carrying both \(A\) and \(B\), and \(f_A\) and \(f_B\) are the
-marginal allele frequencies of \(A\) and \(B\).
+variance of \(D\) (Figure~\ref{fig:TwoLocusFS}D, E) or conditional slices of
+the distribution (Figure~\ref{fig:TwoLocusFS}C) instead of the full
+three-dimensional distribution \(\Psi_n\). Here I focus on low-order LD
+statistics including \(\E[D]\) and \(\E[D^2]\) and their decay with
+recombination distance, as these are statistics that are commonly used to test
+for interactions between loci. For pairs of biallelic loci, with alleles
+labeled \(A/a\) at the left locus and \(B/b\) at the right locus,
+\(D=f_{AB}-f_A f_B\) is the standard covariance measure of LD, where \(f_{AB}\)
+is the frequency of haplotypes carrying both \(A\) and \(B\), and \(f_A\) and
+\(f_B\) are the marginal allele frequencies of \(A\) and \(B\).
 
 Instead of unnormalized \(\E[D^2]\) and \(\E[D]\) I consider expectations for
 \(\sigma_d^2 = \E[D^2]/\E[f_A(1-f_A)f_B(1-f_B)]\) and \(\sigma_d^1 =
@@ -276,15 +275,13 @@ numerical appraoch is most accurate.
     \includegraphics{../figures/hill_robertson}
     \caption{
         \textbf{Hill-Robertson interference.}
-        Interference between pairs of selected mutations can cause deviations
-        from expected patterns of LD under neutrality, without dominance
-        or epistatic effects.
+        Interference between pairs of selected mutations can cause negative
+        signed LD in the absence of dominance and epistatic effects.
         (A) The expected normalized variance of $D$ (\(\sigma_d^2\))
         decreases below neutral expectations
         as the strength of negative selection increases.
         (B, C) For tightly linked loci (\(4Nr \lesssim 1\)), interference is most
-        noticeable as measured by signed LD for pairs of mutations with
-        \(s \approx 1/N\).
+        noticeable for pairs of mutations with \(s \approx 1/N\).
         At larger recombination distances (\(4Nr > 1\)), signed LD is most
         negative for somewhat stronger selection coefficients.
         Dashed lines show neutral expectations.
@@ -299,7 +296,7 @@ numerical appraoch is most accurate.
         \textbf{Additive selection and epistasis.}
         Left panels (A and C) show expectations for the decay of
         \(\sigma_d^2 = \E[D^2] / \E[p(1-p)q(1-q)]\) with recombination
-        distance, and right panesl (B and D) show expectations for the
+        distance, and right panels (B and D) show expectations for the
         decay of \(\sigma_d^1 = \E[D] / \E[p(1-p)q(1-q)]\). Dashed lines
         show neutral expectations.
         For both weak (\(s=-1/2N\), A and B) and moderate
@@ -328,8 +325,8 @@ variants, with sign depending on the direction of epistatic interactions
 Synergistic epistasis (in which the effect of two mutations together is larger than
 the product of each individual mutation's effect) results in negative LD while
 antagonistic epistasis (in which the combined effect is less than the product of
-independent effects) results in positive LD, and large positive LD can occur
-even when the epistatic effect is relatively weak. Epistasis-induced LD can
+independent effects) results in positive LD, and large nonzero LD can occur
+even when epistasis is relatively weak. Epistasis-induced LD can
 extend over long distances, especially for strongly deleterious mutations. For
 example, in Figure \ref{fig:epistasis}F even moderately deleterious mutations with
 population-size-scaled selection coefficients of \(\gamma=-10\) show large mean
@@ -395,8 +392,8 @@ analytic formula in \citet{Roze2021-cf} predicts that LD should be positive for
 of strong selection (compare to Figure 1A in \citet{Roze2021-cf}). For moderate
 to moderately strong selection, this threshold of \(h\) can be less than
 \(0.25\), and LD is negative for all \(0\leq h \leq 1\) for weakly deleterious
-mutations with interference strongest between pairs of recessive mutations
-(Figure~\ref{fig:dominance}C).
+mutations with interference strongest between pairs of partially recessive
+mutations (Figure~\ref{fig:dominance}C).
 
 \subsubsection{General selection and gene-based dominance}
 \label{sec:general-selection}
@@ -476,7 +473,7 @@ interpretations can give similar patterns of expected signed LD.
     \includegraphics{../figures/demog_YRI_CEU.dominance}
     \caption{
         \textbf{Signed LD under inferred models of human population-size history.}
-        Piecewise-constant population size histories inferred by Relate applied to
+        Piecewise-constant population size histories inferred by \texttt{Relate} applied to
         \citet{1000_Genomes_Project_Consortium2015-zq} phase 3 data were used to
         simulate time series of two-locus statistics, as in Figure~\ref{fig:toy}.
         (A) The CEU (Utah residents with Northern and Western European ancestry)
@@ -506,7 +503,7 @@ also consider two demographic histories inferred using genome-wide gene
 genealogy reconstruction \citep{Speidel2019-nj} applied to the
 \citet{1000_Genomes_Project_Consortium2015-zq} dataset, and focus on size histories
 for the Yoruba from Ibidan, Nigeria (YRI) and Utahns of North and West European
-ancestry (CEU) (Figure \ref{fig:relate_dom}B).
+ancestry (CEU) (Figure \ref{fig:relate_dom}A).
 
 For each of the four histories,
 Figures~\ref{fig:toy},~\ref{fig:relate_dom},~and~\ref{fig:toy_sd2}--\ref{fig:relate_dom_sd2}
@@ -563,7 +560,7 @@ Here, I examine patterns of signed LD between mutations in human protein-coding
 genes partitioned by functional annotations. Synonymous and missense mutations
 show similar levels of slighly positive signed LD when considering pairs of
 mutations within the same gene averaged over all autosomal chromosomes.
-Loss-of-function mutations have more negative LD, possibly suggesting differing
+Loss-of-function mutations have more negative LD, possibly due to differing
 modes of selective interactions for loss-of-function and missense mutations
 (Figure \ref{fig:data}A--B). Within each population, measurement noise gives
 95\% confidence intervals that overlap with zero in each mutation class,
@@ -739,8 +736,8 @@ positive signed LD between tightly linked loci. One explanation is a prevalence
 of pairs of compensatory mutations that are tolerated to co-segregate at high
 frequencies within conserved domains \citep{Yeang2007-gj,Ivankov2014-tn}.
 \citet{Callahan2011-ac} and \citet{Taverner2020-lk} have proposed such a
-mechanism to explain observed clusters of nonsynonymous mutations in lineages
-of \emph{Drosophila} and other species. Another possibility is a model of
+mechanism to explain observed clusters of nonsynonymous substitutions in
+\emph{Drosophila} and other species. Another possibility is a model of
 antagonistic, or diminishing returns epistasis, in which a single amino
 acid-changing mutation within a domain damages the functionality of that
 subunit, but additional mutations within that same domain reduce fitness by a
@@ -783,7 +780,7 @@ annotated domains mean that our standard models and simulation approaches may
 be too simple to capture the evolutionary trajectories and patterns of
 diversity that differ at finer scales.
 
-\subsection{Clustered mutations may cause positive LD among synonymous mutations}
+\subsection{Causes of positive LD between synonymous mutations}
 
 In a non-structured randomly mating population, neutral mutations are expected to have
 average signed LD of zero, but across all populations analyzed here, LD between
@@ -825,11 +822,11 @@ mutations occur simultaneously in the same mutational event. Such
 multinucleotide mutations have been shown to affect patterns of LD over short
 distances, on the order of 10s to 100s of base pairs \citep{Harris2014-zg}, and
 clustered mutational events may be common in humans \citep{Besenbacher2016-ac}.
-Indeed, a simple exponential model in which the fraction of pairs of mutations
-arising from a multinucleotide mutation event decays with distance fits the
-observed decay of \(\sigma_d^1\) between synonymous variants (Supporting
-Information, Figure~\ref{fig:mslmnms}), with the best-fit model requiring only
-a small fraction of mutations to cause multinucleotide mutation events. We may
+Indeed, a simple exponential model in which the fraction of mutations causing a
+multinucleotide mutation event decays with distance fits the observed patterns
+of \(\sigma_d^1\) between synonymous variants (Supporting Information,
+Figure~\ref{fig:mslmnms}), with the best-fit model requiring only a small
+fraction of mutations to cause multinucleotide mutation events. We may
 therefore treat positive LD as the baseline expectation for tightly linked
 variants primarily due to clustered mutations, so that subsequent selective
 processes and interactions cause LD to deviate from that expectation, as seen
@@ -856,7 +853,7 @@ be needed to more thoroughly assess significance.
 
 From a modeling perspective, in exploring or inferring multi-locus selective
 models, the number of plausible selection scenarios becomes quite large as we
-relax the strict assumptions of additivity and multiplicative fitness effects.
+relax the strict assumptions of additivity and multiplicative interactions.
 The inclusion of dominance effects, epistasis, or other interactions leads to a
 rapid increase in the number of parameters to consider. This makes performing
 forward simulations that span the range of all such selective interaction
@@ -891,10 +888,11 @@ however, will have been inferred under a simple set of assumptions, such as
 additivity and interchangeability between sites within a gene, potentially
 biasing any inference using previously inferred DFEs to learn about patterns of
 interactions. Again, this underlines the need to jointly infer strengths and
-interactions of selected variants.
+interactions of selected variants and to consider patterns of variation at
+finer genomic scales.
 
 Finally, exploring additional summaries of the two-locus sampling distribution
-should provide additional power to distinguish between interaction models. The
+should increase power to distinguish between interaction models. The
 numerical methods developed here provide the full two-locus sampling
 distribution, and expectations for a large family of informative two-locus
 statistics can be computed directly from this distribution. These expectations
@@ -946,7 +944,7 @@ To include selection, however, there have been relatively few advances beyond
 the Monte Carlo simulation approach taken by \citet{Hill1966-gv}, albeit now
 with more powerful computational resources and sophisticated software for
 performing flexible forward simulation
-\citep[e.g.][0]{Thornton2019-qc,Haller2019-vm}. Analytic results for two-locus
+\citep[e.g.,][]{Thornton2019-qc,Haller2019-vm}. Analytic results for two-locus
 distributions under selection are notoriously difficult, with a few notable
 flashes of progress. For example, \citet{McVean2007-xd} considered the effect
 of a recent sweep on patterns of LD between neutral loci near the locus under
@@ -960,7 +958,7 @@ and limited analytic solutions, providing a more efficient and practical method
 to compute expectations of two-locus diversity measures under a wider range of
 parameters and demographic scenarios. \citet{Ragsdale2017-gg} used a finite
 differencing approach to numerically solve the two-locus diffusion equation
-with additive selection at either locus, although that paper focused on the
+with additive selection at either locus, although they focused on the
 applicability of two-locus statistics to demographic inference. More recently,
 \citet{Ragsdale2019-nt} extended the \citet{Hill1968-vu} system for \(\E[D^2]\)
 to compute arbitrary moments of the distribution of \(D\) for any number of
@@ -1032,14 +1030,11 @@ approximation, or it can be found through a more intuitive process of tracking
 the dynamics of allelic states of a sample of size of \(n\) from the full
 population. We assume \(n \ll N_e\), and \(r\) and \(s\) are \(O(1/N_e)\) so
 that multiple coalescence, recombination, or selective events within the \(n\)
-lineages are rare in any given generation. For example, for drift events, we
-account for the probability that two lineages within the \(n\) tracked lineages
-at time \(t+1\) coalesced in the previous generation and, given a coalescence
-event, the probability that haplotype counts changed due to this coalescence
-event \citep[Supporting Information;][]{Jouganous2017-pq,Ragsdale2019-nt}. In
-typical diffusion approximation fashion, we multiple through by \(2N_{ref}\) so
-that time is measured in \(2N_{ref}\) generations, and we consider scaled
-parameters \(\rho = 4Nr\), \(\theta = 4Nu\), and \(\gamma=2Ns\).
+lineages are rare in any given generation \citep[Supporting
+Information;][]{Jouganous2017-pq,Ragsdale2019-nt}. In typical diffusion
+approximation fashion, we multiple through by \(2N_{ref}\) so that time is
+measured in \(2N_{ref}\) generations, and we consider scaled parameters \(\rho
+= 4Nr\), \(\theta = 4Nu\), and \(\gamma=2Ns\).
 
 \subsubsection{Moment closure}\label{moment-closure}
 
@@ -1075,12 +1070,12 @@ using nearby entries in \(\Psi_n\), is more accurate for larger sample sizes,
 creating a tension between efficiency and accuracy: larger sample sizes result
 in more accurate solutions, as error in the jackknife is diminished, but
 computational complexity also grows rapidly in the number of entries of
-\(\Psi_n\), which is \(O(n^3)\). Accuracy and runtime are shown in Figure
-\ref{fig:jackknife}. In the results presented in this paper, sample sizes
-between \(n=30\) and \(n=80\) are used. Derivations for the drift, recombination,
-and mutation operators and the jackknife moment-closure approximation can be
-found in section S1.3 of \citet{Ragsdale2019-nt}, and I repeat the main results in the
-Supporting Information of this paper.
+\(\Psi_n\), which is \(O(n^3)\) (Figure~\ref{fig:jackknife}). In the results
+presented in this paper, sample sizes between \(n=30\) and \(n=80\) are used.
+Derivations for the drift, recombination, and mutation operators and the
+jackknife moment-closure approximation can be found in section S1.3 of
+\citet{Ragsdale2019-nt}, and I repeat the main results in the Supporting
+Information of this paper.
 
 \subsubsection{Selection models with epistasis and dominance}
 
@@ -1156,10 +1151,10 @@ computed using the same approach, as implemented in \texttt{moments} following
 \citet{Ragsdale2020-nz}, which can be compared across sample sizes and between
 estimates from phased or unphased data. In this paper, I focus on \(\sigma_d^2
 = \E[D^2] / \E[p(1-p)q(1-q)]\) and \(\sigma_d^1 = \E[D] / \E[p(1-p)q(1-q)]\),
-averaged over pairs of variants at all frequencies. However, allele-frequency
-conditioned statistics (such as keeping only loci below some frequency
-threshold as in \citet{Good2022-ot}) can be considered using this same
-approach.
+which can be averaged over pairs of variants at all frequencies.
+Allele-frequency conditioned statistics (such as keeping only loci below some
+frequency threshold as in \citet{Good2022-ot}) can be considered using this
+same approach.
 
 \subsubsection{Simulations of non-steady-state demography}
 
@@ -1234,10 +1229,11 @@ linkage disequilibrium statistics are implemented in Python using Numpy
 \citep{Harris2020-pc} and sparse matrix solvers in Scipy
 \citep{Virtanen2020-kr}. These methods are packaged within \texttt{moments},
 and analyses here were performed using \texttt{moments} version 1.1.10,
-available from \url{https://bitbucket.org/simongravel/moments/src/master/} with
-extensive documentation at \url{https://moments.readthedocs.org}. Scripts to
-run all analyses, recreate figures, and compile this manuscript are available
-at \url{https://github.com/apragsdale/two_locus_selection}.
+available from \url{https://bitbucket.org/simongravel/moments/src/master/} and
+via \texttt{conda}, with extensive documentation at
+\url{https://moments.readthedocs.org}. Scripts to run all analyses, recreate
+figures, and compile this manuscript are available at
+\url{https://github.com/apragsdale/two_locus_selection}.
 
 \section{Acknowledgements}\label{acknowledgements}
 
