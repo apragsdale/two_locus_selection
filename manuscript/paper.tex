@@ -532,13 +532,16 @@ affected by population size history.
     \caption{
         \textbf{LD in human protein-coding genes and annotated domains.}
         (A) Gene-wide averages of signed LD are slightly positive between pairs
-        of both missense and synonymous mutations. This positive, equal
-        \(\sigma_d^1\) is also observed when conditioning on common variants
-        (minor allele frequencies \(\gtrsim 0.05\)).
+        of both missense and synonymous mutations, considering pairs of mutations
+        at matching distances. This positive, equal \(\sigma_d^1\) is also observed
+        when conditioning on allele frequencies or considering only common variants
+        with minor allele frequencies \(\gtrsim 0.1\)
+        (Tables~\ref{tab:afrsd1}--\ref{tab:eassd2}).
         (B) While there are relatively fewer pairs of loss-of-function mutations
-        within genes, causing larger measurement uncertainty, such pairs have
+        within genes, causing larger measurement uncertainty, such pairs tend to have
         negative average LD. Note that measurement noises for each class of
-        mutations overlap with zero and with each other.
+        mutations overlap with zero and with each other, making it difficult to
+        draw firm conclusions on the patterns of interactions occurring gene-wide.
         (C) Partitioning pairs of mutations as falling within or outside
         of conserved domains reveals opposing patterns of signed LD, with
         \(\sigma_d^1\) between missense mutations larger than that of synonymous

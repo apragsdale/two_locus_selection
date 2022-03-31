@@ -17,6 +17,11 @@
 \usepackage{xr}
 \externaldocument{paper}
 
+% external latex tables
+\usepackage{catchfile}
+\begin{filecontents*}{AFR.sd1.tex}
+\end{filecontents*}
+
 
 \begin{document}
 
@@ -848,6 +853,116 @@ KHV & Synonymous & All & -0.576\\
     \label{tab:msldfe}
 \end{table}
 
+\CatchFileDef{\afrsigned}{AFR.sd1.tex}{}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lccc}
+            \afrsigned
+        \end{tabular}
+    \end{center}
+    \caption{
+        \label{tab:afrsd1}
+        \textbf{Signed LD in AFR-labeled populations matched to distances
+        and allele frequencies of synonymous mutations.}
+        Gene-wide signed LD is observed to be at similar slightly positive levels between
+        pairs of synonymous and pairs of missense variants. This observation is
+        consistest when weighting missense variants to match distances between
+        pairs of synonymous variants and when weighting to match synonymous allele
+        frequencies, with only a slight reduction in missense \(\sigma_d^1\).
+        The distribution of distances between synonymous and missense mutations
+        within genes are very similar (Figure~\ref{fig:mutDistances}),
+        so matching by distances separating mutations
+        has a minor effect on measured average LD.
+        The large measurement uncertainty of loss-of-function mutation pairs
+        due to few observed pairs of such mutations within the same gene causes
+        signed LD to fluctuate when conditioning on distances and frequencies
+        matched to synonymous mutations.
+    }
+\end{table}
+
+\CatchFileDef{\afrsquared}{AFR.sd2.tex}{}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lccc}
+            \afrsquared
+        \end{tabular}
+    \end{center}
+    \caption{
+        \label{tab:afrsd2}
+        \textbf{Squared LD in AFR-labeled populations matched to distances
+        and allele frequencies of synonymous mutations.}
+    }
+\end{table}
+
+\CatchFileDef{\eursigned}{EUR.sd1.tex}{}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lccc}
+            \eursigned
+        \end{tabular}
+    \end{center}
+    \caption{
+        \label{tab:eursd1}
+        \textbf{Signed LD in EUR-labeled populations matched to distances
+        and allele frequencies of synonymous mutations.}
+        Similar to the pattern observed in AFR-labeled populations
+        (Table~\ref{tab:afrsd1}), \(sigma_d^1\) between missense mutations matched
+        to distances and allele frequencies observed in synonymous mutation pairs
+        has only a small effect on average signed LD, and gene-wide measurements
+        are roughy equal between these two mutation classes.
+        Again, measurement noise for loss-of-function mutation pairs is high.
+    }
+\end{table}
+
+\CatchFileDef{\eursquared}{EUR.sd2.tex}{}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lccc}
+            \eursquared
+        \end{tabular}
+    \end{center}
+    \caption{
+        \label{tab:eursd2}
+        \textbf{Squared LD in EUR-labeled populations matched to distances
+        and allele frequencies of synonymous mutations.}
+    }
+\end{table}
+
+\CatchFileDef{\eassigned}{EAS.sd1.tex}{}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lccc}
+            \eassigned
+        \end{tabular}
+    \end{center}
+    \caption{
+        \label{tab:eassd1}
+        \textbf{Signed LD in EUR-labeled populations matched to distances
+        and allele frequencies of synonymous mutations.}
+        Similar to the pattern observed in AFR-labeled populations
+        (Table~\ref{tab:afrsd1}), \(sigma_d^1\) between missense mutations matched
+        to distances and allele frequencies observed in synonymous mutation pairs
+        has only a small effect on average signed LD, and gene-wide measurements
+        are roughly equal between these two mutation classes. 
+        Again, measurement noise for loss-of-function mutation pairs is high.
+    }
+\end{table}
+
+\CatchFileDef{\eassquared}{EAS.sd2.tex}{}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lccc}
+            \eassquared
+        \end{tabular}
+    \end{center}
+    \caption{
+        \label{tab:eassd2}
+        \textbf{Squared LD in EAS-labeled populations matched to distances
+        and allele frequencies of synonymous mutations.}
+    }
+\end{table}
+
+
 \clearpage
 \newpage
 
@@ -1224,6 +1339,21 @@ KHV & Synonymous & All & -0.576\\
         counts (Figure~\ref{fig:mutCorrGene}).
     }
     \label{fig:mutCorrDomain}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics{../figures/mutation_class_distances}
+    \caption{
+        \textbf{Distances between mutation pairs for different classes of variants.}
+        Despite different mutation rates between classes of mutations, the
+        proportions of pairs of mutations at given distances are similar.
+        Missense mutations, which have the highest mutation rate within genes,
+        have slightly more pairs of mutations at close distances than synonymous,
+        with loss of function mutations, which have the lowest mutation rate within
+        genes, have the fewest pairs at short distances.
+    }
+    \label{fig:mutDistances}
 \end{figure}
 
 \begin{figure}[ht!]

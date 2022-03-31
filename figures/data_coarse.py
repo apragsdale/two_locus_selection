@@ -31,12 +31,14 @@ populations = {
 for continent, pops in populations.items():
     for pop in pops:
         ld_pop = pickle.load(
-            open(f"../analysis/parsed_data_v2/{pop}.unphased.all.0.02_to_0.1.bp", "rb")
+            #open(f"../analysis/parsed_data_v2/{pop}.unphased.all.0.02_to_0.1.bp", "rb")
+            open(f"../analysis/parsed_data_v2/{pop}.unphased.dist_freq.all.bp", "rb")
         )
         data[pop] = ld_pop
         se_pop = pickle.load(
             open(
-                f"../analysis/parsed_data_v2/{pop}.unphased.all.SEs.0.02_to_0.1.bp",
+                #f"../analysis/parsed_data_v2/{pop}.unphased.all.SEs.0.02_to_0.1.bp",
+                f"../analysis/parsed_data_v2/{pop}.unphased.all.dist_freq.SEs.bp",
                 "rb",
             )
         )
@@ -171,12 +173,12 @@ err = []
 
 for continent in ["Africa", "Europe", "East Asia"]:
     for pop in populations[continent]:
-        yy.append(data[pop]["all_sites"]["all"]["synonymous"]["sd1"])
-        yy.append(data[pop]["all_sites"]["all"]["missense"]["sd1"])
-        yy.append(data[pop]["all_sites"]["all"]["loss_of_function"]["sd1"])
-        err.append(SE[pop]["all_sites"]["all"]["synonymous"]["sd1"])
-        err.append(SE[pop]["all_sites"]["all"]["missense"]["sd1"])
-        err.append(SE[pop]["all_sites"]["all"]["loss_of_function"]["sd1"])
+        yy.append(data[pop]["distances"]["synonymous"]["sd1"])
+        yy.append(data[pop]["distances"]["missense"]["sd1"])
+        yy.append(data[pop]["distances"]["loss_of_function"]["sd1"])
+        err.append(SE[pop]["distances"]["synonymous"]["sd1"])
+        err.append(SE[pop]["distances"]["missense"]["sd1"])
+        err.append(SE[pop]["distances"]["loss_of_function"]["sd1"])
 
 yy = np.array(yy)
 err = np.array(err)
