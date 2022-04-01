@@ -258,7 +258,7 @@ ax1.set_title("Single-locus site frequency spectrum ($2Ns = -2$)", fontsize=7)
 # )
 
 # inset panel
-ax1.text(3, 50000, "\\underline{Summaries (selected):}", fontsize=6, ha="left", va="center")
+ax1.text(3, 50000, "\\underline{Summaries:}", fontsize=6, ha="left", va="center")
 ax1.text(
     3, 44000, rf"$\pi$ per bp = ${fs.pi() / L:.5f}$", fontsize=6, ha="left", va="center"
 )
