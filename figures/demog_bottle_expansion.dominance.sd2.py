@@ -25,7 +25,10 @@ matplotlib.rc("axes", labelsize=7)
 matplotlib.rc("axes", titlesize=7)
 matplotlib.rc("legend", fontsize=6)
 
-from bokeh.palettes import Colorblind
+from bokeh.palettes import Colorblind, Category10
+from bokeh.palettes import YlGnBu, YlOrBr
+c1 = YlGnBu[8]
+c2 = YlOrBr[8]
 
 
 def piecewise_constant(
@@ -293,7 +296,7 @@ tt_bottle = ts_gens(data["t"])
 ## plots
 
 lw = 1
-colors = Colorblind[8]
+colors = Category10[10]
 
 fig = plt.figure(4, figsize=(6.5, 3.5))
 fig.clf()
@@ -306,7 +309,7 @@ plot_relate_curve(
     N_expand,
     line_style="-",
     lw=lw,
-    color=colors[0],
+    color=c1[0],
     label="Expansion",
     gen=1,
 )
@@ -316,7 +319,7 @@ plot_relate_curve(
     N_bottle,
     line_style="--",
     lw=lw,
-    color=colors[1],
+    color=c2[0],
     label="Bottleneck",
     gen=1,
 )
@@ -334,21 +337,21 @@ print("plotting additivity panel")
 axes[1].plot(tt_expand, sd2_neu_expand, "k--", lw=0.5)
 axes[1].plot(tt_bottle, sd2_neu_bottle, "k--", lw=0.5)
 t, v = get_sd2(nus_expand, Ts_expand, 50, gamma=-2.0, name="expand")
-axes[1].plot(t, v, "-", lw=lw, color=colors[0])
+axes[1].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2(nus_bottle, Ts_bottle, 50, gamma=-2.0, name="bottle")
-axes[1].plot(t, v, "--", lw=lw, color=colors[1])
+axes[1].plot(t, v, "--", lw=lw, color=c2[1])
 axes[1].text(1000, v[0] + 0.025, rf"$\gamma=-2$", va="center", ha="center", fontsize=7)
 
-axes[1].set_title("Interference")
+axes[1].set_title("Interference ($h=0.5$)")
 
 ## simple dominance
 print("plotting simple dominance panel")
 axes[2].plot(tt_expand, sd2_neu_expand, "k--", lw=0.5)
 axes[2].plot(tt_bottle, sd2_neu_bottle, "k--", lw=0.5)
 t, v = get_sd2(nus_expand, Ts_expand, 50, gamma=-2.0, h=0.1, name="expand")
-axes[2].plot(t, v, "-", lw=lw, color=colors[0])
+axes[2].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2(nus_bottle, Ts_bottle, 50, gamma=-2.0, h=0.1, name="bottle")
-axes[2].plot(t, v, "--", lw=lw, color=colors[1])
+axes[2].plot(t, v, "--", lw=lw, color=c2[2])
 axes[2].text(1000, v[0] + 0.02, rf"$\gamma=-2$", va="center", ha="center", fontsize=7)
 axes[2].set_title(r"Site-wise dominance ($h=0.1$)")
 
@@ -359,9 +362,9 @@ axes[3].plot(tt_expand, sd2_neu_expand, "k--", lw=0.5)
 axes[3].plot(tt_bottle, sd2_neu_bottle, "k--", lw=0.5)
 # gamma = -2
 t, v = get_sd2(nus_expand, Ts_expand, 50, gamma=-2.0, h=0.1, dom="gene", name="expand")
-axes[3].plot(t, v, "-", lw=lw, color=colors[0])
+axes[3].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2(nus_bottle, Ts_bottle, 50, gamma=-2.0, h=0.1, dom="gene", name="bottle")
-axes[3].plot(t, v, "--", lw=lw, color=colors[1])
+axes[3].plot(t, v, "--", lw=lw, color=c2[3])
 axes[3].text(1000, v[0] + 0.02, rf"$\gamma=-2$", va="center", ha="center", fontsize=7)
 axes[3].set_title(r"Gene-based dominance ($h=0.1$)")
 
@@ -370,21 +373,21 @@ print("plotting rare data")
 thr = 4
 # each with gamma = -2
 t, v = get_sd2_cond(gamma=-2.0, name="expand", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2_cond(gamma=-2.0, name="bottle", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(t, v, "--", lw=lw, color=c2[1])
 axes[4].text(600, v[0] - 0.03, rf"$h=1/2$", va="center", ha="center", fontsize=7)
 # site-wise
 t, v = get_sd2_cond(gamma=-2.0, h=0.1, name="expand", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2_cond(gamma=-2.0, h=0.1, name="bottle", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(t, v, "--", lw=lw, color=c2[2])
 axes[4].text(600, v[0] - 0.015, rf"site", va="center", ha="center", fontsize=7)
 # gene-based
 t, v = get_sd2_cond(gamma=-2.0, h=0.1, dom="gene", name="expand", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2_cond(gamma=-2.0, h=0.1, dom="gene", name="bottle", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(t, v, "--", lw=lw, color=c2[3])
 axes[4].text(800, v[0] + 0.02, rf"gene", va="center", ha="center", fontsize=7)
 # neutral baseline
 t, v = get_sd2_cond(nAmax=thr, nBmax=thr, name="expand")
@@ -398,25 +401,25 @@ axes[4].set_title(rf"$n_A, n_B \leq {thr}$ and $\gamma=-2$")
 print("plotting common data")
 # each with gamma = -1
 t, v = get_sd2_cond(gamma=-2.0, name="expand", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2_cond(gamma=-2.0, name="bottle", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(t, v, "--", lw=lw, color=c2[1])
 axes[5].text(1000, v[0] + 0.02, rf"$h=1/2$", va="center", ha="center", fontsize=7)
 # site-wise
 t, v = get_sd2_cond(gamma=-2.0, h=0.1, name="expand", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2_cond(gamma=-2.0, h=0.1, name="bottle", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(t, v, "--", lw=lw, color=c2[2])
 axes[5].text(1000, v[0] - 0.025, rf"$h=0.1$, site", va="center", ha="center", fontsize=7)
 # gene-based
 t, v = get_sd2_cond(
     gamma=-2.0, h=0.1, dom="gene", name="expand", nAmin=thr + 1, nBmin=thr + 1
 )
-axes[5].plot(t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2_cond(
     gamma=-2.0, h=0.1, dom="gene", name="bottle", nAmin=thr + 1, nBmin=thr + 1
 )
-axes[5].plot(t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(t, v, "--", lw=lw, color=c2[3])
 axes[5].text(1000, v[0] + 0.02, rf"$h=0.1$, gene", va="center", ha="center", fontsize=7)
 # neutral baseline
 t, v = get_sd2_cond(nAmin=thr + 1, nBmin=thr + 1, name="expand")

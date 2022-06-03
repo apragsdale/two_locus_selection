@@ -17,8 +17,10 @@ matplotlib.rc("axes", labelsize=7)
 matplotlib.rc("axes", titlesize=7)
 matplotlib.rc("legend", fontsize=6)
 
-from bokeh.palettes import Colorblind
-
+from bokeh.palettes import Colorblind, Category10
+from bokeh.palettes import YlGnBu, YlOrBr
+c1 = YlGnBu[8]
+c2 = YlOrBr[8]
 
 def piecewise_constant(
     nus,
@@ -268,7 +270,7 @@ tt_CEU, sd2_neu_CEU = get_sd2(nu_CEU, Ts, n, Ne, name="CEU")
 ## plots
 
 lw = 1
-colors = Colorblind[8]
+colors = Category10[10]
 
 fig = plt.figure(4, figsize=(6.5, 3.5))
 fig.clf()
@@ -283,7 +285,7 @@ plot_relate_curve(
     N0,
     line_style="-",
     lw=lw,
-    color=colors[0],
+    color=c1[0],
     label="YRI",
     gen=1,
 )
@@ -293,7 +295,7 @@ plot_relate_curve(
     N1,
     line_style="--",
     lw=lw,
-    color=colors[1],
+    color=c2[0],
     label="CEU",
     gen=1,
 )
@@ -310,64 +312,67 @@ axes[0].set_title("Size histories")
 print("plotting additivity panel")
 # gamma = -1
 t, v = get_sd2(nu_YRI, Ts, 50, Ne, gamma=-1.0, name="YRI")
-axes[1].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[1].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2(nu_CEU, Ts, 50, Ne, gamma=-1.0, name="CEU")
-axes[1].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
-#axes[1].text(2e5, v[0] + 0.02, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
+axes[1].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[1])
+axes[1].text(2e5, v[0] -0.1, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
 
 # gamma = -10
 t, v = get_sd2(nu_YRI, Ts, 50, Ne, n_large=70, gamma=-10.0, name="YRI")
-axes[1].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[1].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2(nu_CEU, Ts, 50, Ne, n_large=70, gamma=-10.0, name="CEU")
-axes[1].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
-#axes[1].text(2e5, v[0] - 0.02, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
+axes[1].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[1])
+axes[1].text(2e5, v[0] + 0.05, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
 
 # neutral baseline
 axes[1].plot(1e6 - gen_time * tt_YRI, sd2_neu_YRI, "k--", lw=0.5)
+axes[1].plot(1e6 - gen_time * tt_CEU, sd2_neu_CEU, "k--", lw=0.5)
 
-axes[1].set_title("Interference")
+axes[1].set_title("Interference ($\epsilon=0$)")
 
 ## synergistic epistasis
 print("plotting positive epistasis panel")
 # gamma = -1
 t, v = get_sd2(nu_YRI, Ts, 50, Ne, gamma=-1.0, eps=0.5, name="YRI")
-axes[2].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[2].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2(nu_CEU, Ts, 50, Ne, gamma=-1.0, eps=0.5, name="CEU")
-axes[2].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
-#axes[2].text(2e5, v[0] + 0.06, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
+axes[2].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[2])
+axes[2].text(2e5, v[0] + 0.06, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
 
 # gamma = -10
 t, v = get_sd2(nu_YRI, Ts, 50, Ne, n_large=70, gamma=-10.0, eps=0.5, name="YRI")
-axes[2].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[2].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2(nu_CEU, Ts, 50, Ne, n_large=70, gamma=-10.0, eps=0.5, name="CEU")
-axes[2].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
-#axes[2].text(2e5, v[0] + 0.06, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
+axes[2].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[2])
+axes[2].text(2e5, v[0] + 0.06, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
 
 # neutral baseline
 axes[2].plot(1e6 - gen_time * tt_YRI, sd2_neu_YRI, "k--", lw=0.5)
+axes[2].plot(1e6 - gen_time * tt_CEU, sd2_neu_CEU, "k--", lw=0.5)
 
-axes[2].set_title(r"Synergistic epistasis ($\epsilon=0.5$)")
+axes[2].set_title(r"Synergistic epistasis ($\epsilon=1/2$)")
 
 # antagonistic epistasis
 print("plotting negative epistasis panel")
 # gamma = -1
 t, v = get_sd2(nu_YRI, Ts, 50, Ne, gamma=-1.0, eps=-0.5, name="YRI")
-axes[3].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[3].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2(nu_CEU, Ts, 50, Ne, gamma=-1.0, eps=-0.5, name="CEU")
-axes[3].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
-#axes[3].text(2e5, v[0] + 0.08, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
+axes[3].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[3])
+axes[3].text(2e5, v[0] - 0.1, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
 
 # gamma = -10
 t, v = get_sd2(nu_YRI, Ts, 50, Ne, n_large=70, gamma=-10.0, eps=-0.5, name="YRI")
-axes[3].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[3].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2(nu_CEU, Ts, 50, Ne, n_large=70, gamma=-10.0, eps=-0.5, name="CEU")
-axes[3].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
-#axes[3].text(2e5, v[0] - 0.08, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
+axes[3].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[3])
+axes[3].text(2e5, v[0] + 0.04, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
 
 # neutral baseline
 axes[3].plot(1e6 - gen_time * tt_YRI, sd2_neu_YRI, "k--", lw=0.5)
+axes[3].plot(1e6 - gen_time * tt_CEU, sd2_neu_CEU, "k--", lw=0.5)
 
-axes[3].set_title(r"Antagonistic epistasis ($\epsilon=-0.5$)")
+axes[3].set_title(r"Antagonistic epistasis ($\epsilon=-1/2$)")
 
 # n <= 4
 print("plotting rare data")
@@ -375,21 +380,21 @@ thr = 4
 ## each with gamma = -1
 # eps = 0
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.0, name="YRI", nAmax=thr, nBmax=thr)
-axes[4].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.0, name="CEU", nAmax=thr, nBmax=thr)
-axes[4].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[1])
 #axes[4].text(2500, v[0], rf"$\epsilon=0$", va="center", ha="center", fontsize=7)
 eps = 0.5
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.5, name="YRI", nAmax=thr, nBmax=thr)
-axes[4].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.5, name="CEU", nAmax=thr, nBmax=thr)
-axes[4].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[2])
 #axes[4].text(2e4, v[0] - 0.5, rf"$\epsilon=1/2$", va="center", ha="center", fontsize=7)
 # eps = -0.5
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=-0.5, name="YRI", nAmax=thr, nBmax=thr)
-axes[4].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=-0.5, name="CEU", nAmax=thr, nBmax=thr)
-axes[4].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[3])
 #axes[4].text(3e5, v[0] + 1, rf"$\epsilon=-1/2$", va="center", ha="center", fontsize=7)
 # neutral baseline
 t, v = get_sd2_cond(Ne, nAmax=thr, nBmax=thr, name="YRI")
@@ -404,21 +409,21 @@ print("plotting common data")
 # each with gamma = -1
 # eps = 0
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.0, name="YRI", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.0, name="CEU", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[1])
 #axes[5].text(2e5, v[0] - 0.2, rf"$\epsilon=0$", va="center", ha="center", fontsize=7)
 # eps = 0.5
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.5, name="YRI", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=0.5, name="CEU", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[2])
 #axes[5].text(2e5, v[0] + 0.1, rf"$\epsilon=1/2$", va="center", ha="center", fontsize=7)
 # eps = -0.5
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=-0.5, name="YRI", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(1e6 - gen_time * t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(1e6 - gen_time * t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd2_cond(Ne, gamma=-1.0, eps=-0.5, name="CEU", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(1e6 - gen_time * t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(1e6 - gen_time * t, v, "--", lw=lw, color=c2[3])
 #axes[5].text(
 #    2e5, v[0] - 0.2, rf"$\epsilon=-1/2$", va="center", ha="center", fontsize=7
 #)

@@ -93,7 +93,7 @@ def plot_domain_data(pops, categ, ax, legend=False):
     # within syn, within non, match syn, match non
     xx = np.array([1, 2, 3, 4])
     for i in range(len(pops) - 1):
-        xx = np.concatenate((xx, xx[-1] + 1 + np.array([1, 2, 3, 4])))
+        xx = np.concatenate((xx, xx[-1] + 3 + np.array([1, 2, 3, 4])))
 
     to_plot = [
         [
@@ -154,10 +154,10 @@ def plot_domain_data(pops, categ, ax, legend=False):
     ax.set_xticks(np.mean(xx.reshape(len(pops), 4), axis=1))
     ax.set_xticklabels(pops)
     if legend:
-        ax.legend(fontsize=5, frameon=False, loc="upper left")
+        ax.legend(fontsize=5, loc="upper left")
 
 
-fig = plt.figure(5, figsize=(6.5, 4.5))
+fig = plt.figure(5, figsize=(6.5, 4.0))
 fig.clf()
 
 # plot all stats within genes
@@ -244,7 +244,7 @@ ax1b.errorbar(
 
 ax1.set_ylabel(r"$\sigma_d^1$")
 ax1b.set_ylabel(r"$\sigma_d^1$")
-ax1b.set_xlabel("Populations")
+#ax1b.set_xlabel("Populations")
 
 ax1.set_xticks(
     [
@@ -309,120 +309,121 @@ pops = [pop_afr, pop_eur, pop_eas]
 ax2 = plt.subplot2grid(dims, (5, 0), rowspan=3)
 plot_domain_data(pops, "all", ax2, legend=True)
 ax2.set_ylabel("$\sigma_d^1$")
-ax2.set_xlabel("Populations")
+#ax2.set_xlabel("Populations")
 ax2.set_title("All pairs")
 ax2.set_ylim(-0.2, 1)
 
-#ax3 = plt.subplot2grid(dims, (5, 1), rowspan=3)
-#plot_domain_data(pops, "leq2", ax3)
-#ax3.set_xlabel("Populations")
-#ax3.set_title("$n_A, n_B \leq 2$")
-#
-#ax4 = plt.subplot2grid(dims, (5, 2), rowspan=3)
-#plot_domain_data(pops, "3to8", ax4)
-#ax4.set_xlabel("Populations")
-#ax4.set_title("$3 \leq n_A, n_B \leq 8$")
-
 ax3 = plt.subplot2grid(dims, (5, 1), rowspan=3)
-plot_domain_data(pops, "common", ax3)
-ax3.set_xlabel("Populations")
-ax3.set_title("$p_A, p_B \gtrsim 0.1$")
-ax3.sharey(ax2)
+plot_domain_data(pops, "rare", ax3)
+#ax3.set_xlabel("Populations")
+ax3.set_title("$p_A, p_B < 0.02$")
 
-## plots of LD decay within and outside of domains for AFR populations
 ax4 = plt.subplot2grid(dims, (5, 2), rowspan=3)
-
-decay_data = {}
-for c, ps in populations.items():
-    for p in ps:
-        decay_data[p] = pickle.load(
-            open(f"../analysis/parsed_data_v2/{p}.unphased.domains.bp", "rb")
-        )
-
-bins = decay_data[p]["bin_edges"]
-bin_mids = np.mean(bins, axis=1)
-
-pops = populations["Africa"]
-label_syn = "Synonymous"
-label_mis = "Missense"
-ax4.plot(bin_mids[:-4], 0 * bin_mids[:-4], "k--", lw=lw)
-for pop in pops:
-    sd1_syn = decay_data[pop]["bins"]["within"]["synonymous"]["sd1"]
-    sd1_mis = decay_data[pop]["bins"]["within"]["missense"]["sd1"]
-    ax4.plot(
-        bin_mids[:-4],
-        sd1_syn[:-4],
-        "o--",
-        color=colors[0],
-        ms=ms,
-        lw=lw,
-        label=label_syn,
-    )
-    ax4.plot(
-        bin_mids[:-4],
-        sd1_mis[:-4],
-        "s--",
-        color=colors[1],
-        ms=ms,
-        lw=lw,
-        label=label_mis,
-    )
-    label_syn = None
-    label_mis = None
-
-ax4.set_xscale("log")
-ax4.set_title("LD decay in domains")
-ax4.set_xlabel("bp distance")
-ax4.legend(fontsize=5,frameon=False)
+plot_domain_data(pops, "uncommon", ax4)
+#ax4.set_xlabel("Populations")
+ax4.set_title("$p_A, p_B \in [0.02, 0.1)$")
 
 ax5 = plt.subplot2grid(dims, (5, 3), rowspan=3)
+plot_domain_data(pops, "common", ax5)
+#ax5.set_xlabel("Populations")
+ax5.set_title("$p_A, p_B \geq 0.1$")
+ax5.sharey(ax2)
 
-decay_data = {}
-for c, ps in populations.items():
-    for p in ps:
-        decay_data[p] = pickle.load(
-            open(f"../analysis/parsed_data_v2/{p}.unphased.domains.bp", "rb")
-        )
-
-bins = decay_data[p]["bin_edges"]
-bin_mids = np.mean(bins, axis=1)
-
-pops = populations["Africa"]
-label_syn = "Synonymous"
-label_mis = "Missense"
-ax5.plot(bin_mids[:-4], 0 * bin_mids[:-4], "k--", lw=lw)
-for pop in pops:
-    sd1_syn = decay_data[pop]["bins"]["outside"]["synonymous"]["sd1"]
-    sd1_mis = decay_data[pop]["bins"]["outside"]["missense"]["sd1"]
-    ax5.plot(
-        bin_mids[:-4],
-        sd1_syn[:-4],
-        "o--",
-        color=colors[0],
-        ms=ms,
-        lw=lw,
-        mfc="white",
-        label=label_syn,
-    )
-    ax5.plot(
-        bin_mids[:-4],
-        sd1_mis[:-4],
-        "s--",
-        color=colors[1],
-        ms=ms,
-        lw=lw,
-        mfc="white",
-        label=label_mis,
-    )
-    label_syn = None
-    label_mis = None
-
-ax5.set_xscale("log")
-ax5.set_title("Decay outside domains")
-ax5.set_xlabel("bp distance")
+## plots of LD decay within and outside of domains for AFR populations
+#ax4 = plt.subplot2grid(dims, (5, 2), rowspan=3)
+#
+#decay_data = {}
+#for c, ps in populations.items():
+#    for p in ps:
+#        decay_data[p] = pickle.load(
+#            open(f"../analysis/parsed_data_v2/{p}.unphased.domains.bp", "rb")
+#        )
+#
+#bins = decay_data[p]["bin_edges"]
+#bin_mids = np.mean(bins, axis=1)
+#
+#pops = populations["Africa"]
+#label_syn = "Synonymous"
+#label_mis = "Missense"
+#ax4.plot(bin_mids[:-4], 0 * bin_mids[:-4], "k--", lw=lw)
+#for pop in pops:
+#    sd1_syn = decay_data[pop]["bins"]["within"]["synonymous"]["sd1"]
+#    sd1_mis = decay_data[pop]["bins"]["within"]["missense"]["sd1"]
+#    ax4.plot(
+#        bin_mids[:-4],
+#        sd1_syn[:-4],
+#        "o--",
+#        color=colors[0],
+#        ms=ms,
+#        lw=lw,
+#        label=label_syn,
+#    )
+#    ax4.plot(
+#        bin_mids[:-4],
+#        sd1_mis[:-4],
+#        "s--",
+#        color=colors[1],
+#        ms=ms,
+#        lw=lw,
+#        label=label_mis,
+#    )
+#    label_syn = None
+#    label_mis = None
+#
+#ax4.set_xscale("log")
+#ax4.set_title("LD decay in domains")
+#ax4.set_xlabel("bp distance")
+#ax4.legend(fontsize=5,frameon=False)
+#
+#ax5 = plt.subplot2grid(dims, (5, 3), rowspan=3)
+#
+#decay_data = {}
+#for c, ps in populations.items():
+#    for p in ps:
+#        decay_data[p] = pickle.load(
+#            open(f"../analysis/parsed_data_v2/{p}.unphased.domains.bp", "rb")
+#        )
+#
+#bins = decay_data[p]["bin_edges"]
+#bin_mids = np.mean(bins, axis=1)
+#
+#pops = populations["Africa"]
+#label_syn = "Synonymous"
+#label_mis = "Missense"
+#ax5.plot(bin_mids[:-4], 0 * bin_mids[:-4], "k--", lw=lw)
+#for pop in pops:
+#    sd1_syn = decay_data[pop]["bins"]["outside"]["synonymous"]["sd1"]
+#    sd1_mis = decay_data[pop]["bins"]["outside"]["missense"]["sd1"]
+#    ax5.plot(
+#        bin_mids[:-4],
+#        sd1_syn[:-4],
+#        "o--",
+#        color=colors[0],
+#        ms=ms,
+#        lw=lw,
+#        mfc="white",
+#        label=label_syn,
+#    )
+#    ax5.plot(
+#        bin_mids[:-4],
+#        sd1_mis[:-4],
+#        "s--",
+#        color=colors[1],
+#        ms=ms,
+#        lw=lw,
+#        mfc="white",
+#        label=label_mis,
+#    )
+#    label_syn = None
+#    label_mis = None
+#
+#ax5.set_xscale("log")
+#ax5.set_title("Decay outside domains")
+#ax5.set_xlabel("bp distance")
 
 fig.tight_layout()
-fig.subplots_adjust(hspace=0.5)
+fig.subplots_adjust(hspace=0.5, bottom=0.1)
+fig.text(0.5, 0.03, "Populations", fontsize=8, ha="center", va="center")
 fig.text(0.02, 0.97, "A", fontsize=8, ha="center", va="center")
 fig.text(0.02, 0.72, "B", fontsize=8, ha="center", va="center")
 fig.text(0.04, 0.43, "C", fontsize=8, ha="center", va="center")

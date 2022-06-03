@@ -25,7 +25,10 @@ matplotlib.rc("axes", labelsize=7)
 matplotlib.rc("axes", titlesize=7)
 matplotlib.rc("legend", fontsize=6)
 
-from bokeh.palettes import Colorblind
+import bokeh.palettes
+from bokeh.palettes import YlGnBu, YlOrBr
+c1 = YlGnBu[8]
+c2 = YlOrBr[8]
 
 
 def piecewise_constant(
@@ -273,7 +276,8 @@ tt_bottle = ts_gens(data["t"])
 ## plots
 
 lw = 1
-colors = Colorblind[8]
+#colors = bokeh.palettes.Colorblind[8]
+colors = bokeh.palettes.Category10[10]
 
 fig = plt.figure(4, figsize=(6.5, 3.5))
 fig.clf()
@@ -286,7 +290,7 @@ plot_relate_curve(
     N_expand,
     line_style="-",
     lw=lw,
-    color=colors[0],
+    color=c1[0],
     label="Expansion",
     gen=1,
 )
@@ -296,7 +300,7 @@ plot_relate_curve(
     N_bottle,
     line_style="--",
     lw=lw,
-    color=colors[1],
+    color=c2[0],
     label="Bottleneck",
     gen=1,
 )
@@ -313,72 +317,72 @@ axes[0].set_title("Size histories")
 print("plotting additivity panel")
 # gamma = -1
 t, v = get_sd1(nus_expand, Ts_expand, 50, gamma=-1.0, name="expand")
-axes[1].plot(t, v, "-", lw=lw, color=colors[0])
+axes[1].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd1(nus_bottle, Ts_bottle, 50, gamma=-1.0, name="bottle")
-axes[1].plot(t, v, "--", lw=lw, color=colors[1])
+axes[1].plot(t, v, "--", lw=lw, color=c2[1])
 axes[1].text(1000, v[0] + 0.02, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
 
 # gamma = -10
 t, v = get_sd1(nus_expand, Ts_expand, 50, n_large=70, gamma=-10.0, name="expand")
-axes[1].plot(t, v, "-", lw=lw, color=colors[0])
+axes[1].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd1(nus_bottle, Ts_bottle, 50, n_large=70, gamma=-10.0, name="bottle")
-axes[1].plot(t, v, "--", lw=lw, color=colors[1])
+axes[1].plot(t, v, "--", lw=lw, color=c2[1])
 axes[1].text(1000, v[0] - 0.02, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
 
 # neutral baseline
 axes[1].plot(tt_expand, sd1_neu_expand, "k--", lw=0.5)
 
-axes[1].set_title("Interference")
+axes[1].set_title("Interference ($\epsilon=0$)")
 
 ## synergistic epistasis
 print("plotting positive epistasis panel")
 # gamma = -1
 t, v = get_sd1(nus_expand, Ts_expand, 50, gamma=-1.0, eps=0.5, name="expand")
-axes[2].plot(t, v, "-", lw=lw, color=colors[0])
+axes[2].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd1(nus_bottle, Ts_bottle, 50, gamma=-1.0, eps=0.5, name="bottle")
-axes[2].plot(t, v, "--", lw=lw, color=colors[1])
+axes[2].plot(t, v, "--", lw=lw, color=c2[2])
 axes[2].text(1000, v[0] + 0.06, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
 
 # gamma = -10
 t, v = get_sd1(
     nus_expand, Ts_expand, 50, n_large=70, gamma=-10.0, eps=0.5, name="expand"
 )
-axes[2].plot(t, v, "-", lw=lw, color=colors[0])
+axes[2].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd1(
     nus_bottle, Ts_bottle, 50, n_large=70, gamma=-10.0, eps=0.5, name="bottle"
 )
-axes[2].plot(t, v, "--", lw=lw, color=colors[1])
+axes[2].plot(t, v, "--", lw=lw, color=c2[2])
 axes[2].text(1000, v[0] + 0.06, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
 
 # neutral baseline
 axes[2].plot(tt_expand, sd1_neu_expand, "k--", lw=0.5)
 
-axes[2].set_title(r"Synergistic epistasis ($\epsilon=0.5$)")
+axes[2].set_title(r"Synergistic epistasis ($\epsilon=1/2$)")
 
 # antagonistic epistasis
 print("plotting negative epistasis panel")
 # gamma = -1
 t, v = get_sd1(nus_expand, Ts_expand, 50, gamma=-1.0, eps=-0.5, name="expand")
-axes[3].plot(t, v, "-", lw=lw, color=colors[0])
+axes[3].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd1(nus_bottle, Ts_bottle, 50, gamma=-1.0, eps=-0.5, name="bottle")
-axes[3].plot(t, v, "--", lw=lw, color=colors[1])
+axes[3].plot(t, v, "--", lw=lw, color=c2[3])
 axes[3].text(1000, v[0] + 0.08, rf"$\gamma=-1$", va="center", ha="center", fontsize=7)
 
 # gamma = -10
 t, v = get_sd1(
     nus_expand, Ts_expand, 50, n_large=70, gamma=-10.0, eps=-0.5, name="expand"
 )
-axes[3].plot(t, v, "-", lw=lw, color=colors[0])
+axes[3].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd1(
     nus_bottle, Ts_bottle, 50, n_large=70, gamma=-10.0, eps=-0.5, name="bottle"
 )
-axes[3].plot(t, v, "--", lw=lw, color=colors[1])
+axes[3].plot(t, v, "--", lw=lw, color=c2[3])
 axes[3].text(1000, v[0] - 0.08, rf"$\gamma=-10$", va="center", ha="center", fontsize=7)
 
 # neutral baseline
 axes[3].plot(tt_expand, sd1_neu_expand, "k--", lw=0.5)
 
-axes[3].set_title(r"Antagonistic epistasis ($\epsilon=-0.5$)")
+axes[3].set_title(r"Antagonistic epistasis ($\epsilon=-1/2$)")
 
 # n <= 4
 print("plotting rare data")
@@ -386,21 +390,21 @@ thr = 4
 # each with gamma = -1
 # eps = 0
 t, v = get_sd1_cond(gamma=-1.0, eps=0.0, name="expand", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd1_cond(gamma=-1.0, eps=0.0, name="bottle", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(t, v, "--", lw=lw, color=c2[1])
 axes[4].text(2500, v[0], rf"$\epsilon=0$", va="center", ha="center", fontsize=7)
 # eps = 0.5
 t, v = get_sd1_cond(gamma=-1.0, eps=0.5, name="expand", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd1_cond(gamma=-1.0, eps=0.5, name="bottle", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(t, v, "--", lw=lw, color=c2[2])
 axes[4].text(500, v[0] - 0.8, rf"$\epsilon=1/2$", va="center", ha="center", fontsize=7)
 # eps = -0.5
 t, v = get_sd1_cond(gamma=-1.0, eps=-0.5, name="expand", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "-", lw=lw, color=colors[0])
+axes[4].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd1_cond(gamma=-1.0, eps=-0.5, name="bottle", nAmax=thr, nBmax=thr)
-axes[4].plot(t, v, "--", lw=lw, color=colors[1])
+axes[4].plot(t, v, "--", lw=lw, color=c2[3])
 axes[4].text(
     1000, v[0] + 0.5, rf"$\epsilon=-1/2$", va="center", ha="center", fontsize=7
 )
@@ -417,21 +421,21 @@ print("plotting common data")
 # each with gamma = -1
 # eps = 0
 t, v = get_sd1_cond(gamma=-1.0, eps=0.0, name="expand", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(t, v, "-", lw=lw, color=c1[1])
 t, v = get_sd1_cond(gamma=-1.0, eps=0.0, name="bottle", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(t, v, "--", lw=lw, color=c2[1])
 axes[5].text(1000, v[0] - 0.2, rf"$\epsilon=0$", va="center", ha="center", fontsize=7)
 # eps = 0.5
 t, v = get_sd1_cond(gamma=-1.0, eps=0.5, name="expand", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(t, v, "-", lw=lw, color=c1[2])
 t, v = get_sd1_cond(gamma=-1.0, eps=0.5, name="bottle", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(t, v, "--", lw=lw, color=c2[2])
 axes[5].text(1000, v[0] + 0.1, rf"$\epsilon=1/2$", va="center", ha="center", fontsize=7)
 # eps = -0.5
 t, v = get_sd1_cond(gamma=-1.0, eps=-0.5, name="expand", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "-", lw=lw, color=colors[0])
+axes[5].plot(t, v, "-", lw=lw, color=c1[3])
 t, v = get_sd1_cond(gamma=-1.0, eps=-0.5, name="bottle", nAmin=thr + 1, nBmin=thr + 1)
-axes[5].plot(t, v, "--", lw=lw, color=colors[1])
+axes[5].plot(t, v, "--", lw=lw, color=c2[3])
 axes[5].text(
     1000, v[0] - 0.2, rf"$\epsilon=-1/2$", va="center", ha="center", fontsize=7
 )

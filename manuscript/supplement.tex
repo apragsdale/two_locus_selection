@@ -352,7 +352,7 @@ To explore the effects of many linked selected loci on patterns of LD, I used
 \texttt{fwdpy11} \citep{Thornton2014-pn,Thornton2019-qc} to simulate large
 genomic segments with many selected mutations. Each simulation had population
 size of \(N=1000\), a sequence length of 1Mb, with mutation and recombination
-rates both \(u=r=10^{-8}\). I considered four scenarios for selected mutaions:
+rates both \(u=r=10^{-8}\). I considered four scenarios for selected mutations:
 additive selection \(h=0.5\) with \(s=-0.0005\) and \(s=-0.01\) (\(\gamma=-1\)
 and \(-20\)), and recessivity \(h=0.0\) or \(h=0.1\) with the same selection
 coefficients. These sets of parameters should give rise to strong effects of
@@ -387,7 +387,7 @@ pairs of neutral mutations \citep{Good2022-ot}. Mutations of different
 functional classes (synonymous, missense, and loss-of-function, for example)
 are expected to segregate at different average frequencies, and average
 selection pressures are observed to be greater within annotated conserved
-domains, with stronger purifying selection driving allele frqeuencies to
+domains, with stronger purifying selection driving allele frequencies to
 relatively lower levels among missense and loss-of-function variants. Since
 mutations of difference classes and locations have different average
 frequencies, this may drive differences in patterns of LD when comparing
@@ -655,7 +655,7 @@ population sizes, mutation and recombination rates) than by sample sizes.
 \begin{longtable}[t]{lllr}
 \caption{\label{tab:tajimasD}
 \textbf{Tamija's $D$ for classes of coding mutations.} Here, we partitioned by
-synonymous, missense, and nonsense mutationsi, and considered all mutations gene-wide,
+synonymous, missense, and nonsense mutations, and considered all mutations gene-wide,
 mutations falling within annotated conserved elements,
 and mutations falling outside of those
 elements.}\\
@@ -866,7 +866,7 @@ KHV & Synonymous & All & -0.576\\
         and allele frequencies of synonymous mutations.}
         Gene-wide signed LD is observed to be at similar slightly positive levels between
         pairs of synonymous and pairs of missense variants. This observation is
-        consistest when weighting missense variants to match distances between
+        consistent when weighting missense variants to match distances between
         pairs of synonymous variants and when weighting to match synonymous allele
         frequencies, with only a slight reduction in missense \(\sigma_d^1\).
         The distribution of distances between synonymous and missense mutations
@@ -909,7 +909,7 @@ KHV & Synonymous & All & -0.576\\
         (Table~\ref{tab:afrsd1}), \(sigma_d^1\) between missense mutations matched
         to distances and allele frequencies observed in synonymous mutation pairs
         has only a small effect on average signed LD, and gene-wide measurements
-        are roughy equal between these two mutation classes.
+        are roughly equal between these two mutation classes.
         Again, measurement noise for loss-of-function mutation pairs is high.
     }
 \end{table}
@@ -937,7 +937,7 @@ KHV & Synonymous & All & -0.576\\
     \end{center}
     \caption{
         \label{tab:eassd1}
-        \textbf{Signed LD in EUR-labeled populations matched to distances
+        \textbf{Signed LD in EAS-labeled populations matched to distances
         and allele frequencies of synonymous mutations.}
         Similar to the pattern observed in AFR-labeled populations
         (Table~\ref{tab:afrsd1}), \(sigma_d^1\) between missense mutations matched
@@ -1047,7 +1047,7 @@ KHV & Synonymous & All & -0.576\\
         \(\gamma=-2\)), with \(h=0.1\) at both loci and no
         epistatic interactions (\(\epsilon=0\)).
         E: \texttt{moments} expectations, D: simulated data.
-        Additional comparisons to simulated data are availabe at
+        Additional comparisons to simulated data are available at
         \texttt{https://github.com/apragsdale/two\_locus\_selection}.
     }
     \label{fig:validation5}
@@ -1058,14 +1058,16 @@ KHV & Synonymous & All & -0.576\\
     \includegraphics{../figures/bgs_gamma_-1.0_h_0.5_n_50}
     \caption{
         \textbf{Background selection with slightly deleterious mutations.}
-        Using an individual based forward simulator \citep{Thornton2019-qc}, I
-        simulated many replicates of 1Mb regions with high mutation rates of
+        Using an individual-based forward simulator \citep{Thornton2019-qc}, I
+        simulated many replicates of 1Mb regions with a high mutation rate of
         selected mutations (see Section~\ref{sec:bgs} for details). Here,
         many linked additive weakly selected mutations slightly distort the
-        SFS for both selected and neutral mutations. \(\sigma_d^2\) is reduced
-        relative to two-locus expectations within background selection, and
-        Hill-Robertson interference effects are slightly diminished with
-        \(\sigma_d^1\) not as strongly negative as expected.
+        SFS for both (A) selected and (C) neutral mutations.
+        (B) In this scenario of background selection, \(\sigma_d^2\)
+        is reduced relative to two-locus expectations without linked selection.
+        (D) Hill-Robertson interference effects are slightly diminished, with
+        \(\sigma_d^1\) not as strongly negative as expected without additional
+        linked selected mutations.
     }
     \label{fig:bgs1}
 \end{figure}
@@ -1076,9 +1078,10 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Background selection with moderately deleterious mutations.}
         In the case of many linked strongly selected additive mutations, neither
-        selected nor neutral statistics deviate dramatically from two-locus expectations.
-        The SFS from the simulated data matches expectations, with a slight excess
-        of selected mutations. LD is also largely unaffected, with \(\sigma_d^2\)
+        selected nor neutral statistics deviate dramatically from expectations
+        for either the SFS (A, C) or two-locus statistics (B, D).
+        The SFS from the simulated data matches single-locus expectations.
+        LD is also largely unaffected, with \(\sigma_d^2\)
         matching expectations and \(\sigma_d^1\) fluctuating near zero as expected.
     }
     \label{fig:bgs2}
@@ -1090,12 +1093,14 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Associative overdominance due to slightly deleterious recessive mutations.}
         The presence of many linked weakly selected recessive mutations can cause
-        measues of diversity to have large increases over single- and two-locus
-        expectations. The SFS for both neutral and selected mutations both show
+        measures of diversity to have large increases over single- and two-locus
+        expectations. The SFS for both selected (A) and neutral (C) mutations both show
         a very large excess of common variants (note the log scale), and \(\sigma_d^2\)
+        decay curves (B)
         are also increased over two-locus expectations for both classes of mutations.
-        Still, \(\sigma_d^1\) remains 0 for neutral mutations and is not as strongly
-        negative for pairs of selected mutations.
+        (D) \(\sigma_d^1\) remains 0 for neutral mutations and is not as strongly
+        negative for pairs of selected mutations due to interference from linked selected
+        mutations.
     }
     \label{fig:bgs3}
 \end{figure}
@@ -1107,11 +1112,14 @@ KHV & Synonymous & All & -0.576\\
         \textbf{Background selection with moderately deleterious recessive mutations.}
         More strongly deleterious recessive mutations do not show as dramatic of
         deviations from expectations as the case of weakly deleterious recessive
-        mutations. The neutral SFS is reduced, and we observe more selected mutations
-        at higher frequencies than expected. LD is also only weakly distorted from
-        two-locus expectations. Notably, we see positive LD (matching between
-        simulations and expectations) for strongly deleterious recessive mutations,
-        as predicted in \citet{Roze2021-cf}.
+        mutations (Fig.~\ref{fig:bgs3}.
+        (A) We observe more selected mutations at higher frequencies than expected,
+        and (C) the neutral SFS is reduced below single-locus expectations.
+        (B, D) LD is also only weakly distorted from
+        two-locus expectations. Notably, we see positive LD for strongly
+        deleterious recessive mutations (which matches between
+        simulations and expectations),
+        as previously predicted in \citet{Roze2021-cf}.
     }
     \label{fig:bgs4}
 \end{figure}
@@ -1124,7 +1132,15 @@ KHV & Synonymous & All & -0.576\\
         and expansion histories with epistasis.}
         Bottlenecks increase \(\sigma_d^2\) (squared LD),
         while expansions tend to decrease squared LD.
-        Dashed lines show neutral expectations.
+        Black dashed lines show neutral expectations.
+        (A) The simulated size histories. (B-F) Blue solid lines
+        are expected squared LD under the expansion model, and gold
+        dashed lines are squared LD under the bottleneck/recovery model.
+        (B-D) Expectations are computed over all allele frequencies.
+        (E) Expected squared LD between uncommon variants, with $n_A$
+        and $n_B \leq 4$, in a sample size of 50 haploid copies.
+        (F) Expected LD squared LD between common variants
+        $p_A, p_B \gtrsim 10\%$.
     }
     \label{fig:toy_sd2}
 \end{figure}
@@ -1137,7 +1153,11 @@ KHV & Synonymous & All & -0.576\\
         and expansion histories with dominance.}
         Gene-based dominance, unlike site-wise dominance effects, can cause
         large positive signed LD, similar to compensatory mutations or
-        antagonistic epistasis. In general, common variants are more
+        antagonistic epistasis.
+        (A) The simulated size histories.
+        (B-D) Signed LD computed from pairs of mutations
+        across all allele frequencies.
+        (E, F) In general, common variants are more
         stable under population size changes than rare variants.
         Dashed lines show neutral expectations.
     }
@@ -1152,6 +1172,10 @@ KHV & Synonymous & All & -0.576\\
         and expansion histories with dominance.}
         Similar to the cases with epistasis, bottlenecks tend to increase
         \(\sigma_d^2\) and expansions decrease squared LD.
+        (A) The simulated size histories.
+        (B-D) Squared LD computed from pairs of mutations at all allele frequencies.
+        (E, F) Squared LD computed from uncommon ($<10\%$) and common ($\gtrsim 10\%$)
+        mutations.
         Dashed lines show neutral expectations.
     }
     \label{fig:toy_dom_sd2}
@@ -1163,11 +1187,15 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Time series of signed LD under inferred models of human population
         size history with with epistasis.}
+        (A) Size histories inferred using Relate \citep{Speidel2019-nj}.
+        (B-F)
         Similar to the instantaneous size changes in the toy models
         (Figure~\ref{fig:toy}), bottlenecks tend to make signed LD more extreme.
-        However, in the case of strong selection and antagonistic epistasis,
-        the CEU \(\sigma_d^1\) trajector decreases relative to the YRI
-        trajectory. Again, statistics for rare variants fluctuate more rapidly
+        However, in the case of strong selection and antagonistic epistasis (D),
+        the CEU \(\sigma_d^1\) trajectory decreases relative to the YRI
+        trajectory, showing that non-constant demographic history and epistasis can
+        have complicated interactions.
+        (E, F) Again, statistics for rare variants fluctuate more rapidly
         than common variants.
         Dashed lines show neutral expectations.
     }
@@ -1180,8 +1208,13 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Time series of squared LD under inferred models of human population
         size history with with epistasis.}
+        (A) Inferred size histories used in simulations.
+        (B-D)
         Size reductions, such as bottlenecks in the recent past of Eurasian populations,
         increase squared LD.
+        (E, F) Uncommon and common variants can show strikingly different behaviors
+        under size change histories, here showing trajectories under the three
+        epistasis models from panels B-D.
         Dashed lines show neutral expectations.
     }
     \label{fig:relate_sd2}
@@ -1193,8 +1226,13 @@ KHV & Synonymous & All & -0.576\\
     \caption{
         \textbf{Time series of squared LD under inferred models of human population
         size history with with dominance.}
+        (A) Inferred size histories used in simulations.
+        (B-D)
         Again, bottlenecks increase squared LD relative to populations that did
         not experience such strong size reductions in their history.
+        (E, F) Uncommon and common variants can show strikingly different behaviors
+        under size change histories, here showing trajectories under the three
+        dominance models from panels B-D.
         Dashed lines show neutral expectations.
     }
     \label{fig:relate_dom_sd2}
@@ -1224,7 +1262,7 @@ KHV & Synonymous & All & -0.576\\
         \textbf{LD decay for pairs of synonymous and missense mutations
         that fall inside the same domain.}
         At short distances between SNPs that both fall within sthe same conserved
-        annotated domain, missense mtuations show consistently
+        annotated domain, missense mutations show consistently
         larger signed LD than synonymous variants. This may be caused by
         antagonistic epistasis or compensatory effects between pairs of
         nearby missense mutations.
@@ -1256,7 +1294,7 @@ KHV & Synonymous & All & -0.576\\
         same domain and outside domains at matched distances.}
         Showing the five populations in the Thousand Genomes African group.
         We observe increased LD between missense mutations within domains,
-        but decrased LD outside of domains at matched distances. This pattern
+        but decreased LD outside of domains at matched distances. This pattern
         holds when conditioning on non-rare variation (\(n_A, n_B \geq 9\),
         MAF \(\gtrsim 0.05\)).
     }
@@ -1271,7 +1309,7 @@ KHV & Synonymous & All & -0.576\\
         same domain and outside domains at matched distances.}
         Showing the five populations in the Thousand Genomes European group.
         We again observe increased LD between missense mutations within domains,
-        but decrased LD outside of domains at matched distances. And again,
+        but decreased LD outside of domains at matched distances. And again,
         this pattern holds when conditioning on non-rare variation
         (\(n_A, n_B \geq 9\), MAF \(\gtrsim 0.05\)).
     }
@@ -1286,8 +1324,8 @@ KHV & Synonymous & All & -0.576\\
         same domain and outside domains at matched distances.}
         Showing the five populations in the Thousand Genomes East Asian group.
         As with the African and European data,
-        wobserve increased LD between missense mutations within domains,
-        but decrased LD outside of domains at matched distances. And again,
+        we observe increased LD between missense mutations within domains,
+        but decreased LD outside of domains at matched distances. And again,
         this pattern holds when conditioning on non-rare variation
         (\(n_A, n_B \geq 9\), MAF \(\gtrsim 0.05\)).
     }
@@ -1310,6 +1348,26 @@ KHV & Synonymous & All & -0.576\\
         domain, but not between domains.
     }
     \label{fig:between_domains}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../figures/SFS_proportions}
+    \caption{
+        \textbf{SFS for common missense and synonymous variants.}
+        The full SFS (considering variants at all observed allele frequencies) is
+        skewed toward low frequencies for missense variants compared to synonymous
+        variants (shown in light colors). Tajima's $D$ is considerably more negative
+        for missense variants than synonymous variants for missense variants, whether
+        conditioning on mutations within annotated elements or outside
+        (Table~\ref{tab:tajimasD}). However, the SFS for common variants (with
+        observed MAF $\geq 10\%$) are similar between missense and synonymous variants
+        for each partition of the data. Thus, the excess of positive signed LD for
+        common variants within annotated domains is likely not to be driven by
+        subtle differences in allele frequencies between missense and synonymous
+        classes.
+    }
+    \label{fig:sfs_proportions}
 \end{figure}
 
 \begin{figure}[ht!]
